@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" id="WebApp_ID" version="3.1">
+  <display-name>RestfullService_JerseyImple_Bootstraping</display-name>
+  
+  <!-- Bootstrapping Option #1 Here we can kick off the ServletContainer By Providing the ResourceClasses Package Names to the ServletContainer
+  Through init parameter so that ServletContainer will read those classes from packages but not from sub packages.if you want it to be read from 
+  sub packages also you have to provide recursive true inside one more init parameter -->
+  
+  <!-- <servlet>
+     <servlet-name>JerseyBootStraping</servlet-name>
+     <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+      <init-param>
+        <param-name>jersey.config.server.provider.packages</param-name>
+        <param-value>com.jerseybootstraping.resource</param-value>  
+     </init-param>
+     for recursive packages means one inside another.by default it will not take from sub packages
+      <init-param>
+        <param-name>jersey.config.server.provider.scanning.recursive</param-name>
+        <param-value>true</param-value>  
+     </init-param>
+     <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+     <servlet-name>JerseyBootStraping</servlet-name>
+     <url-pattern>/product/*</url-pattern>
+  </servlet-mapping> -->
+  
+  
+  <!-- BootStrapingOption #2 Here we can kick off the ServletContainer By Providing the ResourceClass Names By separating them by semicolon or 
+  Separateing them by comma either of the way we can use it.and this has to give to the ServletContainer through init parameter
+  Then ServletContainer will read classnames from by spiliting through comma(,) or semocolion(;) it will be created and placed inside the meta data 
+  of the container this is how this approach will work and in tomcat server this servlet url and resource url same also it will work but incase of 
+  tomcat 8 or 9 we have to place /* symbol and the remaing url should match with the either of the resources-->
+  <!-- <servlet>
+     <servlet-name>JerseyBootStraping</servlet-name>
+     <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+      <init-param>
+        <param-name>jersey.config.server.provider.classnames</param-name>
+        <param-value>com.jerseybootstraping.resource.Product;com.jerseybootstraping.resource.PaytmResource</param-value>  
+     </init-param>
+     <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+     <servlet-name>JerseyBootStraping</servlet-name>
+     <url-pattern>/common/*</url-pattern>
+  </servlet-mapping> -->
+  
+  
+  <!-- Incase of J2EE5+ / SERVLET 3.1 / NO WEB.XML Configuration
+       BootStrapingOption #3 Here we can kick off the server container in another way By using Application class.This is also called as Resource scope
+       For every request sevlet will create one thread object but this these threads will share the same Sevlet object bcz servlet is singleton 
+       createdby servlet container. But if go for one object for one servlet DataInconsistency problems will come.bcz all the threads are sharing the 
+       same object. to avoid this problem EJB's come into picture it will create one object for each thread due to which more reasources will be consume by
+       application so it will become heavy weight.but incase of jersey it has given this option to the users it self.you can make servlet container to create 
+       one object for all request or object for request this process is called scopeing.
+       Here we are wiring a class that is comming from jersey implimentation of the jax-rs api.this class will be called by jersey SevletContainer class
+       as part of the init parameter to create the objects to the Resource classes.inside this we have to over ride the methods.
+       
+  
+  <servlet>
+     <servlet-name>JerseyBootStraping</servlet-name>
+     <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+      <init-param>
+        <param-name>javax.ws.rs.Application</param-name>
+        <param-value>com.jerseybootstraping.common.JerseyImplimentationBootStrapingApplication</param-value>  
+     </init-param>
+     <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+     <servlet-name>JerseyBootStraping</servlet-name>
+     <url-pattern>/common/*</url-pattern>
+  </servlet-mapping> -->
+  
+  <!-- BootStraping#5 Here we can kick off the servlet container with easy configuration this is the second way of Automatic Detection.First way is 4Bootstraping option
+       Here you just have to Write the Application name with the fully qualified name. So that at the time of Tomcat Servlet Container startup it will call the contractual method 
+       provided by Servlet Api that is over ridden by jax-rs api that class is JerseySevletContainerIntilaizer inside this method they have provided one method to override means our implementation
+       onStartUp method so jersey people implemented in such a way that if you provide just servletName as Application then they will provide servlet class as ServletContainer and by default they will use
+       packages as *.* this will applicable to Sub directorys also.all the resource objects will be created at the time of first request only.And default scope is request per every request one one object will be created
+   
+  <servlet>
+     <servlet-name>javax.ws.rs.core.Application</servlet-name>
+     <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+     <servlet-name>javax.ws.rs.core.Application</servlet-name>
+     <url-pattern>/common/*</url-pattern>
+  </servlet-mapping> -->
+  
+  <!-- This is the Customizing way of BootStraping#6 option Bcz incase of  BootStraping option nothing is there in Programmer hands Bcz EveryThing internally
+  Managed by Jersey Container class.This is Additional Implementation provided bt Jersey Providedr.This feature is available only in jersey
+  Bcz if you provide more flexibility to the programmer that many people will stat using that.this kind of implimentations are not available in RestEasy.it is Completely customization of 
+  BootStrap 5 there you can not maintain the scope as singleton or prototype but here you can maintain by ypur wish here you can not apply the load on startup for both the cases 
+  
+  <servlet>
+     <servlet-name>com.jerseybootstraping.common.JerseyImplimentationBootStrapingApplication</servlet-name>
+     <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+     <servlet-name>com.jerseybootstraping.common.JerseyImplimentationBootStrapingApplication</servlet-name>
+     <url-pattern>/common/*</url-pattern>
+  </servlet-mapping> -->
+  
+  
+  <!-- Bootstraping#7 option here we can use ResourceConfig class insted of Applicationclass. It is the child class of ApplicationClass
+  so what ever the logic we have to write every thing will be handle by the jersey people itself. Means Creating the objects of singletones
+  and getclasses that has to do by every one.so insted of that extend from Resource Config so every those will come to your class as part of inheritence
+  you can configure this resource class either in web.xml or in Annotated with the @ApplicationPath so that ServletContainer will identify this class -->
+  <servlet>
+     <servlet-name>JerseyBootStraping</servlet-name>
+     <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+      <init-param>
+        <param-name>javax.ws.rs.Application</param-name>
+        <param-value>com.jerseybootstraping.common.JerseyBootStrapingResourceConfig</param-value>  
+     </init-param>
+     <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+     <servlet-name>JerseyBootStraping</servlet-name>
+     <url-pattern>/common/*</url-pattern>
+  </servlet-mapping>
+  
+</web-app>
