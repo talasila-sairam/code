@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="mappings">
+			<props>
+				<prop key="/search-display.action">searchcontroller</prop>
+				<prop key="/viewsearch.action">searchCommand</prop>
+			</props>
+		</property>
+	</bean>
+	<bean id="searchcontroller"
+		class="org.springframework.web.servlet.mvc.ParameterizableViewController">
+		<property name="viewName" value="Search-Display"></property>
+	</bean>
+	<bean id="searchCommand" class="com.apps.controller.SearchCommandController">
+		<property name="commandClass" value="com.apps.BO.CommandClass"></property>
+	</bean>		
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/views/"></property>
+		<property name="suffix" value=".jsp"></property>
+	</bean>
+	
+</beans>
