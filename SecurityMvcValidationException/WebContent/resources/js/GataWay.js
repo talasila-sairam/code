@@ -1,0 +1,3 @@
+function gotoGateway(){
+	alert("hi");
+}
