@@ -18,16 +18,16 @@ public class ProductValidator implements Validator{
 	public void validate(Object object, Errors errors) {
 		ProductForm product=(ProductForm)object;
 		if(product.getFmobile()==null||product.getFmobile().length()==0) {
-			errors.rejectValue("fmobile", "Please enter all mandatory fields");
+			errors.rejectValue("fmobile", "productform.frommobile");
 		}
 		if(product.getTmobile()==null||product.getTmobile().length()==0) {
-			errors.rejectValue("tmobile", "Please enter all mandatory fields");
+			errors.rejectValue("tmobile", "productform.toMobile");
 		}
 		if(product.getPname()==null||product.getPname().length()==0) {
-			errors.rejectValue("pname", "Please enter all mandatory fields");
+			errors.rejectValue("pname", "productform.productnames");
 		}
 		if(product.getPprice()<=0) {
-			errors.rejectValue("pprice", "Please enter all mandatory fields");
+			errors.rejectValue("pprice", "productform.price");
 		}
 	}
 

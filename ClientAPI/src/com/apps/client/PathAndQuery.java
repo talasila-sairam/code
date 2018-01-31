@@ -41,6 +41,14 @@ public class PathAndQuery {
 		inputs.setLevel(10);
 		Company read = PathAndQuery.getXmlReadData(inputs);
 		System.out.println("From XML read====== "+read);
+		
+		Response paramsSync = PathAndQuery.getFormParamsWithSync("Chandu", 24);
+	}
+
+	private static Response getFormParamsWithSync(String string, int i) {
+		final String BASE_URL ="http://localhost:8081/RestParentScopes/api/check/Hyderabad";
+		
+		return null;
 	}
 
 	private static Company getXmlReadData(CompanyInput inputCompany) {

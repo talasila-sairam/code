@@ -7,14 +7,8 @@
 		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd">
 
 	<mvc:annotation-driven></mvc:annotation-driven>
-
+	<mvc:resources location="/resources" mapping="/resources/*"></mvc:resources>
 	<context:component-scan base-package="com.apps.controller"></context:component-scan>
-	<bean id="messageSource"
-		class="org.springframework.context.support.ResourceBundleMessageSource">
-		<property name="basename">
-			<value>WEB-INF/resources/ProductFormErrors</value>
-		</property>
-	</bean>
 	<mvc:view-controller path="/account.htm" view-name="account" />
 	<mvc:view-controller path="/viewhome.htm"
 		view-name="Home" />
