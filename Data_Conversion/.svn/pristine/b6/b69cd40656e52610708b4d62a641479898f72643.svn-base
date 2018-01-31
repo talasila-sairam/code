@@ -1,0 +1,17 @@
+$(document).ready(function() {
+	$("#userAssignment").on('click', function(e){
+		e.preventDefault();
+		$("#reportPagesDisplay").removeAttr("src");
+		$("#reportPagesDisplay").attr("src","./UserAssignment.jsp");
+	});
+	$("#DataConversion").on('click', function(e){
+		e.preventDefault();
+		$("#reportPagesDisplay").removeAttr("src");
+		$("#reportPagesDisplay").attr("src","./MainIndex.jsp");
+	});
+	$("#dashBoard").on('click', function(e){
+		e.preventDefault();
+		$("#reportPagesDisplay").removeAttr("src");
+		$("#reportPagesDisplay").attr("src","./DashBoard.jsp");
+	});
+});

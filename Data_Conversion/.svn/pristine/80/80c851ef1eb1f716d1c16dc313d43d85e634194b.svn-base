@@ -1,0 +1,12 @@
+package com.appstek.dc.dao;
+
+import java.io.BufferedWriter;
+import java.util.List;
+import com.appstek.dc.dbload.FnfLanDictionary;
+
+public interface FnfLan23Dao {
+	
+//public List<String> getColumn();
+public BufferedWriter callProcedureForTXTGeneration(List<FnfLanDictionary> fnfLanDictionaryList,String realPath);
+public String saveData(String countyName,String stateName,List<FnfLanDictionary> fnfLanDictionaryList);
+}

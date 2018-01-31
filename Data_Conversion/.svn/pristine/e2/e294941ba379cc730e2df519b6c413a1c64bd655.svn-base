@@ -1,0 +1,23 @@
+package com.appstek.dc.service;
+
+import java.io.BufferedWriter;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+
+import com.appstek.dc.dto.ExcelFileDto;
+
+public interface GenerateReportService {
+
+	public List<ExcelFileDto> getFirstTableRecordsList();
+	public List<ExcelFileDto> getSecondTableRecordsList();
+	public List<ExcelFileDto> getThirdTableRecordsList();
+	public Map<String, Map<String,?>> getForthTableRecordsList();
+	public BufferedWriter generateTextReport(String realPath);
+	public HSSFWorkbook getQueryDataXl(String inputString,String realPath ) ;
+	public List<String> createWordDocumentForExcelReportGeneration(String realPath);
+	
+	public String getUsedTableNames(int fieldNumber, String territoryName); 
+	public String getUsedColumnNames(int fieldNumber, String territoryName);
+}

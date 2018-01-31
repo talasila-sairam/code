@@ -1,0 +1,479 @@
+package com.appstek.dc.controller;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.appstek.dc.dbload.SourceVerificationAnswer;
+import com.appstek.dc.dto.DataConversionDto;
+import com.appstek.dc.dto.ExcelFileDto;
+import com.appstek.dc.dto.ExcelQuestionAnswerDto;
+import com.appstek.dc.dto.JsonResponse;
+import com.appstek.dc.service.GenerateReportService;
+import com.appstek.dc.util.DataConversionExcelUtility;
+import com.appstek.dc.util.MappingConstants;
+
+@Controller
+@RequestMapping("/report/")
+public class ReportController {
+	
+	static final Logger log4j = Logger.getLogger(ReportController.class);
+	public static FileOutputStream outStream = null;
+	
+	public static XSSFWorkbook workbook = null;
+	public static int secondTableRowCount;
+	public static int thirdTableRowCount;
+
+	@Autowired
+	GenerateReportService generateReportService;
+
+	@RequestMapping(value = MappingConstants.DOWNLOADEXCELREPORT, method = RequestMethod.GET)
+	public ModelAndView downloadExcel(HttpServletRequest request, HttpServletResponse response,@RequestParam("countyName") String countyName,
+										@RequestParam("editon") String editon, @RequestParam("countryFipsCode") Long countryFipsCode, 
+										@RequestParam("stateFipsCode") Long stateFipsCode, @RequestParam("countyFipsCode") Long countyFipsCode,
+										@RequestParam("stateCode") String stateCode,@RequestParam("state") String stateName,@RequestParam("edition") String edition) {
+		log4j.info("ReportController - downloadExcel :: Start");
+		try {
+			
+			/*String home = System.getProperty("user.home");
+		    String realPath = home+"/Downloads/";
+		    FileInputStream is = new FileInputStream(new File(realPath));
+         	int read=0;
+			Path path = Paths.get(realPath);
+			byte[] bytes = Files.readAllBytes(path);
+		
+			System.out.println(countyName);
+			String userAgent = request.getHeader("User-Agent");
+			List<ExcelFileDto> excelFileDtoListForFirstTable = generateReportService.getFirstTableRecordsList();
+			List<ExcelFileDto> excelFileDtoListForSecondTable = generateReportService.getSecondTableRecordsList();
+			List<ExcelFileDto> excelFileDtoListForThirdTable = generateReportService.getThirdTableRecordsList();
+			Map<String, Map<String, ?>> excelFileDtoListForForthTable = generateReportService
+					.getForthTableRecordsList();
+			Map<String, Object> params = new LinkedHashMap<String, Object>();
+			params.put("FirstTable", excelFileDtoListForFirstTable);
+			params.put("SecondTable", excelFileDtoListForSecondTable);
+			params.put("ThirdTable", excelFileDtoListForThirdTable);
+			params.put("ForthTable", excelFileDtoListForForthTable);
+			response.setContentType("application/xlsx");
+			response.setHeader("Content-Disposition", "attachment; filename="+MappingConstants.EXCELREPORTNAME);
+			ServletOutputStream out = response.getOutputStream();
+			XSSFWorkbook wb = generateExcel(params, request,generateReportService,countyName);
+			wb.write(out);
+			response.flushBuffer();*/
+			/*if(userAgent.equalsIgnoreCase("Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36") || userAgent.equalsIgnoreCase("Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko"))
+			{
+				Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " +realPath);
+			}*/
+			byte[] zip = {};
+			String path = request.getServletContext().getRealPath("");
+			List<String> fileNameList = createWordDocument(path,countyName,stateName,edition);
+			//fileNameList.add("AK_Sitka_06_Data_Spec_Sheet.xlsx");
+			String fileName = stateCode+"_"+countyName+"_"+editon+"_Data_Spec_Sheet.xlsx";
+			fileNameList.add(fileName);
+			String[] nameArray = new String[fileNameList.size()]; 
+			if(fileNameList != null && !fileNameList.isEmpty())
+			{
+				for(int i=0;i<fileNameList.size();i++)
+				{
+					nameArray[i] = fileNameList.get(i);
+				}
+			}
+			List<ExcelFileDto> excelFileDtoListForFirstTable = generateReportService.getFirstTableRecordsList(editon, countryFipsCode, stateFipsCode, countyFipsCode);
+			List<ExcelFileDto> excelFileDtoListForSecondTable = generateReportService.getSecondTableRecordsList(editon, countryFipsCode, stateFipsCode, countyFipsCode);
+			List<ExcelFileDto> excelFileDtoListForThirdTable = generateReportService.getThirdTableRecordsList(editon, stateCode, countyName);
+			Map<String, Map<String, ?>> excelFileDtoListForForthTable = generateReportService.getForthTableRecordsList();
+			Map<String, Object> params = new LinkedHashMap<String, Object>();
+			params.put("FirstTable", excelFileDtoListForFirstTable);
+			params.put("SecondTable", excelFileDtoListForSecondTable);
+			params.put("ThirdTable", excelFileDtoListForThirdTable);
+			params.put("ForthTable", excelFileDtoListForForthTable);
+			XSSFWorkbook wb = generateExcel(params, request,generateReportService,countyName,editon,fileName,stateCode);
+			File directory = new File(path);
+			System.out.println(nameArray);
+			zip = zipFiles(directory, nameArray);
+			
+			ServletOutputStream sos = response.getOutputStream();
+            response.setContentType("application/zip");
+            response.setHeader("Content-Disposition", "attachment; filename=REPORT.ZIP");
+
+            sos.write(zip);
+            sos.flush();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		log4j.info("ReportController - downloadExcel :: End");
+		return null;
+	}
+	private byte[] zipFiles(File directory, String[] files) throws IOException {
+		 ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	     ZipOutputStream zos = new ZipOutputStream(baos);
+	        byte bytes[] = new byte[2048];
+
+	        for (String fileName : files) {
+	            FileInputStream fis = new FileInputStream(directory.getPath() + "/" + fileName);
+	            BufferedInputStream bis = new BufferedInputStream(fis);
+	            zos.putNextEntry(new ZipEntry(fileName));
+	            int bytesRead;
+	            while ((bytesRead = bis.read(bytes)) != -1) {
+	                zos.write(bytes, 0, bytesRead);
+	            }
+	            zos.closeEntry();
+	            bis.close();
+	            fis.close();
+	        }
+	        zos.flush();
+	        baos.flush();
+	        zos.close();
+	        baos.close();
+
+       /* ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ZipOutputStream zos = new ZipOutputStream(baos);
+        byte bytes[] = new byte[2048];
+      //  FileInputStream fis = new FileInputStream("D:/AK_Sitka_06 QC Validation Results.docx");
+        FileInputStream fis = new FileInputStream(directory + "/"+fileName);
+        BufferedInputStream bis = new BufferedInputStream(fis);
+        zos.putNextEntry(new ZipEntry(fileName));
+        int bytesRead;
+        while ((bytesRead = bis.read(bytes)) != -1) {
+            zos.write(bytes, 0, bytesRead);
+        }
+        zos.closeEntry();
+        bis.close();
+        fis.close();
+        zos.flush();
+        baos.flush();
+        zos.close();
+        baos.close();*/
+
+        return baos.toByteArray();
+    }
+
+	/*@RequestMapping(value = MappingConstants.DOWNLOADTEXTREPORT, method = RequestMethod.GET)
+	public ModelAndView downloadTextReport(HttpServletRequest request, HttpServletResponse response) {
+		log4j.info("ReportController - downloadTextReport :: Start");
+		try{
+			response.setContentType("text/plain");
+			response.setHeader("Content-Disposition", "attachment; filename="+MappingConstants.TEXTREPORTNAME);
+			String realPath = request.getSession().getServletContext()
+					.getRealPath("/report/AK_Sitka_06_Data_Spec_Sheet.txt");
+			BufferedWriter br = generateReportService.generateTextReport(realPath);
+			FileInputStream is = new FileInputStream(new File(realPath));
+			int read=0;
+			Path path = Paths.get(realPath);
+			byte[] bytes = Files.readAllBytes(path);
+			OutputStream os = response.getOutputStream();
+			while((read = is.read(bytes))!= -1){
+				os.write(bytes, 0, read);
+			}
+			os.flush();
+			os.close();
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		log4j.info("ReportController - downloadTextReport :: End");
+		return null;
+	}*/
+	@RequestMapping(value = MappingConstants.DOWNLOADTEXTREPORT, method = RequestMethod.GET)
+	public ModelAndView downloadTextReport(HttpServletRequest request, HttpServletResponse response) {
+		log4j.info("ReportController - downloadTextReport :: Start");
+		String userAgent = request.getHeader("User-Agent");
+		try{
+			/* Properties prop = new Properties();
+			 InputStream input = null;
+			 input = getClass().getClassLoader().getResourceAsStream("data_conversion.properties");
+			    // load a properties file
+			 prop.load(input);*/
+			// String realPath = prop.getProperty("localpath")+"/AK_Sitka_06_Data_Spec_Sheet.txt";
+			/* String home = System.getProperty("user.home");
+			    String realPath = home+"/Downloads/"+"/AK_Sitka_06_Data_Spec_Sheet.txt";*/
+			response.setContentType("text/plain");
+	    	response.setHeader("Content-Disposition", "attachment; filename="+MappingConstants.TEXTREPORTNAME);
+			String realPath = request.getSession().getServletContext()
+					.getRealPath("/AK_Sitka_06_Data_Spec_Sheet.txt");
+			File fl = new File(realPath);
+			if(!fl.exists())
+			{
+				fl.createNewFile();
+			}else
+			{
+				fl.delete();
+			}
+			log4j.info("realPath===================>"+realPath);
+			BufferedWriter br = generateReportService.generateTextReport(realPath);
+            FileInputStream is = new FileInputStream(new File(realPath));
+         	int read=0;
+			Path path = Paths.get(realPath);
+			byte[] bytes = Files.readAllBytes(path);
+			OutputStream os = response.getOutputStream();
+			while((read = is.read(bytes))!= -1){
+				os.write(bytes, 0, read);
+			}
+			os.flush();
+			os.close();
+			if(userAgent.equalsIgnoreCase("Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36") || userAgent.equalsIgnoreCase("Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko"))
+			{
+				Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " +realPath);
+            }
+        }catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		log4j.info("ReportController - downloadTextReport :: End");
+		return null;
+	}
+
+	public XSSFWorkbook generateExcel(Map<String, Object> params, HttpServletRequest request,GenerateReportService generateReportService,String territoryName,String editon,String fileName,String stateCode) {
+		log4j.info("ReportController - generateExcel :: Start");
+		/*String realPath = request.getSession().getServletContext()
+				.getRealPath("/report/AK_Sitka_06_Data_Spec_Sheet.xlsx");*/
+		try {
+			/* Properties prop = new Properties();
+			 InputStream input = null;
+			 input = getClass().getClassLoader().getResourceAsStream("data_conversion.properties");
+			    // load a properties file
+			 prop.load(input);*/
+			// String realPath = prop.getProperty("localpath")+"/AK_Sitka_06_Data_Spec_Sheet.xlsx";
+		/*	 String home = System.getProperty("user.home");
+			 String realPath = home+"/Downloads/"+"/AK_Sitka_06_Data_Spec_Sheet.xlsx";*/
+			/*String realPath = request.getSession().getServletContext()
+					.getRealPath("/report/AK_Sitka_06_Data_Spec_Sheet.xlsx");*/
+			/*String realPath = request.getSession().getServletContext()
+					.getRealPath("/AK_Sitka_06_Data_Spec_Sheet.xlsx");*/
+			String realPath = request.getSession().getServletContext()
+					.getRealPath("/"+fileName);
+			File fl = new File(realPath);
+			if(!fl.exists())
+			{
+				fl.createNewFile();
+			}else
+			{
+				fl.delete();
+			}
+			List<ExcelFileDto> excelFileDtoListForFirstTable = (List<ExcelFileDto>) params.get("FirstTable");
+			List<ExcelFileDto> excelFileDtoListForSecondTable = (List<ExcelFileDto>) params.get("SecondTable");
+			List<ExcelFileDto> excelFileDtoListForThirdTable = (List<ExcelFileDto>) params.get("ThirdTable");
+			Map<String, Map<String, ?>> excelFileDtoListForForthTable = (Map<String, Map<String, ?>>) params.get("ForthTable");
+			workbook = new XSSFWorkbook();
+			workbook = DataConversionExcelUtility.createFirstTable(workbook, excelFileDtoListForFirstTable,editon,territoryName,stateCode);
+			// FileOutputStream out = new FileOutputStream(new
+			// File(ExcelConstant.EXCEL_FILE_CREATION_DRIVE+ExcelConstant.EXCELFILENAME));
+			FileOutputStream out = new FileOutputStream(new File(realPath));
+			workbook.write(out);
+			out.close();
+			workbook = null;
+
+			FileInputStream inputStream = new FileInputStream(new File(realPath));
+			workbook = DataConversionExcelUtility.createSecondTable(inputStream, excelFileDtoListForSecondTable,editon,territoryName,stateCode);
+
+			FileOutputStream outSecondTable = new FileOutputStream(new File(realPath));
+			workbook.write(outSecondTable);
+			outSecondTable.close();
+			workbook = null;
+
+			FileInputStream inputStream1 = new FileInputStream(new File(realPath));
+			workbook = DataConversionExcelUtility.createThirdTable(inputStream1, excelFileDtoListForThirdTable,editon,territoryName,stateCode);
+			FileOutputStream outThirdTable = new FileOutputStream(new File(realPath));
+
+			workbook.write(outThirdTable);
+			outThirdTable.close();
+			workbook = null;
+
+			FileInputStream inputStream2 = new FileInputStream(new File(realPath));
+			workbook = DataConversionExcelUtility.createForthTable(inputStream2, excelFileDtoListForForthTable,generateReportService,territoryName,editon,stateCode);
+			FileOutputStream outForthTable = new FileOutputStream(new File(realPath));
+			workbook.write(outForthTable);
+			outForthTable.close();
+	
+			System.out.println("AK_Sitka_06_Data_Spec_Sheet.xlsx written successfully in drive.");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		log4j.info("ReportController - generateExcel :: End");
+		return workbook;
+	}
+	
+	public List<String> createWordDocument(String realPath,String countyName,String stateName,String edition)
+	{
+	 log4j.info("ReportController - createWordDocument :: Start");
+	 List<String> fileNameList = new ArrayList<>();
+	 try
+	 {
+		fileNameList = generateReportService.createWordDocumentForExcelReportGeneration(realPath,countyName,stateName,edition);
+	 
+	 }catch(Exception e)
+	 {
+	   e.printStackTrace();
+	 }
+	 log4j.info("ReportController - createWordDocument :: End");
+	 return fileNameList;
+	}
+	
+	@RequestMapping(value = MappingConstants.EXPORTDATAXL,method = RequestMethod.GET)
+	public ModelAndView executeExportDataXl(HttpServletRequest request, HttpServletResponse response) {
+		log4j.info("ReportController - executeExportDataXl :: Start");
+		List<LinkedHashMap<String, Object>> dataList = new ArrayList<LinkedHashMap<String, Object>>();
+		try {
+			//dataConversionService.getQueryDataXl();
+			String inputQuery = "select * from fnf_lan23";
+			response.setContentType("application/vnd.ms-excel");
+			response.setHeader("Content-Disposition", "attachment; filename="+MappingConstants.EXCELREPORTNAMEFNF_Lan23);
+			//String realPath = request.getSession().getServletContext().getRealPath("/report/FNF_Lan23.xls");
+			ServletOutputStream out = response.getOutputStream();
+			String realPath = request.getSession().getServletContext().getRealPath("/report/FNF_Lan23.xls");
+			HSSFWorkbook hssfWorkbook = generateReportService.getQueryDataXl(inputQuery,realPath);
+			hssfWorkbook.write(out);
+			out.flush();
+			out.close();
+			response.flushBuffer();
+		} catch (Exception e) {
+			log4j.error("ReportController - executeExportDataXl :: Error " + e.getMessage());
+		}
+		log4j.info("ReportController - executeQuery :: End");
+		return null;
+	}
+	
+	/**
+	 * @author sushanta
+	 * This method checks the source verification results exists or not.
+	 * @param DataConversionDto
+	 * @exception Exception
+	 * @return JsonResponse
+	 * 
+	 *
+	 */
+	@RequestMapping(value = MappingConstants.CheckSourceVerificationResult, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody JsonResponse checkSourceVerificationResult(@RequestBody DataConversionDto dataConversionDto,BindingResult result) {
+		log4j.info("ReportController - checkSourceVerificationResult :: Start :: " );
+		JsonResponse jsonResponse = new JsonResponse();
+		List<SourceVerificationAnswer> answerList = new ArrayList<SourceVerificationAnswer>();
+		try {
+			answerList = generateReportService.getSourceVerificationAnswers(dataConversionDto);
+			if(answerList.size() > 0)
+				jsonResponse.setStatus("EXISTS");
+			else
+				jsonResponse.setStatus("NOT EXISTS");
+		
+		} catch (Exception e) {
+			log4j.error("ReportController - checkSourceVerificationResult :: Error " + e.getMessage());
+		}
+		log4j.info("ReportController - checkSourceVerificationResult :: End" + jsonResponse.getStatus());
+		return jsonResponse;
+	}
+	
+	/**
+	 * @author sushanta
+	 * This method saves the source verification results into db.
+	 * @param DataConversionDto
+	 * @exception Exception
+	 * @return JsonResponse
+	 * 
+	 *
+	 */
+	@RequestMapping(value = MappingConstants.SaveSourceVerificationResult, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody JsonResponse saveSourceVerificationResult(@RequestBody ExcelQuestionAnswerDto exclQADto,BindingResult result) {
+		log4j.info("ReportController - saveSourceVerificationResult :: Start :: " );
+		JsonResponse jsonResponse = new JsonResponse();
+		try {
+			boolean b = generateReportService.saveSourceVerificationResult(exclQADto);
+			if(b)
+				jsonResponse.setStatus("SUCCESS");
+			else
+				jsonResponse.setStatus("FAILED");
+		
+		} catch (Exception e) {
+			log4j.error("ReportController - saveSourceVerificationResult :: Error " + e.getMessage());
+		}
+		log4j.info("ReportController - saveSourceVerificationResult :: End" + jsonResponse.getStatus());
+		return jsonResponse;
+	}
+	
+	
+	@RequestMapping(value = MappingConstants.DwnloadIndividualFiedDoc, method = RequestMethod.POST)
+	public ModelAndView createWordDocumentForIndividualField(HttpServletRequest request, HttpServletResponse response,@RequestParam("countyName") String countyName,
+										@RequestParam("state") String stateName,@RequestParam("edition") String edition,@RequestParam("fieldNumber") String fieldNumber,
+										@RequestParam("fieldName") String fieldName) {
+		log4j.info("ReportController - downloadExcel :: Start");
+		String individualFileName="";
+		try {
+			String path = request.getServletContext().getRealPath("");
+			individualFileName =  generateReportService.createWordDocumentForIndividualField(response,path,countyName,stateName,edition,Integer.parseInt(fieldNumber),fieldName);
+			path = path+individualFileName+".docx";
+			 String filePath = path;
+		        File downloadFile = new File(filePath);
+		        FileInputStream inStream = new FileInputStream(downloadFile);
+		        System.out.println("relativePath = " + path);
+		        String mimeType = request.getServletContext().getMimeType(filePath);
+		        System.out.println("MIME type: " + mimeType);
+		         
+		        // modifies response
+		        response.setContentType(mimeType);
+		        response.setContentLength((int) downloadFile.length());
+		         
+		        System.out.println(downloadFile.getName());
+		        
+		        // forces download
+		        String headerKey = "Content-Disposition";
+		        
+		         
+		        // obtains response's output stream
+		        OutputStream outStream = response.getOutputStream();
+		         
+		        byte[] buffer = new byte[4096];
+		        int bytesRead = -1;
+		         
+		        while ((bytesRead = inStream.read(buffer,0,buffer.length))>0) {
+		            outStream.write(buffer, 0, bytesRead);
+		            outStream.flush();
+		        }
+		        String headerValue = String.format("attachment; filename=\"%s\"", downloadFile.getName());
+		        response.setHeader(headerKey, headerValue);
+		        inStream.close();
+		        outStream.close();
+
+			
+			
+		} 
+		
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		log4j.info("ReportController - downloadExcel :: End");
+		return null;
+	}
+}
+
+

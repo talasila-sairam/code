@@ -1,0 +1,56 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<%@page import="java.util.*"%>
+<%String columnValues=request.getParameter("tablecolumns");
+String str[] = {};
+List columnValue = new ArrayList();
+if(columnValues != ""){
+	str=columnValues.split(",");
+	columnValue = new ArrayList(Arrays.asList(str));	
+	System.out.println(columnValue);
+} 
+String namesTOshow=request.getParameter("namesTOshow");
+String str1[] = {};
+List namesShow = new ArrayList();
+if(namesTOshow != ""){
+	str1=namesTOshow.split(",");
+	namesShow = new ArrayList(Arrays.asList(str1));	
+	System.out.println(namesShow);
+}
+%>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Insert title here</title>
+<link rel="stylesheet" href="css/bootstrap-multiselect.css">
+<link rel="stylesheet" href="css/jquery-ui.css">
+<link href="css/manual-style.css" rel="stylesheet" type="text/css"/>
+<link href="css/main.css" rel="stylesheet" type="text/css"/>
+<script src="js/bootstrap-multiselect.js"></script>
+<script>
+	
+	$(function () {
+            $('.fieldClass').multiselect({
+            	includeSelectAllOption: true
+            });
+	});
+	</script>
+</head>
+<body>
+<div id = "colSelect" >
+	<label class="control-label" id = "countyTableLabel">Select Column:</label>
+	<select id="SelectCols" class="form-control fieldClass" multiple="multiple">
+            	<%Iterator iterator=namesShow.iterator();
+                	Iterator iterator1=columnValue.iterator();
+				 	 while(iterator1.hasNext()&&iterator.hasNext()){
+				 		String columnOptionToShow=(String)iterator1.next();
+				 		String columnOptionShow=(String)iterator.next();
+				 	%><option value="<%=columnOptionShow%>"><%=columnOptionShow%></option><%
+				 	}
+				 %>					    		
+	</select>
+	   <textarea id="formedQuery" rows="5" cols="3" name="textarea" class="auto form-control test"  style="overflow: scroll; word-wrap: break-word; resize: horizontal;height:60px;background-color: white; margin-top: 10px;spellcheck="false" data-toggle="tooltip" title = "" disabled ></textarea>
+	</div>
+</body>
+</html>

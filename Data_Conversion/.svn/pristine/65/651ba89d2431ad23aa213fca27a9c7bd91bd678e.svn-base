@@ -1,0 +1,140 @@
+var app = angular.module('app', ['ngTouch', 'ui.grid', 'ui.grid.edit', 'ui.grid.pagination', 'ngAnimate','ui.grid.resizeColumns']);
+app.controller('MainCtrl', ['$scope', '$http', '$timeout', function($scope, $http, $timeout) {
+    var colArr = [];
+/*    $("#GridDisplay").addClass("initial-grid");
+	$("#GridDisplay2").addClass("initial-grid");
+    $scope.fullSceen=function(){
+    	$("#GridDisplay").addClass("maximized");
+    	$("#GridDisplay2").addClass("maximized");
+    }
+    $(document).keydown(function(e){
+    	if (e.keyCode==27){
+    		$("#GridDisplay").removeClass("maximized");
+    		$("#GridDisplay2").removeClass("maximized");
+    		 $("#GridDisplay").addClass("initial-grid");
+    			$("#GridDisplay2").addClass("initial-grid");
+    	}
+    });*/
+    var baseQuery = $("#baseQuery").val();
+    var ruleQuery = $("#ruleQuery").val();
+    var specialChars = ['%','&','+','#'];
+	var codeNumbersForSplChars = ['%25','%26','%2B','%23'];
+	for(var sp = 0 ; sp < specialChars.length;sp++){
+		if(ruleQuery.indexOf(specialChars[sp]) >0){
+	    		ruleQuery = ruleQuery.split(specialChars[sp]).join(codeNumbersForSplChars[sp]);
+	    }
+		if(baseQuery.indexOf(specialChars[sp]) >0){
+			baseQuery = baseQuery.split(specialChars[sp]).join(codeNumbersForSplChars[sp]);
+    	}
+	}
+	
+    /*if(ruleQuery.indexOf("&") >0){
+		ruleQuery = ruleQuery.split("&").join("%26");
+	}
+    if(ruleQuery.indexOf("%") >0){
+		ruleQuery = ruleQuery.split("%").join("%25");
+	}
+    if(baseQuery.indexOf("&") >0){
+    	baseQuery = baseQuery.split("&").join("%26");
+	}
+    if(baseQuery.indexOf("%") >0){
+    	baseQuery = baseQuery.split("%").join("%25");
+	}*/
+    if (baseQuery != "" && ruleQuery != "") {
+        $http.get('./executeMultiPleQuery?input_query=' + baseQuery + '&rule_query=' + ruleQuery).success(function(data) {
+        	//alert("executeMultiPleQuery");
+        	if(data == ""){
+        		return false;
+        	}else{
+            var inputDataMap = [];
+            inputDataMap = data[0];
+            var outputDataMap = [];
+            outputDataMap = data[1];
+            $.extend(true, inputDataMap, outputDataMap);
+            
+            var inputData = JSON.stringify(inputDataMap);
+            var inputData = JSON.parse(inputData);
+            for (i = 1; i < inputData.length; i++) {
+                var dataMap = inputData[i];
+                colCount = 1;
+                for (var key in dataMap) {
+                    var nameToDisplay = key.toUpperCase();
+                    colArr[colCount] = {
+                        name: key,
+                        displayName: nameToDisplay,
+                        width: '20%'
+                    }
+                    colCount = colCount + 1;
+                }
+            }
+            $scope.gridOptions = {
+                columnDefs: colArr
+            };
+            	$scope.gridOptions.data = inputData;
+            	$scope.gridOptions.enableColumnResizing = true;
+        	}
+        });
+    } else if (baseQuery != "" && ruleQuery == "") {
+    	alert(baseQuery);
+        $http.get('./executeQuery?input_query='+baseQuery).success(function(response) {
+           $('.widget-content').hide();
+            for (i = 0; i < response.length; i++) {
+                var dataMap = response[i];
+                colCount = 0;
+                for (var key in dataMap) {
+                    colArr[colCount] = {
+                        name: key,
+                        displayName: key,
+                        width: '20%'
+                    }
+                    colCount = colCount + 1;
+                }
+            }
+            $scope.gridOptions = {
+                columnDefs: colArr
+            };
+            $scope.gridOptions.data = response;
+            $scope.gridOptions.enableColumnResizing = true;
+        });
+    }
+    $scope.gridOptions = {
+        paginationPageSizes: [10000, 50000, 100000],
+        paginationPageSize: 100000
+    };
+    $scope.storeFile = function(gridRow, gridCol, files) {
+        // ignore all but the first file, it can only select one anyway
+        // set the filename into this column
+        gridRow.entity.filename = files[0].name;
+        // read the file and set it into a hidden column, which we may do stuff with later
+        var setFile = function(fileContent) {
+            gridRow.entity.file = fileContent.currentTarget.result;
+            // put it on scope so we can display it - you'd probably do something else with it
+            $scope.lastFile = fileContent.currentTarget.result;
+            $scope.$apply();
+        }
+        ;
+        var reader = new FileReader();
+        reader.onload = setFile;
+        reader.readAsText(files[0]);
+    }
+    ;
+    $scope.msg = {};
+    $scope.gridOptions.onRegisterApi = function(gridApi) {
+        //set gridApi on scope
+        $scope.gridApi = gridApi;
+        gridApi.edit.on.afterCellEdit($scope, function(rowEntity, colDef, newValue, oldValue) {
+            $scope.msg.lastCellEdited = 'edited row i d:' + rowEntity.id + ' Column:' + colDef.name + ' newValue:' + newValue + ' oldValue:' + oldValue;
+            $scope.$apply();
+        });
+    }
+    ;
+}
+]).directive('gridLoading', function() {
+    return {
+        restrict: 'C',
+        require: '^uiGrid',
+        link: function($scope, $elm, $attrs, uiGridCtrl) {
+            $scope.grid = uiGridCtrl.grid;
+        }
+    }
+});

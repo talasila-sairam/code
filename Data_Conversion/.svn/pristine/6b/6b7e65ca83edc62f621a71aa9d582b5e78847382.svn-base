@@ -1,0 +1,173 @@
+package com.appstek.dc.dto;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class DataConversionRuleDto {
+
+	private int countryFipsCode;
+	private int stateFipsCode;
+	private int countyFipsCode;
+	private String ruleQuery;
+	//private String fieldNumber;
+	private int fieldNumber;
+	private String countryName;
+	private String stateName;
+	private String countyName;
+	private String ruleScope;
+	private String ruleName;
+	private int ruleQueryId;
+	private String query;
+	private List<Integer> fieldList;
+	private String baseQuery;
+	private String tables;
+	private String columns;
+	private String edition;
+	private String ruleQuery71;
+	private String ruleQuery72;
+	private String ruleQuery73;
+	private List rowDataArr_71_72_73 = new ArrayList();
+	private String ruleExcelFilePath;
+	private int ruleId;
+	
+	
+	public int getRuleId() {
+		return ruleId;
+	}
+	public void setRuleId(int ruleId) {
+		this.ruleId = ruleId;
+	}
+	public String getRuleExcelFilePath() {
+		return ruleExcelFilePath;
+	}
+	public void setRuleExcelFilePath(String ruleExcelFilePath) {
+		this.ruleExcelFilePath = ruleExcelFilePath;
+	}
+	public String getRuleQuery71() {
+		return ruleQuery71;
+	}
+	public void setRuleQuery71(String ruleQuery71) {
+		this.ruleQuery71 = ruleQuery71;
+	}
+	public String getRuleQuery72() {
+		return ruleQuery72;
+	}
+	public void setRuleQuery72(String ruleQuery72) {
+		this.ruleQuery72 = ruleQuery72;
+	}
+	public String getRuleQuery73() {
+		return ruleQuery73;
+	}
+	public void setRuleQuery73(String ruleQuery73) {
+		this.ruleQuery73 = ruleQuery73;
+	}
+	public List getRowDataArr_71_72_73() {
+		return rowDataArr_71_72_73;
+	}
+	public void setRowDataArr_71_72_73(List rowDataArr_71_72_73) {
+		this.rowDataArr_71_72_73 = rowDataArr_71_72_73;
+	}
+	public String getEdition() {
+		return edition;
+	}
+	public void setEdition(String edition) {
+		this.edition = edition;
+	}
+	public String getTables() {
+		return tables;
+	}
+	public void setTables(String tables) {
+		this.tables = tables;
+	}
+	public String getColumns() {
+		return columns;
+	}
+	public void setColumns(String columns) {
+		this.columns = columns;
+	}
+	public String getBaseQuery() {
+		return baseQuery;
+	}
+	public void setBaseQuery(String baseQuery) {
+		this.baseQuery = baseQuery;
+	}
+	public List<Integer> getFieldList() {
+		return fieldList;
+	}
+	public void setFieldList(List<Integer> fieldList) {
+		this.fieldList = fieldList;
+	}
+	public int getRuleQueryId() {
+		return ruleQueryId;
+	}
+	public void setRuleQueryId(int ruleQueryId) {
+		this.ruleQueryId = ruleQueryId;
+	}
+	public String getRuleName() {
+		return ruleName;
+	}
+	public void setRuleName(String ruleName) {
+		this.ruleName = ruleName;
+	}
+	public String getRuleScope() {
+		return ruleScope;
+	}
+	public void setRuleScope(String ruleScope) {
+		this.ruleScope = ruleScope;
+	}
+	public String getCountryName() {
+		return countryName;
+	}
+	public void setCountryName(String countryName) {
+		this.countryName = countryName;
+	}
+	public String getStateName() {
+		return stateName;
+	}
+	public void setStateName(String stateName) {
+		this.stateName = stateName;
+	}
+	public String getCountyName() {
+		return countyName;
+	}
+	public void setCountyName(String countyName) {
+		this.countyName = countyName;
+	}
+	public int getFieldNumber() {
+		return fieldNumber;
+	}
+	public void setFieldNumber(int fieldNumber) {
+		this.fieldNumber = fieldNumber;
+	}
+	public int getCountryFipsCode() {
+		return countryFipsCode;
+	}
+	public void setCountryFipsCode(int countryFipsCode) {
+		this.countryFipsCode = countryFipsCode;
+	}
+	public int getStateFipsCode() {
+		return stateFipsCode;
+	}
+	public void setStateFipsCode(int stateFipsCode) {
+		this.stateFipsCode = stateFipsCode;
+	}
+	public int getCountyFipsCode() {
+		return countyFipsCode;
+	}
+	public void setCountyFipsCode(int countyFipsCode) {
+		this.countyFipsCode = countyFipsCode;
+	}
+	public String getRuleQuery() {
+		return ruleQuery;
+	}
+	public void setRuleQuery(String ruleQuery) {
+		this.ruleQuery = ruleQuery;
+	}
+	public String getQuery() {
+		return query;
+	}
+	public void setQuery(String query) {
+		this.query = query;
+	}
+	
+}

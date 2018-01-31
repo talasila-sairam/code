@@ -1,0 +1,261 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Insert title here</title>
+<script src="js/angular.js"></script>
+    <script src="js/angular-touch.js"></script>
+    <script src="js/angular-animate.js"></script>
+    <script src="js/csv.js"></script>
+    <script src="js/pdfmake.js"></script>
+    <script src="js/vfs_fonts.js"></script>
+    <script src="js/ui-grid.js"></script>
+    <script src="js/angular-sanitize.js"></script>
+    <link rel="stylesheet" href="css/ui-grid.css" type="text/css">
+    <link rel="stylesheet" href="css/jquery-ui.css">
+    <script src="js/dataConversion.js"></script>
+    <script src=js/modelJavaScript.js></script>
+    <script src="js/copyRule.js"></script>
+    
+    
+<link href="css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+<link href="css/main.css" rel="stylesheet" type="text/css"/>
+<link href="css/manual-style.css" rel="stylesheet" type="text/css"/>
+<link rel="stylesheet" href="css/font-awesome.min.css" type="text/css">
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script src="js/bootstrap-multiselect.js"></script>
+<script type="text/javascript" src="js/ajax.js"></script>
+
+    <script>
+    /* $(function(){
+    	loadingImage('hierarchyFrame');
+    	jqueryAjaxfunction('getCounties','hierarchyFrame','');
+    });
+    
+    	function loadingImage(divId){
+    		$("#"+divId).html("<center><img src='img/ajax-loader.gif'  /></center>");
+    	} */
+    	
+    	
+    	
+    	$(document).ready(function() {
+    		var data = "";
+    		var countryInfo = "";
+    		var stateInfo = "";
+    		var countyInfo = "";
+    		
+    		$.ajax({
+    			type : "POST",
+    			url : "getCountriesList",
+    			success : function(countries) {
+    				$("#countryNameSelect").empty();
+    				$("#countryNameSelect").append("<option value=''>--Please Select--</option>");
+    				for ( var i in countries) {
+    					$("#countryNameSelect").append(function() {
+    						return $("<option />", {
+    							value : countries[i].countryCode,
+    							text : countries[i].countryName
+    						})
+    					});
+    				}
+
+    			}
+
+    		})
+
+    		$('#countryNameSelect').on('change', function() {
+    			var countryCode = this.value;
+    			var countryName = $("#countryNameSelect option:selected").text();
+    			countryInfo = countryCode + "|" + countryName;
+    			
+    			$.ajax({
+    				type : "POST",
+    				url : "getStatesList",
+    				data : {
+    					'countryCode' : countryCode
+    				},
+
+    				success : function(states) {
+    					$("#stateNameSelect").empty();
+    					$("#stateNameSelect").append("<option value=''>--Please Select--</option>");
+    					for ( var i in states) {
+    						$("#stateNameSelect").append(function() {
+    							return $("<option />", {
+    								value : states[i].stateFipsCode +"|"+ states[i].stateCode,
+    								text : states[i].stateName
+    							});
+    						});
+    					}
+    				}
+    			})
+    		})
+    		
+    		
+    		$('#stateNameSelect').on('change', function() {
+    			var stateFipsCode = this.value;
+    			var stateName = $("#stateNameSelect option:selected").text();
+    			stateFipsCode = stateFipsCode.split("|");
+    			stateFipsCode = stateFipsCode[0];
+    			stateInfo = stateFipsCode + "|" + stateName;
+    			$.ajax({
+    				type : "POST",
+    				url : "getCountiesList",
+    				data : {
+    					'stateFipsCode' : stateFipsCode
+    				},
+
+    				success : function(counties) {
+    					
+    					$("#countyNameSelect").empty();
+    					$("#countyNameSelect").append("<option value=''>--Please Select--</option>");
+    					for ( var i in counties) {
+    						$("#countyNameSelect").append(function() {
+    							return $("<option />", {
+    								value : counties[i].countyFipsCode,
+    								text : counties[i].countyName
+    							});
+    						});
+    					}
+    				}
+    			})
+    		})
+    		
+    		
+    		$('#countyNameSelect').on('change', function() {
+    			
+    			var countryCode = $("#countyNameSelect option:selected").val();
+    			var countryName = $("#countryNameSelect option:selected").text();
+    			var stateFipsCode = $("#stateNameSelect option:selected").val();
+    			var stateName = $("#stateName option:selected").text();
+    			
+    			var countyFipsCode = this.value;
+    			var countyName = $("#countyNameSelect option:selected").text();
+    			/* countyInfo = countryCode + "|" + countryName + "|" + stateFipsCode + "|" + stateName + "|" + countyFipsCode + "|" + countyName; */
+    			countyInfo = countyFipsCode + "|" + countyName;
+    			
+    			if(countyName == "--Please Select--"){
+    				var status="Error";
+    				var style="alert-danger";
+    				var message="Please select County and Try again.";
+    					 var model_dialog = $("#alertmsgdiv").dialog({
+    			             autoOpen: false,
+    			             title: status,
+    			             height: 150,
+    			             width: 400,
+    			             resizable: false,
+    			             draggable: false,
+    			             position:{
+    			                 my: 'center',
+    			                 at: 'center',
+    			                 of:window
+    			               },
+    			             modal: true,
+    			             show: {
+    			                 effect: 'fade',
+    			                 duration: 1000
+    			             }
+    			         });
+    			         $("#alertmsgdiv").empty();
+    			         $("#alertmsgdiv").prepend('<div class="alert '+style+' role="alert">'+message+'</div>');
+    			         model_dialog.dialog("open");
+    			}
+    			else{
+	    			$.ajax({
+	    				type : "POST",
+	    				url : "getSelectedCountyFields",
+	    				data : {
+	     					'countryInfo' : countryInfo,
+	    					'stateInfo' : stateInfo,
+	    					'countyInfo' : countyInfo
+	    				},
+	    				success : function(response) {
+	    					$('#hierarchyFrame').empty();
+	    					$('#hierarchyFrame').html(response);
+	    		             
+	    				}
+	    			});
+    			};
+    			
+    		});
+    	});
+    	 $(window).load(function() { $("#spinner").fadeOut("slow"); })
+    	
+    </script>
+     <style>
+		.paddingbottom {
+			padding-bottom: 6px !important;
+		}
+		#spinner
+    {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        background: url(./img/ajax-loader.gif) 50% 50% no-repeat #ede9df;
+    }
+	</style>
+</head>
+<body>
+<div id="container" class="margin-top20 " >
+ <div class="index">
+	<div class="col-md-12" >
+	  <div class="widget box " id ="filterDiv" style="margin-bottom:20px;">
+	    <div class="widget-content" style="overflow:hidden;">
+	      <form class="form-horizontal row-border" id="validate-1" action="#" novalidate>
+	        <div class="col-sm-4">
+	          <div class="form-group paddingbottom">
+	            <label class="col-md-3 control-label">Country </label>
+	            <div class="col-md-9">
+	              <select name="dd1" id="countryNameSelect" class="form-control required">
+	               	<option value="">--Please Select--</option>
+	              </select>
+	            </div>
+	          </div>
+	        </div>
+	        <div class="col-sm-4">
+	          <div class="form-group paddingbottom">
+	            <label class="col-md-3 control-label">States</label>
+	            <div class="col-md-9">
+	              <select name="dd1"  id="stateNameSelect" class="form-control required">
+	                <option value="">--Please Select--</option>
+	              </select>
+	            </div>
+	          </div>
+	        </div>
+	        <div class="col-sm-4">
+	          <div class="form-group paddingbottom">
+	            <label class="col-md-3 control-label">Counties</label>
+	            <div class="col-md-9">
+	              <select name="dd1"  id="countyNameSelect" class="form-control required">
+	                <option value="">--Please Select--</option>
+	              </select>
+	            </div>
+	          </div>
+	        </div>
+	      </form>
+	    </div>
+	  </div>
+	</div>
+ 	<!-- <div id="filterDiv">
+				<select id="countryName">
+					<option value="" class="default">---------select---------</option>
+				</select> <select id="stateName">
+					<option value="">---------select---------</option>
+				</select> <select id="countyName">
+					<option value="">---------select---------</option>
+				</select>
+			</div> -->
+   <div id="hierarchyFrame"></div>
+   <div id="rulesFrame"></div>
+ </div>
+ <div id = "overlay"></div>
+ <div id="alertmsgdiv"></div>
+ <div id="spinner"></div>
+ 
+</div>
+</body>
+</html>

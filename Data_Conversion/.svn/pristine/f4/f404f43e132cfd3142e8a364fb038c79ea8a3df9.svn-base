@@ -1,0 +1,3308 @@
+package com.appstek.dc.util;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import com.appstek.dc.dto.ExcelFileDto;
+import com.appstek.dc.service.GenerateReportService;
+
+public class DataConversionExcelUtility {
+	public static FileOutputStream outStream = null;
+	public static XSSFWorkbook workbook = null;
+	public static int secondTableRowCount;
+	public static int thirdTableRowCount;
+
+	public static FileOutputStream creatXLSFile(File file) {
+		try {
+			outStream = new FileOutputStream(file);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return outStream;
+	}
+
+	public static XSSFWorkbook createFirstTable(XSSFWorkbook workbook, List<ExcelFileDto> excelFileDtoList1) {
+		// Create a blank sheet
+		XSSFSheet sheet = workbook.createSheet("AK_Sitka_06");
+		CellStyle style = workbook.createCellStyle();
+		Font font = workbook.createFont();
+		font.setFontName("Calibri");
+		font.setBoldweight(XSSFFont.BOLDWEIGHT_BOLD);
+		font.setFontHeightInPoints((short) 10);
+		style.setFont(font);
+		Row row0 = sheet.createRow(0);
+		Cell cell0 = row0.createCell(0);
+		cell0.setCellValue("AK SITKA_06");
+		sheet.autoSizeColumn(0);
+		cell0.setCellStyle(style);
+
+		int rownum = 2;
+		for (ExcelFileDto obj : excelFileDtoList1) {
+			Row row = sheet.createRow(rownum++);
+			// Setting Table Style Start - Lalitha
+
+			CellStyle style1 = workbook.createCellStyle();
+			Font font1 = workbook.createFont();
+			font1.setFontName("Arial");
+			font1.setBoldweight(XSSFFont.BOLDWEIGHT_NORMAL);
+			font1.setFontHeightInPoints((short) 7);
+			row.setHeight((short) 200);
+			style1.setFont(font1);
+			style1.setVerticalAlignment(CellStyle.VERTICAL_TOP);
+			style1.setAlignment(CellStyle.ALIGN_LEFT);
+			style1.setWrapText(true);
+			sheet.setColumnWidth(0, 4500);
+			sheet.setColumnWidth(1, 4500);
+			row.setHeightInPoints(10);
+			Cell cell_0 = row.createCell(0);
+			Cell cell_1 = row.createCell(1);
+			cell_0.setCellStyle(style1);
+			cell_1.setCellStyle(style1);
+
+			// Setting Table Style End- Lalitha
+
+			cell_0.setCellValue(obj.getProperty1());
+			cell_1.setCellValue(obj.getProperty2());
+		}
+		return workbook;
+	}
+
+	public static XSSFWorkbook createSecondTable(FileInputStream inputStream, List<ExcelFileDto> excelFileDtoList1) {
+		// AK_Sitka_06
+		XSSFWorkbook workbook1 = null;
+		try {
+			workbook1 = new XSSFWorkbook(inputStream);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		XSSFCellStyle styleL = ExcelSettingBorderColorUtility.createLeftBorderStyle(workbook1);
+		XSSFCellStyle styleR = ExcelSettingBorderColorUtility.createRightBorderStyle(workbook1);
+		XSSFCellStyle styleLB = ExcelSettingBorderColorUtility.createLeftBottomBorderStyle(workbook1);
+		XSSFCellStyle styleRB = ExcelSettingBorderColorUtility.createRightBottomBorderStyle(workbook1);
+		XSSFCellStyle styleB = ExcelSettingBorderColorUtility.createBottomBorderStyle(workbook1);
+		XSSFCellStyle styleLTB = ExcelSettingBorderColorUtility.createLeftTopBottomBorderStyle(workbook1);
+		XSSFCellStyle styleTB = ExcelSettingBorderColorUtility.createTopBottomBorderStyle(workbook1);
+		XSSFCellStyle styleRTB = ExcelSettingBorderColorUtility.createRightTopBottomBorderStyle(workbook1);
+		XSSFCellStyle styleLRTB = ExcelSettingBorderColorUtility.createLeftRightTopBottomBorderStyle(workbook1);
+		XSSFCellStyle styleLB6 = ExcelSettingBorderColorUtility.createLeftBottomBorderStyle(workbook1);
+		XSSFSheet sheet = workbook1.getSheet("AK_Sitka_06");
+		Row row1 = sheet.createRow(1);
+		row1.setHeightInPoints(15);
+		ExcelFileDto excelFileDto = new ExcelFileDto();
+		excelFileDto.setHearder1("Source Data Verification Questions:");
+		excelFileDto.setHearder2("Y/N");
+		Cell cell5 = row1.createCell(5);
+		Cell cell6 = row1.createCell(6);
+		Cell cell7 = row1.createCell(7);
+		styleRTB.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex()); 
+		styleRTB.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		styleLB.setBorderBottom(XSSFCellStyle.BORDER_THIN);
+		styleLB.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+		styleRB.setBorderBottom(XSSFCellStyle.BORDER_THIN);
+		styleRB.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+		styleL.setBorderBottom(XSSFCellStyle.BORDER_THIN);
+		styleR.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+
+		styleLRTB.setFillForegroundColor(ExcelColorUtility.MORTAR);
+		styleLRTB.setFillPattern(CellStyle.SOLID_FOREGROUND);
+
+		styleLTB.setFillForegroundColor(ExcelColorUtility.MORTAR);
+		styleLTB.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		styleLRTB.setAlignment(CellStyle.ALIGN_CENTER);
+		styleLRTB.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+		styleLTB.setAlignment(CellStyle.ALIGN_CENTER);
+		styleLTB.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+		styleTB.setAlignment(CellStyle.ALIGN_CENTER);
+		styleTB.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+		XSSFFont font = workbook1.createFont();
+		font.setFontHeightInPoints((short) 7);
+		font.setFontName("Arial");
+		font.setColor(IndexedColors.WHITE.getIndex());
+		font.setBold(true);
+
+		styleLTB.setFont(font);
+		styleRTB.setFont(font);
+		styleLRTB.setFont(font);
+		cell5.setCellValue(excelFileDto.getHearder1());
+		cell5.setCellStyle(styleLTB);
+
+		// Blank text1, lighter 35%
+		styleTB.setFillForegroundColor(ExcelColorUtility.MORTAR);
+		styleTB.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		cell6.setCellValue("");
+		cell6.setCellStyle(styleTB);
+
+		styleRTB.setFillForegroundColor(IndexedColors.BLACK.getIndex());
+		styleRTB.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		cell7.setCellValue(excelFileDto.getHearder2());
+		cell7.setCellStyle(styleLRTB);
+
+		secondTableRowCount = excelFileDtoList1.size();
+		int rownum = 2;
+		int i = 0;
+		int j = 0;
+		styleL.setBorderBottom(XSSFCellStyle.BORDER_MEDIUM);
+		styleL.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+		styleB.setBorderBottom(XSSFCellStyle.BORDER_MEDIUM);
+		styleB.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+		styleR.setBorderBottom(XSSFCellStyle.BORDER_MEDIUM);
+		styleR.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+		styleR.setBorderLeft(XSSFCellStyle.BORDER_MEDIUM);
+		styleR.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+		styleLB.setBorderBottom(XSSFCellStyle.BORDER_MEDIUM);
+		styleLB.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+		styleRB.setBorderBottom(XSSFCellStyle.BORDER_MEDIUM);
+		styleRB.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+		styleLB6.setBorderBottom(XSSFCellStyle.BORDER_MEDIUM);
+		styleLB6.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+		for (ExcelFileDto obj : excelFileDtoList1) {
+			CellStyle style_a = workbook1.createCellStyle();
+			Font font1 = workbook1.createFont();
+			font1.setFontHeightInPoints((short) 7);
+			font1.setFontName("Arial");
+			style_a.setFont(font1);
+			style_a.setBorderBottom(XSSFCellStyle.BORDER_THIN);
+			style_a.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+			style_a.setBorderLeft(XSSFCellStyle.BORDER_MEDIUM);
+			style_a.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+			style_a.setBorderRight(XSSFCellStyle.BORDER_MEDIUM);
+			style_a.setRightBorderColor(IndexedColors.BLACK.getIndex());
+			i = i + 1;
+			j = j + 1;
+			Row row = sheet.getRow(rownum);
+
+			if (row != null) {
+				Cell cell_5 = row.createCell(5);
+				Cell cell_6 = row.createCell(6);
+				Cell cell_7 = row.createCell(7);
+				sheet.setColumnWidth(5, 13000);
+				cell_5.setCellStyle(style_a);
+				cell_6.setCellStyle(style_a);
+				cell_7.setCellStyle(style_a);
+				if (i != excelFileDtoList1.size()) {
+					if (j == 7) {
+						cell_5.setCellValue("        a" + "." + obj.getProperty1());
+						cell_7.setCellValue(obj.getProperty2());
+						i = 6;
+					} else if (j == 8) {
+						cell_5.setCellValue("        b" + "." + obj.getProperty1());
+						cell_7.setCellValue(obj.getProperty2());
+						i = 6;
+					} else {
+						cell_5.setCellValue(i + ".   " + obj.getProperty1());
+						cell_7.setCellValue(obj.getProperty2());
+					}
+				} else if (i == excelFileDtoList1.size()) {
+					styleB.setBorderBottom(XSSFCellStyle.BORDER_MEDIUM);
+					styleB.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+					cell_5.setCellStyle(styleLB);
+					cell_6.setCellStyle(styleLB6);
+					cell_7.setCellStyle(styleRB);
+				} else {
+					cell_5.setCellStyle(styleL);
+					cell_6.setCellStyle(styleB);
+					cell_7.setCellStyle(styleR);
+				}
+			} else {
+				Row newrow = sheet.createRow(rownum);
+				newrow.setHeightInPoints(10);
+				Cell cell_5 = newrow.createCell(5);
+				Cell cell_6 = newrow.createCell(6);
+				Cell cell_7 = newrow.createCell(7);
+				style_a.setBorderBottom(XSSFCellStyle.BORDER_MEDIUM);
+				cell_5.setCellStyle(style_a);
+				cell_6.setCellStyle(style_a);
+				cell_7.setCellStyle(style_a);
+				sheet.setColumnWidth(5, 13000);
+				 newrow.setHeight((short)10); 
+				if (i != excelFileDtoList1.size()) {
+					if (j == 7) {
+						cell_5.setCellValue("  a" + "." + obj.getProperty1());
+						cell_7.setCellValue(obj.getProperty2());
+						i = 6;
+					} else if (j == 8) {
+						cell_5.setCellValue("  b" + "." + obj.getProperty1());
+						cell_7.setCellValue(obj.getProperty2());
+						i = 6;
+					} else {
+						cell_5.setCellValue(i + "." + obj.getProperty1());
+						cell_7.setCellValue(obj.getProperty2());
+					}
+				} else if (i == excelFileDtoList1.size()) {
+					styleB.setBorderBottom(XSSFCellStyle.BORDER_THIN);
+					styleB.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+					cell_5.setCellStyle(styleLB);
+					cell_6.setCellStyle(styleLB6);
+					cell_7.setCellStyle(styleRB);
+				} else {
+					cell_5.setCellStyle(styleL);
+					cell_6.setCellStyle(styleB);
+					cell_7.setCellStyle(styleR);
+				}
+			}
+			row = null;
+
+			rownum = rownum + 1;
+		}
+
+		return workbook1;
+	}
+
+	public static XSSFWorkbook createThirdTable(FileInputStream inputStream, List<ExcelFileDto> excelFileDtoList1) {
+		XSSFWorkbook workbook1 = null;
+		try {
+			workbook1 = new XSSFWorkbook(inputStream);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		XSSFSheet sheet = workbook1.getSheet("AK_Sitka_06");
+		sheet.setColumnWidth(5, 13000);
+		XSSFCellStyle styleLTB = ExcelSettingBorderColorUtility.createLeftTopBottomBorderStyle(workbook1);
+
+		XSSFCellStyle styleL = ExcelSettingBorderColorUtility.createLeftBorderStyle(workbook1);
+		XSSFCellStyle styleR = ExcelSettingBorderColorUtility.createRightBorderStyle(workbook1);
+		XSSFCellStyle styleLB = ExcelSettingBorderColorUtility.createLeftBottomBorderStyle(workbook1);
+		XSSFCellStyle styleRB = ExcelSettingBorderColorUtility.createRightBottomBorderStyle(workbook1);
+		XSSFCellStyle styleRTB = ExcelSettingBorderColorUtility.createRightTopBottomBorderStyle(workbook1);
+
+		styleLTB.setFillForegroundColor(ExcelColorUtility.MORTAR);
+		styleLTB.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		XSSFFont font = workbook1.createFont();
+		font.setFontHeightInPoints((short) 7);
+		font.setFontName("Arial");
+		font.setColor(IndexedColors.WHITE.getIndex());
+		font.setBold(true);
+
+		styleRTB.setFillForegroundColor(ExcelColorUtility.MORTAR);
+		styleRTB.setFillPattern(CellStyle.SOLID_FOREGROUND);
+
+		styleLTB.setFont(font);
+		styleRTB.setFont(font);
+
+		Row row1 = sheet.getRow(1);
+		row1.setHeightInPoints(15);
+		if (row1 != null) {
+			Cell cell8 = row1.createCell(8);
+			Cell cell9 = row1.createCell(9);
+			Cell cell10 = row1.createCell(10);
+			ExcelFileDto excelFileDto = new ExcelFileDto();
+			excelFileDto.setHearder1("List of Source File Name:");
+			excelFileDto.setHearder2("Record Count:");
+			Cell cell11 = row1.createCell(11);
+			Cell cell12 = row1.createCell(12);
+			cell11.setCellValue(excelFileDto.getHearder1());
+			cell11.setCellStyle(styleLTB);
+			cell12.setCellValue(excelFileDto.getHearder2());
+			cell12.setCellStyle(styleRTB);
+		}
+
+		// System.out.println("Size "+excelFileDtoList1.size());
+		thirdTableRowCount = excelFileDtoList1.size();
+		int rownum = 2;
+		int i = 0;
+		// styleLTB,styleRTB
+		styleR.setBorderBottom(XSSFCellStyle.BORDER_THIN);
+		styleR.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+		styleL.setBorderBottom(XSSFCellStyle.BORDER_THIN);
+		styleL.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+		styleL.setBorderRight(XSSFCellStyle.BORDER_THIN);
+		styleL.setRightBorderColor(IndexedColors.BLACK.getIndex());
+
+		styleRB.setBorderBottom(XSSFCellStyle.BORDER_MEDIUM);
+		styleRB.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+		styleLB.setBorderBottom(XSSFCellStyle.BORDER_MEDIUM);
+		styleLB.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+		styleLB.setBorderRight(XSSFCellStyle.BORDER_THIN);
+		styleLB.setRightBorderColor(IndexedColors.BLACK.getIndex());
+
+		for (ExcelFileDto obj : excelFileDtoList1) {
+			i++;
+			// System.out.println("I Size:"+i);
+			Row row = sheet.getRow(rownum);
+			sheet.setColumnWidth(11, 12000);
+			sheet.setColumnWidth(12, 4000);
+			CellStyle style_a = workbook1.createCellStyle();
+			Font font1 = workbook1.createFont();
+			font1.setFontHeightInPoints((short) 7);
+			font1.setFontName("Arial");
+			style_a.setFont(font1);
+
+			style_a.setBorderBottom(XSSFCellStyle.BORDER_THIN);
+			style_a.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+
+			CellStyle style_b = workbook1.createCellStyle();
+			Font font2 = workbook1.createFont();
+			font2.setFontHeightInPoints((short) 7);
+			font2.setFontName("Arial");
+			style_b.setFont(font1);
+
+			style_a.setAlignment(CellStyle.ALIGN_CENTER);
+			style_a.setBorderLeft(XSSFCellStyle.BORDER_MEDIUM);
+			style_a.setBorderRight(XSSFCellStyle.BORDER_MEDIUM);
+			style_a.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+			style_a.setRightBorderColor(IndexedColors.BLACK.getIndex());
+			if (row != null) {
+				// System.out.println("MAIN IF CONDITION");
+				Cell cell_10 = row.createCell(10);
+				Cell cell_11 = row.createCell(11);
+				Cell cell_12 = row.createCell(12);
+				cell_10.setCellValue(i);
+				cell_11.setCellValue(obj.getProperty1());
+				cell_12.setCellValue(obj.getProperty2());
+				cell_10.setCellStyle(style_b);
+				cell_11.setCellStyle(style_a);
+				cell_12.setCellStyle(style_a);
+				if (i == excelFileDtoList1.size()) {
+					// System.out.println("IF CONDITION");
+					cell_11.setCellStyle(style_a);
+					cell_12.setCellStyle(style_a);
+				} else {
+					// System.out.println("ELSE CONDITION");
+					cell_11.setCellStyle(style_a);
+					cell_12.setCellStyle(style_a);
+				}
+
+			} else {
+				// System.out.println("MAIN ELSE ");
+				row = sheet.createRow(rownum);
+				row.setHeightInPoints(10);
+				Cell cell_10 = row.createCell(10);
+				Cell cell_11 = row.createCell(11);
+				Cell cell_12 = row.createCell(12);
+				cell_10.setCellValue(i);
+				cell_11.setCellValue(obj.getProperty1());
+				cell_12.setCellValue(obj.getProperty2());
+				cell_10.setCellStyle(style_b);
+				cell_11.setCellStyle(style_a);
+				cell_12.setCellStyle(style_a);
+				if (i == excelFileDtoList1.size()) {
+					// System.out.println("IF CONDITION");
+					style_a.setBorderBottom(XSSFCellStyle.BORDER_MEDIUM);
+					style_a.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+					cell_11.setCellStyle(style_a);
+					cell_12.setCellStyle(style_a);
+				} else {
+					// System.out.println("ELSE CONDITION");
+					cell_11.setCellStyle(style_a);
+					cell_12.setCellStyle(style_a);
+				}
+				
+				 style_a.setBorderBottom(XSSFCellStyle.BORDER_MEDIUM);
+				 style_a.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+				 
+			}
+			row = null;
+			rownum = rownum + 1;
+			}
+		return workbook1;
+	}
+
+	public static XSSFWorkbook createForthTable(FileInputStream inputStream, Map<String, Map<String, ?>> param,GenerateReportService generateReportService,String territoryName) {
+		int rownum = 0;
+		if (secondTableRowCount > thirdTableRowCount)
+			rownum = secondTableRowCount;
+		else
+			rownum = thirdTableRowCount;
+
+		XSSFWorkbook workbook1 = null;
+		try {
+			workbook1 = new XSSFWorkbook(inputStream);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		XSSFSheet sheet = workbook1.getSheet("AK_Sitka_06");
+		XSSFCellStyle styleLTB = ExcelSettingBorderColorUtility.createLeftTopBottomBorderStyle(workbook1);
+		XSSFCellStyle styleTB = ExcelSettingBorderColorUtility.createTopBottomBorderStyle(workbook1);
+		XSSFCellStyle styleRTB = ExcelSettingBorderColorUtility.createRightTopBottomBorderStyle(workbook1);
+		XSSFCellStyle styleLRTB = ExcelSettingBorderColorUtility.createLeftRightTopBottomBorderStyle(workbook1);
+		XSSFCellStyle styleLRBlue = ExcelSettingBorderColorUtility.createLeftRightBlueBorderStyle(workbook1);
+
+		styleLTB.setFillForegroundColor(ExcelColorUtility.CHARCOAL);
+		styleLTB.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		styleTB.setFillForegroundColor(ExcelColorUtility.CHARCOAL);
+		styleTB.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		styleRTB.setFillForegroundColor(ExcelColorUtility.CHARCOAL);
+		styleRTB.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		styleLRBlue.setFillForegroundColor(ExcelColorUtility.CHARCOAL);
+		styleLRBlue.setFillPattern(CellStyle.SOLID_FOREGROUND);
+
+		styleLTB.setAlignment(CellStyle.ALIGN_CENTER);
+		styleLRBlue.setAlignment(CellStyle.ALIGN_CENTER);
+		styleLRBlue.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+		styleLRBlue.setWrapText(true);
+
+		styleLRBlue.setBorderLeft(CellStyle.BORDER_THIN);
+		styleLRBlue.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+		styleLRBlue.setBorderRight(CellStyle.BORDER_THIN);
+		styleLRBlue.setRightBorderColor(IndexedColors.BLACK.getIndex());
+
+		XSSFFont font = workbook1.createFont();
+		font.setFontHeightInPoints((short) 7);
+		font.setFontName("Arial");
+		font.setColor(IndexedColors.WHITE.getIndex());
+		font.setBold(true);
+
+		styleTB.setFont(font);
+		styleLTB.setFont(font);
+		styleRTB.setFont(font);
+		styleLRBlue.setFont(font);
+		int forthTableFirstHeader = rownum + 3;
+		int forthTableSecondHeader = rownum + 4;
+		// First Row header started
+		Row row = sheet.createRow(forthTableFirstHeader);
+		row.setHeightInPoints(10);
+		Cell cell0 = row.createCell(0);
+		Cell cell1 = row.createCell(1);
+		Cell cell2 = row.createCell(2);
+		Cell cell3 = row.createCell(3);
+		Cell cell4 = row.createCell(4);
+		Cell cell5 = row.createCell(5);
+		Cell cell6 = row.createCell(6);
+		Cell cell7 = row.createCell(7);
+		Cell cell8 = row.createCell(8);
+		Cell cell9 = row.createCell(9);
+		Cell cell10 = row.createCell(10);
+		Cell cell11 = row.createCell(11);
+		Cell cell12 = row.createCell(12);
+
+		ExcelFileDto setFirstRowHeader = new ExcelFileDto();
+		setFirstRowHeader.setHearder1("Destination Fields");
+		setFirstRowHeader.setHearder2("Source Fields");
+		setFirstRowHeader.setHearder3("Conversion Instructions");
+		cell0.setCellValue(setFirstRowHeader.getHearder1());
+		cell5.setCellValue(setFirstRowHeader.getHearder2());
+		cell11.setCellValue(setFirstRowHeader.getHearder3());
+		cell0.setCellStyle(styleLTB);
+		cell1.setCellStyle(styleTB);
+		cell2.setCellStyle(styleTB);
+		cell3.setCellStyle(styleTB);
+		cell4.setCellStyle(styleRTB);
+		cell5.setCellStyle(styleLTB);
+		cell6.setCellStyle(styleTB);
+		cell7.setCellStyle(styleTB);
+		cell8.setCellStyle(styleTB);
+		cell9.setCellStyle(styleTB);
+		cell10.setCellStyle(styleRTB);
+		cell11.setCellStyle(styleLTB);
+		cell12.setCellStyle(styleRTB);
+
+		// Second Row header started
+
+		ExcelFileDto setSecondRowHeader = new ExcelFileDto();
+		setSecondRowHeader.setHearder1("LAN Field Number");
+		setSecondRowHeader.setHearder2("LAN Field Name");
+		setSecondRowHeader.setHearder3("Length");
+		setSecondRowHeader.setHearder4("To");
+		setSecondRowHeader.setHearder5("From");
+		setSecondRowHeader.setHearder6("FileName");
+		setSecondRowHeader.setHearder7("Field Name Start Position");
+		setSecondRowHeader.setHearder8("End Position");
+		setSecondRowHeader.setHearder9("Pull Forward Condidate");
+		setSecondRowHeader.setHearder10("Source Count");
+		setSecondRowHeader.setHearder11("Lan Count");
+		setSecondRowHeader.setHearder12("Upload Instructions/Comment");
+		setSecondRowHeader.setHearder13("Additional Requirement");
+
+		Row row1 = sheet.createRow(forthTableSecondHeader);
+		row1.setHeightInPoints(30);
+		Cell cell_0 = row1.createCell(0);
+		Cell cell_1 = row1.createCell(1);
+		Cell cell_2 = row1.createCell(2);
+		Cell cell_3 = row1.createCell(3);
+		Cell cell_4 = row1.createCell(4);
+		Cell cell_5 = row1.createCell(5);
+		Cell cell_6 = row1.createCell(6);
+		Cell cell_7 = row1.createCell(7);
+		Cell cell_8 = row1.createCell(8);
+		Cell cell_9 = row1.createCell(9);
+		Cell cell_10 = row1.createCell(10);
+		Cell cell_11 = row1.createCell(11);
+		Cell cell_12 = row1.createCell(12);
+		// Cell cell_13 = row1.createCell(12);
+
+		cell_0.setCellValue(setSecondRowHeader.getHearder1());
+		cell_1.setCellValue(setSecondRowHeader.getHearder2());
+		cell_2.setCellValue(setSecondRowHeader.getHearder3());
+		cell_3.setCellValue(setSecondRowHeader.getHearder4());
+		cell_4.setCellValue(setSecondRowHeader.getHearder5());
+		cell_5.setCellValue(setSecondRowHeader.getHearder6());
+		cell_6.setCellValue(setSecondRowHeader.getHearder7());
+		cell_7.setCellValue(setSecondRowHeader.getHearder8());
+		cell_8.setCellValue(setSecondRowHeader.getHearder9());
+		cell_9.setCellValue(setSecondRowHeader.getHearder10());
+		cell_10.setCellValue(setSecondRowHeader.getHearder11());
+		cell_11.setCellValue(setSecondRowHeader.getHearder12());
+		cell_12.setCellValue(setSecondRowHeader.getHearder13());
+
+		cell_0.setCellStyle(styleLRBlue);
+		cell_1.setCellStyle(styleLRBlue);
+		cell_2.setCellStyle(styleLRBlue);
+		cell_3.setCellStyle(styleLRBlue);
+		cell_4.setCellStyle(styleLRBlue);
+		cell_5.setCellStyle(styleLRBlue);
+		cell_6.setCellStyle(styleLRBlue);
+		cell_7.setCellStyle(styleLRBlue);
+		cell_8.setCellStyle(styleLRBlue);
+		cell_9.setCellStyle(styleLRBlue);
+		cell_10.setCellStyle(styleLRBlue);
+		cell_11.setCellStyle(styleLRBlue);
+		cell_12.setCellStyle(styleLRBlue);
+
+		// workbook1 =
+		// DataConversionExcelUtility.createForthTableRowData(workbook1,
+		// forthTableSecondHeader, param);
+		workbook1 = DataConversionExcelUtility.createForthTableRowData(workbook1, forthTableSecondHeader,param,generateReportService,territoryName);
+
+		return workbook1;
+	}
+
+	public static XSSFWorkbook createForthTableRowData(XSSFWorkbook workbook, int rowCount,Map<String, Map<String, ?>> param,GenerateReportService generateReportService,String territoryName) {
+		rowCount = rowCount + 1;
+		System.out.println("param = "+param);
+		XSSFCellStyle styleLTB = ExcelSettingBorderColorUtility.createLeftTopBottomBorderStyle(workbook);
+		XSSFCellStyle styleLTBW = ExcelSettingBorderColorUtility.createLeftTopBottomBorderStyle(workbook);
+		XSSFCellStyle styleLTB1 = ExcelSettingBorderColorUtility.createLeftTopBottomBorderStyle(workbook);
+		XSSFCellStyle styleTB = ExcelSettingBorderColorUtility.createTopBottomBorderStyle(workbook);
+		XSSFCellStyle styleTB1 = ExcelSettingBorderColorUtility.createTopBottomBorderStyle(workbook);
+		XSSFCellStyle styleRTB = ExcelSettingBorderColorUtility.createRightTopBottomBorderStyle(workbook);
+
+		// styleLTB.setFillForegroundColor(IndexedColors..getIndex());
+
+		styleLTB.setFillForegroundColor(IndexedColors.GREEN.getIndex());
+		styleLTB.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		styleLTBW.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+		styleLTBW.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		styleLTB1.setFillForegroundColor(IndexedColors.GREEN.getIndex());
+		styleLTB1.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		styleTB.setFillForegroundColor(IndexedColors.GREEN.getIndex());
+		styleTB.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		styleTB1.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+		styleTB1.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		styleRTB.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+		styleRTB.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		XSSFFont font = workbook.createFont();
+		font.setFontHeightInPoints((short) 10);
+		font.setFontName("Arial");
+		font.setColor(IndexedColors.WHITE.getIndex());
+		font.setBold(true);
+		styleLTB1.setFont(font);
+
+		XSSFFont font1 = workbook.createFont();
+		font1.setFontHeightInPoints((short) 7);
+		font1.setFontName("Arial");
+		font1.setColor(IndexedColors.RED.getIndex());
+		font1.setBold(true);
+		styleLTB.setFont(font1);
+		styleLTBW.setFont(font1);
+
+		XSSFFont blackFont = workbook.createFont();
+		blackFont.setFontHeightInPoints((short) 7);
+		blackFont.setFontName("Arial");
+		blackFont.setColor(IndexedColors.BLACK.getIndex());
+
+		styleLTB1.setFont(font);
+		
+		XSSFFont whiteFont = workbook.createFont();
+		whiteFont.setFontHeightInPoints((short) 7);
+		whiteFont.setFontName("Arial");
+		whiteFont.setColor(IndexedColors.WHITE.getIndex());
+		CellStyle whiteStyle = workbook.createCellStyle();
+		whiteStyle.setFont(whiteFont);
+
+		Map<String, Map<String, ?>> firstMapObj = DataConversionExcelUtility.createDynamicData(generateReportService,territoryName);
+		// Setting cell values with the getting map
+		if (firstMapObj != null) {
+			int headerColorCount = 0;
+			int rowColorCount1 = 1;
+			int rowColorCount2 = 2;
+			int listRowCount = 1;
+			int colorCount = 0;
+			Set<String> keySet = firstMapObj.keySet();
+			XSSFSheet sheet = workbook.getSheet("AK_Sitka_06");
+			// Getting first key value which is always be map
+
+			for (String key : keySet) {
+				headerColorCount += 1;
+
+				// key is header1
+				Map<String, Map<String, ?>> subElementoffirstMapObj = (Map<String, Map<String, ?>>) firstMapObj.get(key);
+				Set<String> childKeySet = subElementoffirstMapObj.keySet();
+				for (String childkey : childKeySet) {
+					Row hrow = sheet.createRow(rowCount++);
+					 hrow.setHeightInPoints(10); 
+
+					Cell hcell0 = hrow.createCell(0);
+					Cell hcell1 = hrow.createCell(1);
+					Cell hcell2 = hrow.createCell(2);
+					Cell hcell3 = hrow.createCell(3);
+					Cell hcell4 = hrow.createCell(4);
+					Cell hcell5 = hrow.createCell(5);
+					Cell hcell6 = hrow.createCell(6);
+					Cell hcell7 = hrow.createCell(7);
+					Cell hcell8 = hrow.createCell(8);
+					Cell hcell9 = hrow.createCell(9);
+					Cell hcell10 = hrow.createCell(10);
+					Cell hcell11 = hrow.createCell(11);
+					Cell hcell12 = hrow.createCell(12);
+					hcell0.setCellValue(key);
+					hcell5.setCellValue(childkey);
+
+					XSSFCellStyle headerBackColor1 = ExcelSettingBorderColorUtility
+							.createLeftTopBottomBorderStyle(workbook);
+					headerBackColor1 = DataConversionExcelUtility.getDifferentColor(headerColorCount, headerBackColor1);
+					headerBackColor1.setFont(font);
+
+					XSSFCellStyle headerBackColor2 = ExcelSettingBorderColorUtility
+							.createTopBottomBorderStyle(workbook);
+					headerBackColor2 = DataConversionExcelUtility.getDifferentColor(headerColorCount, headerBackColor2);
+					headerBackColor2.setFont(font);
+				
+					hcell0.setCellStyle(headerBackColor1);
+					hcell1.setCellStyle(headerBackColor2);
+					hcell5.setCellStyle(styleLTBW);
+					hcell3.setCellStyle(headerBackColor2);
+					hcell4.setCellStyle(headerBackColor2);
+					hcell2.setCellStyle(headerBackColor2);
+					hcell6.setCellStyle(styleTB1);
+					hcell7.setCellStyle(styleTB1);
+					hcell8.setCellStyle(styleTB1);
+					hcell9.setCellStyle(styleTB1);
+					hcell10.setCellStyle(styleTB1);
+					hcell11.setCellStyle(styleTB1);
+					hcell12.setCellStyle(styleTB1);
+
+					if (subElementoffirstMapObj.get(childkey) instanceof List) {
+						// Got list directly put in cell
+						colorCount = colorCount + 1;
+						List<ExcelFileDto> ExcelFileDtoList = (List<ExcelFileDto>) subElementoffirstMapObj.get(childkey);
+						for (ExcelFileDto excelFileDto : ExcelFileDtoList) {
+							Row lrow = sheet.createRow(rowCount++);
+							sheet.setColumnWidth(1, 9000);
+							sheet.setColumnWidth(6, 6000);
+							 lrow.setHeightInPoints(10); 
+							 sheet.setDefaultRowHeight((short)10); 
+							 sheet.autoSizeColumn(12); 
+							if (excelFileDto.getUploadInst().length() > 65) {
+								lrow.setHeightInPoints(30);
+							} else if (excelFileDto.getStartPosition().length() > 33) {
+								lrow.setHeightInPoints(20);
+							} else {
+								lrow.setHeightInPoints(10);
+							}
+
+							if (rowCount == 93 || rowCount == 94) {
+								lrow.setHeightInPoints(30);
+								
+							}
+							XSSFCellStyle rowColor1 = ExcelSettingBorderColorUtility
+									.createLeftRightTopBottomTHINBorderStyle(workbook);
+							rowColor1.setWrapText(true);
+							rowColor1.setAlignment(CellStyle.ALIGN_CENTER);
+							rowColor1.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+							XSSFCellStyle rowColor2 = ExcelSettingBorderColorUtility
+									.createLeftRightTopBottomTHINBorderStyle(workbook);
+							rowColor2.setWrapText(true);
+							rowColor2.setAlignment(CellStyle.ALIGN_CENTER);
+							rowColor2.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+							Cell lcell0 = lrow.createCell(0);
+							Cell lcell1 = lrow.createCell(1);
+							Cell lcell2 = lrow.createCell(2);
+							Cell lcell3 = lrow.createCell(3);
+							Cell lcell4 = lrow.createCell(4);
+							Cell lcell5 = lrow.createCell(5);
+							Cell lcell6 = lrow.createCell(6);
+							Cell lcell7 = lrow.createCell(7);
+							Cell lcell8 = lrow.createCell(8);
+							Cell lcell9 = lrow.createCell(9);
+							Cell lcell10 = lrow.createCell(10);
+							Cell lcell11 = lrow.createCell(11);
+							Cell lcell12 = lrow.createCell(12);
+
+							// Setting header cell value
+							lcell0.setCellValue(excelFileDto.getLanFieldNumber());
+							lcell1.setCellValue(excelFileDto.getLanFieldName());
+							lcell2.setCellValue(excelFileDto.getLength());
+							lcell3.setCellValue(excelFileDto.getTo());
+							lcell4.setCellValue(excelFileDto.getFrom());
+							lcell5.setCellValue(excelFileDto.getFileName());
+							lcell6.setCellValue(excelFileDto.getStartPosition());
+							lcell7.setCellValue(excelFileDto.getEndPosition());
+							lcell8.setCellValue(excelFileDto.getPullForward());
+							lcell9.setCellValue(excelFileDto.getSourceCount());
+							lcell10.setCellValue(excelFileDto.getLanCount());
+							lcell11.setCellValue(excelFileDto.getUploadInst());
+							lcell12.setCellValue(excelFileDto.getAdditionalReq());
+							if (listRowCount % 2 != 0) {
+								lcell0.setCellStyle(rowColor1);
+								rowColor1 = DataConversionExcelUtility.getDifferentColorForRows(rowColorCount1,
+										rowColor1, colorCount);
+								if(rowCount==93){
+									rowColor1.setFont(whiteFont);
+									lcell0.setCellStyle(rowColor1);
+									lcell1.setCellStyle(rowColor1);
+									lcell2.setCellStyle(rowColor1);
+									lcell3.setCellStyle(rowColor1);
+									lcell4.setCellStyle(rowColor1);
+									lcell5.setCellStyle(rowColor1);
+									lcell6.setCellStyle(rowColor1);
+									lcell7.setCellStyle(rowColor1);
+									lcell8.setCellStyle(rowColor1);
+									lcell9.setCellStyle(rowColor1);
+									lcell10.setCellStyle(rowColor1);
+									lcell11.setCellStyle(rowColor1);
+									lcell12.setCellStyle(rowColor1);
+								}
+								else
+								{
+									rowColor1.setFont(blackFont);
+									lcell0.setCellStyle(rowColor1);
+									lcell1.setCellStyle(rowColor1);
+									lcell2.setCellStyle(rowColor1);
+									lcell3.setCellStyle(rowColor1);
+									lcell4.setCellStyle(rowColor1);
+									lcell5.setCellStyle(rowColor1);
+									lcell6.setCellStyle(rowColor1);
+									lcell7.setCellStyle(rowColor1);
+									lcell8.setCellStyle(rowColor1);
+									lcell9.setCellStyle(rowColor1);
+									lcell10.setCellStyle(rowColor1);
+									lcell11.setCellStyle(rowColor1);
+									lcell12.setCellStyle(rowColor1);
+								}
+							} else {
+								rowColor2 = DataConversionExcelUtility.getDifferentColorForRows(rowColorCount2,
+										rowColor2, colorCount);
+								if(rowCount==94)
+								{
+									rowColor2.setFont(whiteFont);
+									lcell0.setCellStyle(rowColor2);
+									lcell1.setCellStyle(rowColor2);
+									lcell2.setCellStyle(rowColor2);
+									lcell3.setCellStyle(rowColor2);
+									lcell4.setCellStyle(rowColor2);
+									lcell5.setCellStyle(rowColor2);
+									lcell6.setCellStyle(rowColor2);
+									lcell7.setCellStyle(rowColor2);
+									lcell8.setCellStyle(rowColor2);
+									lcell9.setCellStyle(rowColor2);
+									lcell10.setCellStyle(rowColor2);
+									lcell11.setCellStyle(rowColor2);
+									lcell12.setCellStyle(rowColor2);
+								}
+								else
+								{
+									rowColor2.setFont(blackFont);
+									lcell0.setCellStyle(rowColor2);
+									lcell1.setCellStyle(rowColor2);
+									lcell2.setCellStyle(rowColor2);
+									lcell3.setCellStyle(rowColor2);
+									lcell4.setCellStyle(rowColor2);
+									lcell5.setCellStyle(rowColor2);
+									lcell6.setCellStyle(rowColor2);
+									lcell7.setCellStyle(rowColor2);
+									lcell8.setCellStyle(rowColor2);
+									lcell9.setCellStyle(rowColor2);
+									lcell10.setCellStyle(rowColor2);
+									lcell11.setCellStyle(rowColor2);
+									lcell12.setCellStyle(rowColor2);
+								}
+							}
+							listRowCount = listRowCount + 1;
+						}
+
+						listRowCount = 1;
+						rowColorCount1 = rowColorCount1 + 2;
+						rowColorCount2 = rowColorCount2 + 2;
+					} else if (subElementoffirstMapObj.get(childkey) instanceof Map) {
+						colorCount = colorCount + 1;
+						headerColorCount += 1;
+						XSSFCellStyle subHeaderBackColor1 = ExcelSettingBorderColorUtility
+								.createLeftTopBottomBorderStyle(workbook);
+						subHeaderBackColor1 = DataConversionExcelUtility.getDifferentColor(headerColorCount,
+								subHeaderBackColor1);
+						subHeaderBackColor1.setFont(font);
+						XSSFCellStyle subHeaderBackColor2 = ExcelSettingBorderColorUtility
+								.createTopBottomBorderStyle(workbook);
+						subHeaderBackColor2 = DataConversionExcelUtility.getDifferentColor(headerColorCount,
+								subHeaderBackColor2);
+						subHeaderBackColor2.setFont(font);
+
+						Map lastchildMap = subElementoffirstMapObj.get(childkey);
+					
+						Set<String> subHeaderKey = lastchildMap.keySet();
+						for (String childKey1 : subHeaderKey) {
+							Row subhrow = sheet.createRow(rowCount++);
+							Cell subhcell0 = subhrow.createCell(0);
+							Cell subhcell1 = subhrow.createCell(1);
+							Cell subhcell2 = subhrow.createCell(2);
+							Cell subhcell3 = subhrow.createCell(3);
+							Cell subhcell4 = subhrow.createCell(4);
+							Cell subhcell5 = subhrow.createCell(5);
+							Cell subhcell6 = subhrow.createCell(6);
+							Cell subhcell7 = subhrow.createCell(7);
+							Cell subhcell8 = subhrow.createCell(8);
+							Cell subhcell9 = subhrow.createCell(9);
+							Cell subhcell10 = subhrow.createCell(10);
+							Cell subhcell11 = subhrow.createCell(11);
+							Cell subhcell12 = subhrow.createCell(12);
+							// Setting header cell value
+							subhcell0.setCellValue(childKey1);
+							subhcell0.setCellStyle(subHeaderBackColor1);
+							subhcell1.setCellStyle(subHeaderBackColor2);
+							subhcell2.setCellStyle(subHeaderBackColor2);
+							subhcell3.setCellStyle(subHeaderBackColor2);
+							subhcell4.setCellStyle(subHeaderBackColor2);
+							subhcell5.setCellStyle(subHeaderBackColor2);
+							subhcell6.setCellStyle(subHeaderBackColor2);
+							subhcell7.setCellStyle(subHeaderBackColor2);
+							subhcell8.setCellStyle(subHeaderBackColor2);
+							subhcell9.setCellStyle(subHeaderBackColor2);
+							subhcell10.setCellStyle(subHeaderBackColor2);
+							subhcell11.setCellStyle(subHeaderBackColor2);
+							subhcell12.setCellStyle(subHeaderBackColor2);
+
+							List<ExcelFileDto> ExcelFileDtoList = (List<ExcelFileDto>) lastchildMap.get(childKey1);
+							for (ExcelFileDto excelFileDto : ExcelFileDtoList) {
+
+								XSSFCellStyle subMapRowColor1 = ExcelSettingBorderColorUtility
+										.createLeftRightTopBottomTHINBorderStyle(workbook);
+								XSSFCellStyle subMapRowColor2 = ExcelSettingBorderColorUtility
+										.createLeftRightTopBottomTHINBorderStyle(workbook);
+								Row shlrow = sheet.createRow(rowCount++);
+								shlrow.setHeightInPoints(10);
+								Cell shlcell0 = shlrow.createCell(0);
+								Cell shlcell1 = shlrow.createCell(1);
+								Cell shlcell2 = shlrow.createCell(2);
+								Cell shlcell3 = shlrow.createCell(3);
+								Cell shlcell4 = shlrow.createCell(4);
+								Cell shlcell5 = shlrow.createCell(5);
+								Cell shlcell6 = shlrow.createCell(6);
+								Cell shlcell7 = shlrow.createCell(7);
+								Cell shlcell8 = shlrow.createCell(8);
+								Cell shlcell9 = shlrow.createCell(9);
+								Cell shlcell10 = shlrow.createCell(10);
+								Cell shlcell11 = shlrow.createCell(11);
+								Cell shlcell12 = shlrow.createCell(12);
+								// Setting header cell value
+								shlcell0.setCellValue(excelFileDto.getLanFieldNumber());
+								shlcell1.setCellValue(excelFileDto.getLanFieldName());
+								shlcell2.setCellValue(excelFileDto.getLength());
+								shlcell3.setCellValue(excelFileDto.getTo());
+								shlcell4.setCellValue(excelFileDto.getFrom());
+								shlcell5.setCellValue(excelFileDto.getFileName());
+								shlcell6.setCellValue(excelFileDto.getStartPosition());
+								shlcell7.setCellValue(excelFileDto.getEndPosition());
+								shlcell8.setCellValue(excelFileDto.getPullForward());
+								shlcell9.setCellValue(excelFileDto.getSourceCount());
+								shlcell10.setCellValue(excelFileDto.getLanCount());
+								shlcell11.setCellValue(excelFileDto.getUploadInst());
+								shlcell12.setCellValue(excelFileDto.getAdditionalReq());
+								if (listRowCount % 2 != 0) {
+									// shlcell0.setCellStyle(rowColor1);
+									subMapRowColor1 = DataConversionExcelUtility
+											.getDifferentColorForRows(rowColorCount1, subMapRowColor1, colorCount);
+									subMapRowColor1.setFont(blackFont);
+									shlcell0.setCellStyle(subMapRowColor1);
+									shlcell1.setCellStyle(subMapRowColor1);
+									shlcell2.setCellStyle(subMapRowColor1);
+									shlcell3.setCellStyle(subMapRowColor1);
+									shlcell4.setCellStyle(subMapRowColor1);
+									shlcell5.setCellStyle(subMapRowColor1);
+									shlcell6.setCellStyle(subMapRowColor1);
+									shlcell7.setCellStyle(subMapRowColor1);
+									shlcell8.setCellStyle(subMapRowColor1);
+									shlcell9.setCellStyle(subMapRowColor1);
+									shlcell10.setCellStyle(subMapRowColor1);
+									shlcell11.setCellStyle(subMapRowColor1);
+									shlcell12.setCellStyle(subMapRowColor1);
+								} else {
+									subMapRowColor2 = DataConversionExcelUtility
+											.getDifferentColorForRows(rowColorCount2, subMapRowColor2, colorCount);
+									subMapRowColor2.setFont(blackFont);
+									shlcell0.setCellStyle(subMapRowColor2);
+									shlcell1.setCellStyle(subMapRowColor2);
+									shlcell2.setCellStyle(subMapRowColor2);
+									shlcell3.setCellStyle(subMapRowColor2);
+									shlcell4.setCellStyle(subMapRowColor2);
+									shlcell5.setCellStyle(subMapRowColor2);
+									shlcell6.setCellStyle(subMapRowColor2);
+									shlcell7.setCellStyle(subMapRowColor2);
+									shlcell8.setCellStyle(subMapRowColor2);
+									shlcell9.setCellStyle(subMapRowColor2);
+									shlcell10.setCellStyle(subMapRowColor2);
+									shlcell11.setCellStyle(subMapRowColor2);
+									shlcell12.setCellStyle(subMapRowColor2);
+								}
+								listRowCount = listRowCount + 1;
+							}
+						}
+						listRowCount = 1;
+						rowColorCount1 = rowColorCount1 + 2;
+						rowColorCount2 = rowColorCount2 + 2;
+					}
+				}
+			}
+		}
+
+		return workbook;
+	}
+
+	public static void main(String[] args) {
+
+		workbook = new XSSFWorkbook();
+		workbook = DataConversionExcelUtility.createFirstTable(workbook, null);
+		try {
+			FileOutputStream out = new FileOutputStream(
+					new File(ExcelConstant.EXCEL_FILE_CREATION_DRIVE + ExcelConstant.EXCELFILENAME));
+			workbook.write(out);
+			out.close();
+			workbook = null;
+			FileInputStream inputStream = new FileInputStream(new File("F:\\AK_Sitka_06_Data_Generated.xlsx"));
+			workbook = DataConversionExcelUtility.createSecondTable(inputStream, null);
+
+			FileOutputStream outSecondTable = new FileOutputStream(new File("F:\\AK_Sitka_06_Data_Generated.xlsx"));
+			workbook.write(outSecondTable);
+			outSecondTable.close();
+			workbook = null;
+
+			FileInputStream inputStream1 = new FileInputStream(new File("F:\\AK_Sitka_06_Data_Generated.xlsx"));
+			workbook = DataConversionExcelUtility.createThirdTable(inputStream1, null);
+			FileOutputStream outThirdTable = new FileOutputStream(new File("F:\\AK_Sitka_06_Data_Generated.xlsx"));
+
+			workbook.write(outThirdTable);
+			outThirdTable.close();
+			workbook = null;
+
+			FileInputStream inputStream2 = new FileInputStream(new File("F:\\AK_Sitka_06_Data_Generated.xlsx"));
+			//workbook = DataConversionExcelUtility.createForthTable(inputStream2, null);
+			FileOutputStream outForthTable = new FileOutputStream(new File("F:\\AK_Sitka_06_Data_Generated.xlsx"));
+			workbook.write(outForthTable);
+			outForthTable.close();
+			workbook = null;
+
+			System.out.println("AK_Sitka_06_Data_Spec_Sheet.xlsx written successfully in drive.");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public static String getUsedTableNames(int fieldNumber,GenerateReportService generateReportService,String territoryName)
+	{
+		String value = generateReportService.getUsedTableNames(fieldNumber, territoryName);
+		return value;
+	}
+	public static String getUsedColumnNames(int fieldNumber,GenerateReportService generateReportService,String territoryName)
+	{
+		String value = generateReportService.getUsedColumnNames(fieldNumber, territoryName);
+    	return value;
+	}
+	public static Map<String, Map<String, ?>> createDynamicData(GenerateReportService generateReportService,String territoryName) {
+		Map<String, Map<String, ?>> parentMap = new LinkedHashMap<String, Map<String, ?>>();
+		List<ExcelFileDto> excelFileDtoList = new ArrayList<ExcelFileDto>();
+		ExcelFileDto obj1 = new ExcelFileDto();
+		obj1.setLanFieldNumber("1");
+		obj1.setLanFieldName("1-STATE (POSTAL CODE)");
+		obj1.setLength("2");
+		obj1.setTo("1");
+		obj1.setFrom("2");
+		obj1.setFileName(getUsedTableNames(1,generateReportService,territoryName));
+		obj1.setStartPosition(getUsedColumnNames(1,generateReportService,territoryName));
+		obj1.setEndPosition("");
+		obj1.setPullForward("");
+		obj1.setSourceCount("");
+		obj1.setLanCount("");
+		obj1.setUploadInst("Load as 'AK'");
+		obj1.setAdditionalReq("");
+		excelFileDtoList.add(obj1);
+		ExcelFileDto obj2 = new ExcelFileDto();
+		obj2.setLanFieldNumber("2");
+		obj2.setLanFieldName("2-County Name)");
+		obj2.setLength("25");
+		obj2.setTo("3");
+		obj2.setFrom("27");
+		obj2.setFileName(getUsedTableNames(2,generateReportService,territoryName));
+		obj2.setStartPosition(getUsedColumnNames(2,generateReportService,territoryName));
+		//obj2.setFileName("");
+		//obj2.setStartPosition("");
+		obj2.setEndPosition("");
+		obj2.setPullForward("");
+		obj2.setSourceCount("");
+		obj2.setLanCount("");
+		obj2.setUploadInst("Load as 'SITKA'");
+		obj2.setAdditionalReq("");
+		excelFileDtoList.add(obj2);
+		ExcelFileDto obj3 = new ExcelFileDto();
+		obj3.setLanFieldNumber("90");
+		obj3.setLanFieldName("90-FIPS CODE");
+		obj3.setLength("5");
+		obj3.setTo("1330");
+		obj3.setFrom("1334");
+		obj3.setFileName(getUsedTableNames(90,generateReportService,territoryName));
+		obj3.setStartPosition(getUsedColumnNames(90,generateReportService,territoryName));
+		/*obj3.setFileName("");
+		obj3.setStartPosition("");*/
+		obj3.setEndPosition("");
+		obj3.setPullForward("");
+		obj3.setSourceCount("");
+		obj3.setLanCount("");
+		obj3.setUploadInst("Load as 02220");
+		obj3.setAdditionalReq("");
+		excelFileDtoList.add(obj3);
+		ExcelFileDto obj4 = new ExcelFileDto();
+		obj4.setLanFieldNumber("3");
+		obj4.setLanFieldName("3-APN-A (OR PIN NUMBER)");
+		obj4.setLength("2");
+		obj4.setTo("1395");
+		obj4.setFrom("1396");
+		obj4.setFileName(getUsedTableNames(3,generateReportService,territoryName));
+		obj4.setStartPosition(getUsedColumnNames(3,generateReportService,territoryName));
+		/*obj4.setFileName("AK_Sitka_06_Main");
+		obj4.setStartPosition("");*/
+		obj4.setEndPosition("");
+		obj4.setPullForward("");
+		obj4.setSourceCount("");
+		obj4.setLanCount("");
+		obj4.setUploadInst(
+				"Load  from [Property #] .Remove the hypen between the numbers and Move the parcel number from starting till the first 8 numbers.Trim Leading and trailing spaces");
+		obj4.setAdditionalReq("");
+		excelFileDtoList.add(obj4);
+		ExcelFileDto obj5 = new ExcelFileDto();
+		obj5.setLanFieldNumber("109");
+		obj5.setLanFieldName("109-ADDITION NUMBER");
+		obj5.setLength("45");
+		obj5.setTo("25");
+		obj5.setFrom("72");
+		obj5.setFileName(getUsedTableNames(109,generateReportService,territoryName));
+		obj5.setStartPosition(getUsedColumnNames(109,generateReportService,territoryName));
+		/*obj5.setFileName("AK_Sitka_06_Main");
+		obj5.setStartPosition("");*/
+		obj5.setEndPosition("");
+		obj5.setPullForward("");
+		obj5.setSourceCount("");
+		obj5.setLanCount("");
+		obj5.setUploadInst("Load as 2016");
+		obj5.setAdditionalReq("");
+		excelFileDtoList.add(obj5);
+		Map<String, List<ExcelFileDto>> subMap1 = new LinkedHashMap<String, List<ExcelFileDto>>();
+		subMap1.put("Class Comment:", excelFileDtoList);
+
+		List<ExcelFileDto> excelFileDtoList1 = new ArrayList<ExcelFileDto>();
+		ExcelFileDto aobj1 = new ExcelFileDto();
+		aobj1.setLanFieldNumber("1");
+		aobj1.setLanFieldName("1-STATE (POSTAL CODE)");
+		aobj1.setLength("2");
+		aobj1.setTo("1");
+		aobj1.setFrom("2");
+		aobj1.setFileName(getUsedTableNames(1,generateReportService,territoryName));
+		aobj1.setStartPosition(getUsedColumnNames(1,generateReportService,territoryName));
+		/*aobj1.setFileName("");
+		aobj1.setStartPosition("");*/
+		aobj1.setEndPosition("");
+		aobj1.setPullForward("");
+		aobj1.setSourceCount("");
+		aobj1.setLanCount("");
+		aobj1.setUploadInst("Load as 'AK'");
+		aobj1.setAdditionalReq("");
+		excelFileDtoList1.add(aobj1);
+		ExcelFileDto aobj2 = new ExcelFileDto();
+		aobj2.setLanFieldNumber("2");
+		aobj2.setLanFieldName("2-County Name)");
+		aobj2.setLength("25");
+		aobj2.setTo("3");
+		aobj2.setFrom("27");
+		aobj2.setFileName(getUsedTableNames(2,generateReportService,territoryName));
+		aobj2.setStartPosition(getUsedColumnNames(2,generateReportService,territoryName));
+		/*aobj2.setFileName("");
+		aobj2.setStartPosition("");*/
+		aobj2.setEndPosition("");
+		aobj2.setPullForward("");
+		aobj2.setSourceCount("");
+		aobj2.setLanCount("");
+		aobj2.setUploadInst("Load as 'SITKA'");
+		aobj2.setAdditionalReq("");
+		excelFileDtoList1.add(aobj2);
+		ExcelFileDto aobj3 = new ExcelFileDto();
+		aobj3.setLanFieldNumber("90");
+		aobj3.setLanFieldName("90-FIPS CODE");
+		aobj3.setLength("5");
+		aobj3.setTo("1330");
+		aobj3.setFrom("1334");
+		aobj3.setFileName(getUsedTableNames(90,generateReportService,territoryName));
+		aobj3.setStartPosition(getUsedColumnNames(90,generateReportService,territoryName));
+		/*aobj3.setFileName("");
+		aobj3.setStartPosition("");*/
+		obj3.setEndPosition("");
+		aobj3.setPullForward("");
+		aobj3.setSourceCount("");
+		aobj3.setLanCount("");
+		aobj3.setUploadInst("Load as 02220");
+		aobj3.setAdditionalReq("");
+		excelFileDtoList1.add(aobj3);
+		ExcelFileDto aobj4 = new ExcelFileDto();
+		aobj4.setLanFieldNumber("3");
+		aobj4.setLanFieldName("3-APN-A (OR PIN NUMBER)");
+		aobj4.setLength("2");
+		aobj4.setTo("1395");
+		aobj4.setFrom("1396");
+		aobj4.setFileName(getUsedTableNames(3,generateReportService,territoryName));
+		aobj4.setStartPosition(getUsedColumnNames(3,generateReportService,territoryName));
+		/*aobj4.setFileName("AK_Sitka_06_Main");
+		aobj4.setStartPosition("");*/
+		aobj4.setEndPosition("");
+		aobj4.setPullForward("");
+		aobj4.setSourceCount("");
+		aobj4.setLanCount("");
+		aobj4.setUploadInst("Load  from [Property #] .");
+		aobj4.setAdditionalReq("");
+		excelFileDtoList1.add(aobj4);
+		ExcelFileDto aobj5 = new ExcelFileDto();
+		aobj5.setLanFieldNumber("109");
+		aobj5.setLanFieldName("109-ADDITION NUMBER");
+		aobj5.setLength("45");
+		aobj5.setTo("25");
+		aobj5.setFrom("72");
+		aobj5.setFileName(getUsedTableNames(109,generateReportService,territoryName));
+		aobj5.setStartPosition(getUsedColumnNames(109,generateReportService,territoryName));
+		/*aobj5.setFileName("AK_Sitka_06_Main");
+		aobj5.setStartPosition("");*/
+		aobj5.setEndPosition("");
+		aobj5.setPullForward("");
+		aobj5.setSourceCount("");
+		aobj5.setLanCount("");
+		aobj5.setUploadInst("Load as 2016");
+		aobj5.setAdditionalReq("");
+		excelFileDtoList1.add(aobj5);
+		Map<String, List<ExcelFileDto>> subMap2 = new LinkedHashMap<String, List<ExcelFileDto>>();
+		subMap2.put("Class Comment:", excelFileDtoList1);
+
+		parentMap.put("Header Fields", subMap1);
+		parentMap.put("Name Fields", subMap2);
+
+		List<String> headerList = new ArrayList<String>();
+		headerList.add("Lot/Building Fields");
+		headerList.add("Exterior Fields");
+		headerList.add("Interior Fields");
+		// headerList.add("Speciality Fields");
+
+		List<ExcelFileDto> list1 = new ArrayList<ExcelFileDto>();
+		ExcelFileDto bobj1 = new ExcelFileDto();
+		bobj1.setLanFieldNumber("1");
+		bobj1.setLanFieldName("1-STATE (POSTAL CODE)");
+		bobj1.setLength("2");
+		bobj1.setTo("1");
+		bobj1.setFrom("2");
+		bobj1.setFileName(getUsedTableNames(1,generateReportService,territoryName));
+		bobj1.setStartPosition(getUsedColumnNames(1,generateReportService,territoryName));
+		/*bobj1.setFileName("");
+		bobj1.setStartPosition("");*/
+		bobj1.setEndPosition("");
+		bobj1.setPullForward("");
+		bobj1.setSourceCount("");
+		bobj1.setLanCount("");
+		bobj1.setUploadInst("Load as 'AK'");
+		bobj1.setAdditionalReq("");
+		list1.add(bobj1);
+		ExcelFileDto bobj2 = new ExcelFileDto();
+		bobj2.setLanFieldNumber("2");
+		bobj2.setLanFieldName("2-County Name)");
+		bobj2.setLength("25");
+		bobj2.setTo("3");
+		bobj2.setFrom("27");
+		bobj2.setFileName(getUsedTableNames(2,generateReportService,territoryName));
+		bobj2.setStartPosition(getUsedColumnNames(2,generateReportService,territoryName));
+		/*bobj2.setFileName("");
+		bobj2.setStartPosition("");*/
+		bobj2.setEndPosition("");
+		bobj2.setPullForward("");
+		bobj2.setSourceCount("");
+		bobj2.setLanCount("");
+		bobj2.setUploadInst("Load as 'SITKA'");
+		bobj2.setAdditionalReq("");
+		list1.add(bobj2);
+		ExcelFileDto bobj3 = new ExcelFileDto();
+		bobj3.setLanFieldNumber("90");
+		bobj3.setLanFieldName("90-FIPS CODE");
+		bobj3.setLength("5");
+		bobj3.setTo("1330");
+		bobj3.setFrom("1334");
+		bobj3.setFileName(getUsedTableNames(90,generateReportService,territoryName));
+		bobj3.setStartPosition(getUsedColumnNames(90,generateReportService,territoryName));
+		/*bobj3.setFileName("");
+		bobj3.setStartPosition("");*/
+		bobj3.setEndPosition("");
+		bobj3.setPullForward("");
+		bobj3.setSourceCount("");
+		obj3.setLanCount("");
+		bobj3.setUploadInst("Load as 02220");
+		bobj3.setAdditionalReq("");
+		list1.add(bobj3);
+		ExcelFileDto bobj4 = new ExcelFileDto();
+		bobj4.setLanFieldNumber("3");
+		bobj4.setLanFieldName("3-APN-A (OR PIN NUMBER)");
+		bobj4.setLength("2");
+		bobj4.setTo("1395");
+		bobj4.setFrom("1396");
+		bobj4.setFileName(getUsedTableNames(3,generateReportService,territoryName));
+		bobj4.setStartPosition(getUsedColumnNames(3,generateReportService,territoryName));
+		/*bobj4.setFileName("AK_Sitka_06_Main");
+		bobj4.setStartPosition("");*/
+		bobj4.setEndPosition("");
+		bobj4.setPullForward("");
+		bobj4.setSourceCount("");
+		bobj4.setLanCount("");
+		bobj4.setUploadInst("Load  from [Property #] .");
+		bobj4.setAdditionalReq("");
+		list1.add(bobj4);
+		ExcelFileDto bobj5 = new ExcelFileDto();
+		bobj5.setLanFieldNumber("109");
+		bobj5.setLanFieldName("109-ADDITION NUMBER");
+		bobj5.setLength("45");
+		bobj5.setTo("25");
+		bobj5.setFrom("72");
+		bobj5.setFileName(getUsedTableNames(109,generateReportService,territoryName));
+		bobj5.setStartPosition(getUsedColumnNames(109,generateReportService,territoryName));
+		/*bobj5.setFileName("AK_Sitka_06_Main");
+		bobj5.setStartPosition("");*/
+		bobj5.setEndPosition("");
+		bobj5.setPullForward("");
+		bobj5.setSourceCount("");
+		bobj5.setLanCount("");
+		bobj5.setUploadInst("Load as 2016");
+		bobj5.setAdditionalReq("");
+		list1.add(bobj5);
+
+		List<ExcelFileDto> list2 = new ArrayList<ExcelFileDto>();
+		ExcelFileDto cbobj1 = new ExcelFileDto();
+		cbobj1.setLanFieldNumber("1");
+		cbobj1.setLanFieldName("1-STATE (POSTAL CODE)");
+		cbobj1.setLength("2");
+		cbobj1.setTo("1");
+		cbobj1.setFrom("2");
+		cbobj1.setFileName(getUsedTableNames(1,generateReportService,territoryName));
+		cbobj1.setStartPosition(getUsedColumnNames(1,generateReportService,territoryName));
+		/*cbobj1.setFileName("");
+		cbobj1.setStartPosition("");*/
+		cbobj1.setEndPosition("");
+		cbobj1.setPullForward("");
+		cbobj1.setSourceCount("");
+		cbobj1.setLanCount("");
+		cbobj1.setUploadInst("Load as 'AK'");
+		cbobj1.setAdditionalReq("");
+		list2.add(cbobj1);
+		ExcelFileDto dbobj2 = new ExcelFileDto();
+		dbobj2.setLanFieldNumber("2");
+		dbobj2.setLanFieldName("2-County Name)");
+		dbobj2.setLength("25");
+		dbobj2.setTo("3");
+		dbobj2.setFrom("27");
+		dbobj2.setFileName(getUsedTableNames(2,generateReportService,territoryName));
+		dbobj2.setStartPosition(getUsedColumnNames(2,generateReportService,territoryName));
+		/*dbobj2.setFileName("");
+		dbobj2.setStartPosition("");*/
+		dbobj2.setEndPosition("");
+		dbobj2.setPullForward("");
+		dbobj2.setSourceCount("");
+		dbobj2.setLanCount("");
+		dbobj2.setUploadInst("Load as 'SITKA'");
+		dbobj2.setAdditionalReq("");
+		list2.add(dbobj2);
+		ExcelFileDto ebobj3 = new ExcelFileDto();
+		ebobj3.setLanFieldNumber("90");
+		ebobj3.setLanFieldName("90-FIPS CODE");
+		ebobj3.setLength("5");
+		ebobj3.setTo("1330");
+		ebobj3.setFrom("1334");
+		ebobj3.setFileName(getUsedTableNames(1,generateReportService,territoryName));
+		ebobj3.setStartPosition(getUsedColumnNames(1,generateReportService,territoryName));
+		/*ebobj3.setFileName("");
+		ebobj3.setStartPosition("");*/
+		ebobj3.setEndPosition("");
+		ebobj3.setPullForward("");
+		ebobj3.setSourceCount("");
+		ebobj3.setLanCount("");
+		ebobj3.setUploadInst("Load as 02220");
+		ebobj3.setAdditionalReq("");
+		list2.add(ebobj3);
+		ExcelFileDto dbobj4 = new ExcelFileDto();
+		dbobj4.setLanFieldNumber("3");
+		dbobj4.setLanFieldName("3-APN-A (OR PIN NUMBER)");
+		dbobj4.setLength("2");
+		dbobj4.setTo("1395");
+		dbobj4.setFrom("1396");
+		dbobj4.setFileName(getUsedTableNames(3,generateReportService,territoryName));
+		dbobj4.setStartPosition(getUsedColumnNames(3,generateReportService,territoryName));
+		/*dbobj4.setFileName("AK_Sitka_06_Main");
+		dbobj4.setStartPosition("");*/
+		dbobj4.setEndPosition("");
+		dbobj4.setPullForward("");
+		dbobj4.setSourceCount("");
+		dbobj4.setLanCount("");
+		dbobj4.setUploadInst("Load  from [Property #] .");
+		dbobj4.setAdditionalReq("");
+		list2.add(dbobj4);
+		ExcelFileDto fbobj5 = new ExcelFileDto();
+		fbobj5.setLanFieldNumber("109");
+		fbobj5.setLanFieldName("109-ADDITION NUMBER");
+		fbobj5.setLength("45");
+		fbobj5.setTo("25");
+		fbobj5.setFrom("72");
+		fbobj5.setFileName(getUsedTableNames(109,generateReportService,territoryName));
+		fbobj5.setStartPosition(getUsedColumnNames(109,generateReportService,territoryName));
+		/*fbobj5.setFileName("AK_Sitka_06_Main");
+		fbobj5.setStartPosition("");*/
+		fbobj5.setEndPosition("");
+		fbobj5.setPullForward("");
+		fbobj5.setSourceCount("");
+		fbobj5.setLanCount("");
+		fbobj5.setUploadInst("Load as 2016");
+		fbobj5.setAdditionalReq("");
+		list2.add(fbobj5);
+
+		List<ExcelFileDto> list3 = new ArrayList<ExcelFileDto>();
+		ExcelFileDto gbobj1 = new ExcelFileDto();
+		gbobj1.setLanFieldNumber("1");
+		gbobj1.setLanFieldName("1-STATE (POSTAL CODE)");
+		gbobj1.setLength("2");
+		gbobj1.setTo("1");
+		gbobj1.setFrom("2");
+		gbobj1.setFileName(getUsedTableNames(1,generateReportService,territoryName));
+		gbobj1.setStartPosition(getUsedColumnNames(1,generateReportService,territoryName));
+		/*cbobj1.setFileName("");
+		gbobj1.setStartPosition("");*/
+		gbobj1.setEndPosition("");
+		gbobj1.setPullForward("");
+		gbobj1.setSourceCount("");
+		gbobj1.setLanCount("");
+		gbobj1.setUploadInst("Load as 'AK'");
+		gbobj1.setAdditionalReq("");
+		list3.add(gbobj1);
+		ExcelFileDto hdbobj2 = new ExcelFileDto();
+		hdbobj2.setLanFieldNumber("2");
+		hdbobj2.setLanFieldName("2-County Name)");
+		hdbobj2.setLength("25");
+		hdbobj2.setTo("3");
+		hdbobj2.setFrom("27");
+		hdbobj2.setFileName(getUsedTableNames(2,generateReportService,territoryName));
+		hdbobj2.setStartPosition(getUsedColumnNames(2,generateReportService,territoryName));
+		/*hdbobj2.setFileName("");
+		hdbobj2.setStartPosition("");*/
+		hdbobj2.setEndPosition("");
+		hdbobj2.setPullForward("");
+		hdbobj2.setSourceCount("");
+		hdbobj2.setLanCount("");
+		hdbobj2.setUploadInst("Load as 'SITKA'");
+		hdbobj2.setAdditionalReq("");
+		list3.add(hdbobj2);
+		ExcelFileDto iebobj3 = new ExcelFileDto();
+		iebobj3.setLanFieldNumber("90");
+		iebobj3.setLanFieldName("90-FIPS CODE");
+		iebobj3.setLength("5");
+		iebobj3.setTo("1330");
+		iebobj3.setFrom("1334");
+		iebobj3.setFileName(getUsedTableNames(90,generateReportService,territoryName));
+		iebobj3.setStartPosition(getUsedColumnNames(90,generateReportService,territoryName));
+		/*iebobj3.setFileName("");
+		iebobj3.setStartPosition("");*/
+		iebobj3.setEndPosition("");
+		iebobj3.setPullForward("");
+		iebobj3.setSourceCount("");
+		iebobj3.setLanCount("");
+		iebobj3.setUploadInst("Load as 02220");
+		iebobj3.setAdditionalReq("");
+		list3.add(iebobj3);
+		ExcelFileDto jdbobj4 = new ExcelFileDto();
+		jdbobj4.setLanFieldNumber("3");
+		jdbobj4.setLanFieldName("3-APN-A (OR PIN NUMBER)");
+		jdbobj4.setLength("2");
+		jdbobj4.setTo("1395");
+		jdbobj4.setFrom("1396");
+		jdbobj4.setFileName(getUsedTableNames(3,generateReportService,territoryName));
+		jdbobj4.setStartPosition(getUsedColumnNames(3,generateReportService,territoryName));
+		/*jdbobj4.setFileName("AK_Sitka_06_Main");
+		jdbobj4.setStartPosition("");*/
+		jdbobj4.setEndPosition("");
+		jdbobj4.setPullForward("");
+		jdbobj4.setSourceCount("");
+		jdbobj4.setLanCount("");
+		jdbobj4.setUploadInst("Load  from [Property #] .");
+		jdbobj4.setAdditionalReq("");
+		list3.add(jdbobj4);
+		ExcelFileDto kbobj5 = new ExcelFileDto();
+		kbobj5.setLanFieldNumber("109");
+		kbobj5.setLanFieldName("109-ADDITION NUMBER");
+		kbobj5.setLength("45");
+		kbobj5.setTo("25");
+		kbobj5.setFrom("72");
+		kbobj5.setFileName(getUsedTableNames(109,generateReportService,territoryName));
+		kbobj5.setStartPosition(getUsedColumnNames(109,generateReportService,territoryName));
+		/*kbobj5.setFileName("AK_Sitka_06_Main");
+		kbobj5.setStartPosition("");*/
+		kbobj5.setEndPosition("");
+		kbobj5.setPullForward("");
+		kbobj5.setSourceCount("");
+		kbobj5.setLanCount("");
+		kbobj5.setUploadInst("Load as 2016");
+		kbobj5.setAdditionalReq("");
+		list3.add(kbobj5);
+
+		///////// My Code
+
+		Map<String, List<ExcelFileDto>> subMap3 = new LinkedHashMap<String, List<ExcelFileDto>>();
+		List<ExcelFileDto> excelFileDtoList2 = new ArrayList<ExcelFileDto>();
+		subMap3.put("Class Comment:", excelFileDtoList2);
+		ExcelFileDto cobj1 = new ExcelFileDto();
+		cobj1.setLanFieldNumber("4");
+		cobj1.setLanFieldName("4-DUPLICATE APN/MULTI ADDRESS ID");
+		cobj1.setLength("");
+		cobj1.setTo("");
+		cobj1.setFrom("");
+		cobj1.setFileName(getUsedTableNames(4,generateReportService,territoryName));
+		cobj1.setStartPosition(getUsedColumnNames(4,generateReportService,territoryName));
+		/*cobj1.setFileName("");
+		cobj1.setStartPosition("");*/
+		cobj1.setEndPosition("");
+		cobj1.setPullForward("");
+		cobj1.setSourceCount("");
+		cobj1.setLanCount("");
+		cobj1.setUploadInst("Load as 'AK'");
+		cobj1.setAdditionalReq("");
+		excelFileDtoList2.add(cobj1);
+		ExcelFileDto cobj2 = new ExcelFileDto();
+		cobj2.setLanFieldNumber("5");
+		cobj2.setLanFieldName("5-PROP ADDR SRCE FLAG)");
+		cobj2.setLength("");
+		cobj2.setTo("");
+		cobj2.setFrom("");
+		cobj2.setFileName(getUsedTableNames(5,generateReportService,territoryName));
+		cobj2.setStartPosition(getUsedColumnNames(5,generateReportService,territoryName));
+		/*cobj2.setFileName("");
+		cobj2.setStartPosition("");*/
+		cobj2.setEndPosition("");
+		cobj2.setPullForward("");
+		cobj2.setSourceCount("");
+		cobj2.setLanCount("");
+		cobj2.setUploadInst("Please Refer the attached Document");
+		cobj2.setAdditionalReq("");
+		excelFileDtoList2.add(cobj2);
+		ExcelFileDto cobj3 = new ExcelFileDto();
+		cobj3.setLanFieldNumber("7");
+		cobj3.setLanFieldName("7-PROP HOUSE ALPHA");
+		cobj3.setLength("");
+		cobj3.setTo("");
+		cobj3.setFrom("");
+		cobj3.setFileName(getUsedTableNames(7,generateReportService,territoryName));
+		cobj3.setStartPosition(getUsedColumnNames(7,generateReportService,territoryName));
+		/*cobj3.setFileName("");
+		cobj3.setStartPosition("");*/
+		cobj3.setEndPosition("");
+		cobj3.setPullForward("");
+		cobj3.setSourceCount("");
+		cobj3.setLanCount("");
+		cobj3.setUploadInst("");
+		cobj3.setAdditionalReq("");
+		excelFileDtoList2.add(cobj3);
+		ExcelFileDto cobj4 = new ExcelFileDto();
+		cobj4.setLanFieldNumber("8");
+		cobj4.setLanFieldName("8-PROP STREET DIRECTION LEFT");
+		cobj4.setLength("");
+		cobj4.setTo("");
+		cobj4.setFrom("");
+		cobj4.setFileName(getUsedTableNames(8,generateReportService,territoryName));
+		cobj4.setStartPosition(getUsedColumnNames(8,generateReportService,territoryName));
+		/*cobj4.setFileName("");
+		cobj4.setStartPosition("");*/
+		cobj4.setEndPosition("");
+		cobj4.setPullForward("");
+		cobj4.setSourceCount("");
+		cobj4.setLanCount("");
+		cobj4.setUploadInst("");
+		cobj4.setAdditionalReq("");
+		excelFileDtoList2.add(cobj4);
+		ExcelFileDto cobj5 = new ExcelFileDto();
+		cobj5.setLanFieldNumber("9");
+		cobj5.setLanFieldName("9-PROP STREET NAME");
+		cobj5.setLength("");
+		cobj5.setTo("");
+		cobj5.setFrom("");
+		cobj5.setFileName(getUsedTableNames(9,generateReportService,territoryName));
+		cobj5.setStartPosition(getUsedColumnNames(9,generateReportService,territoryName));
+		/*cobj5.setFileName("AK_Sitka_06_Main");
+		cobj5.setStartPosition("[Street Name]");*/
+		cobj5.setEndPosition("");
+		cobj5.setPullForward("");
+		cobj5.setSourceCount("");
+		cobj5.setLanCount("");
+		cobj5.setUploadInst("Please Refer the attached Document");
+		cobj5.setAdditionalReq("");
+		excelFileDtoList2.add(cobj5);
+		ExcelFileDto cobj6 = new ExcelFileDto();
+		cobj6.setLanFieldNumber("10");
+		cobj6.setLanFieldName("10-PROP STREET SUFFIX");
+		cobj6.setLength("");
+		cobj6.setTo("");
+		cobj6.setFrom("");
+		cobj6.setFileName(getUsedTableNames(10,generateReportService,territoryName));
+		cobj6.setStartPosition(getUsedColumnNames(10,generateReportService,territoryName));
+		/*cobj6.setFileName("AK_Sitka_06_Main");
+		cobj6.setStartPosition("[Addr Mod]");*/
+		cobj6.setEndPosition("");
+		cobj6.setPullForward("");
+		cobj6.setSourceCount("");
+		cobj6.setLanCount("");
+		cobj6.setUploadInst("Please Refer the attached Document");
+		cobj6.setAdditionalReq("");
+		excelFileDtoList2.add(cobj6);
+		ExcelFileDto cobj7 = new ExcelFileDto();
+		cobj7.setLanFieldNumber("11");
+		cobj7.setLanFieldName("11-PROP STREET DIRECTION RIGHT");
+		cobj7.setLength("");
+		cobj7.setTo("");
+		cobj7.setFrom("");
+		cobj7.setFileName(getUsedTableNames(11,generateReportService,territoryName));
+		cobj7.setStartPosition(getUsedColumnNames(11,generateReportService,territoryName));
+		/*cobj7.setFileName("");
+		cobj7.setStartPosition("");*/
+		cobj7.setEndPosition("");
+		cobj7.setPullForward("");
+		cobj7.setSourceCount("");
+		cobj7.setLanCount("");
+		cobj7.setUploadInst("");
+		cobj7.setAdditionalReq("");
+		excelFileDtoList2.add(cobj7);
+		ExcelFileDto cobj8 = new ExcelFileDto();
+		cobj8.setLanFieldNumber("12");
+		cobj8.setLanFieldName("12-PROP UNIT NUMBER");
+		cobj8.setLength("");
+		cobj8.setTo("");
+		cobj8.setFrom("");
+		cobj8.setFileName(getUsedTableNames(12,generateReportService,territoryName));
+		cobj8.setStartPosition(getUsedColumnNames(12,generateReportService,territoryName));
+	/*	cobj8.setFileName("AK_Sitka_08_Main");
+		cobj8.setStartPosition("[Addr Mod]");*/
+		cobj8.setEndPosition("");
+		cobj8.setPullForward("");
+		cobj8.setSourceCount("");
+		cobj8.setLanCount("");
+		cobj8.setUploadInst("Please Refer the attached Document");
+		cobj8.setAdditionalReq("");
+		excelFileDtoList2.add(cobj8);
+		ExcelFileDto cobj9 = new ExcelFileDto();
+		cobj9.setLanFieldNumber("13");
+		cobj9.setLanFieldName("13-PROP FULL STREET ADDRESS");
+		cobj9.setLength("");
+		cobj9.setTo("");
+		cobj9.setFrom("");
+		cobj9.setFileName(getUsedTableNames(13,generateReportService,territoryName));
+		cobj9.setStartPosition(getUsedColumnNames(13,generateReportService,territoryName));
+		/*cobj9.setFileName("AK_Sitka_09_Main");
+		cobj9.setStartPosition("St No\n[Street Name]\n[Addr Mod]");*/
+		cobj9.setEndPosition("");
+		cobj9.setPullForward("");
+		cobj9.setSourceCount("");
+		cobj9.setLanCount("");
+		cobj9.setUploadInst(
+				"Concatenate Fields trough 6 to 11 with Space and Concatenate F12 with #. Replace double spaces and Trim leading and trailing spaces ");
+		cobj9.setAdditionalReq("");
+		excelFileDtoList2.add(cobj9);
+		ExcelFileDto cobj10 = new ExcelFileDto();
+		cobj10.setLanFieldNumber("14");
+		cobj10.setLanFieldName("14-PROP CITY NAME");
+		cobj10.setLength("");
+		cobj10.setTo("");
+		cobj10.setFrom("");
+		cobj10.setFileName(getUsedTableNames(14,generateReportService,territoryName));
+		cobj10.setStartPosition(getUsedColumnNames(14,generateReportService,territoryName));
+		/*cobj10.setFileName("");
+		cobj10.setStartPosition("");*/
+		cobj10.setEndPosition("");
+		cobj10.setPullForward("");
+		cobj10.setSourceCount("");
+		cobj10.setLanCount("");
+		cobj10.setUploadInst("");
+		cobj10.setAdditionalReq("");
+		excelFileDtoList2.add(cobj10);
+		ExcelFileDto cobj11 = new ExcelFileDto();
+		cobj11.setLanFieldNumber("15");
+		cobj11.setLanFieldName("15-PROP STATE");
+		cobj11.setLength("");
+		cobj11.setTo("");
+		cobj11.setFrom("");
+		cobj11.setFileName(getUsedTableNames(15,generateReportService,territoryName));
+		cobj11.setStartPosition(getUsedColumnNames(15,generateReportService,territoryName));
+		/*cobj11.setFileName("");
+		cobj11.setStartPosition("");*/
+		cobj11.setEndPosition("");
+		cobj11.setPullForward("");
+		cobj11.setSourceCount("");
+		cobj11.setLanCount("");
+		cobj11.setUploadInst("");
+		cobj11.setAdditionalReq("");
+		excelFileDtoList2.add(cobj11);
+		ExcelFileDto cobj12 = new ExcelFileDto();
+		cobj12.setLanFieldNumber("16");
+		cobj12.setLanFieldName("16-PROP ZIP CODE");
+		cobj12.setLength("");
+		cobj12.setTo("");
+		cobj12.setFrom("");
+		cobj12.setFileName(getUsedTableNames(16,generateReportService,territoryName));
+		cobj12.setStartPosition(getUsedColumnNames(16,generateReportService,territoryName));
+		/*cobj12.setFileName("");
+		cobj12.setStartPosition("");*/
+		cobj12.setEndPosition("");
+		cobj12.setPullForward("");
+		cobj12.setSourceCount("");
+		cobj12.setLanCount("");
+		cobj12.setUploadInst("");
+		cobj12.setAdditionalReq("");
+		excelFileDtoList2.add(cobj12);
+
+		ExcelFileDto cobj13 = new ExcelFileDto();
+		cobj13.setLanFieldNumber("15");
+		cobj13.setLanFieldName("15-PROP STATE");
+		cobj13.setLength("");
+		cobj13.setTo("");
+		cobj13.setFrom("");
+		cobj13.setFileName(getUsedTableNames(15,generateReportService,territoryName));
+		cobj13.setStartPosition(getUsedColumnNames(15,generateReportService,territoryName));
+		/*cobj13.setFileName("");
+		cobj13.setStartPosition("");*/
+		cobj13.setEndPosition("");
+		cobj13.setPullForward("");
+		cobj13.setSourceCount("");
+		cobj13.setLanCount("");
+		cobj13.setUploadInst("");
+		cobj13.setAdditionalReq("");
+		excelFileDtoList2.add(cobj13);
+		ExcelFileDto cobj14 = new ExcelFileDto();
+		cobj14.setLanFieldNumber("16");
+		cobj14.setLanFieldName("16-PROP ZIP CODE");
+		cobj14.setLength("");
+		cobj14.setTo("");
+		cobj14.setFrom("");
+		cobj14.setFileName(getUsedTableNames(16,generateReportService,territoryName));
+		cobj14.setStartPosition(getUsedColumnNames(16,generateReportService,territoryName));
+		/*cobj14.setFileName("");
+		cobj14.setStartPosition("");*/
+		cobj14.setEndPosition("");
+		cobj14.setPullForward("");
+		cobj14.setSourceCount("");
+		cobj14.setLanCount("");
+		cobj14.setUploadInst("");
+		cobj14.setAdditionalReq("");
+		excelFileDtoList2.add(cobj14);
+		ExcelFileDto cobj15 = new ExcelFileDto();
+		cobj15.setLanFieldNumber("17");
+		cobj15.setLanFieldName("17-PROP ZIP+4");
+		cobj15.setLength("");
+		cobj15.setTo("");
+		cobj15.setFrom("");
+		cobj15.setFileName(getUsedTableNames(17,generateReportService,territoryName));
+		cobj15.setStartPosition(getUsedColumnNames(17,generateReportService,territoryName));
+		/*cobj15.setFileName("");
+		cobj15.setStartPosition("");*/
+		cobj15.setEndPosition("");
+		cobj15.setPullForward("");
+		cobj15.setSourceCount("");
+		cobj15.setLanCount("");
+		cobj15.setUploadInst("");
+		cobj15.setAdditionalReq("");
+		excelFileDtoList2.add(cobj15);
+		ExcelFileDto cobj16 = new ExcelFileDto();
+		cobj16.setLanFieldNumber("23");
+		cobj16.setLanFieldName("23-ASSE MAIL: HOUSE NUMBER");
+		cobj16.setLength("");
+		cobj16.setTo("");
+		cobj16.setFrom("");
+		cobj16.setFileName(getUsedTableNames(23,generateReportService,territoryName));
+		cobj16.setStartPosition(getUsedColumnNames(23,generateReportService,territoryName));
+	/*	cobj16.setFileName("");
+		cobj16.setStartPosition("");*/
+		cobj16.setEndPosition("");
+		cobj16.setPullForward("");
+		cobj16.setSourceCount("");
+		cobj16.setLanCount("");
+		cobj16.setUploadInst("");
+		cobj16.setAdditionalReq("");
+		excelFileDtoList2.add(cobj16);
+		ExcelFileDto cobj17 = new ExcelFileDto();
+		cobj17.setLanFieldNumber("24");
+		cobj17.setLanFieldName("24-ASSE MAIL: HOUSE ALPHA");
+		cobj17.setLength("");
+		cobj17.setTo("");
+		cobj17.setFrom("");
+		cobj17.setFileName(getUsedTableNames(24,generateReportService,territoryName));
+		cobj17.setStartPosition(getUsedColumnNames(24,generateReportService,territoryName));
+	/*	cobj17.setFileName("");
+		cobj17.setStartPosition("");*/
+		cobj17.setEndPosition("");
+		cobj17.setPullForward("");
+		cobj17.setSourceCount("");
+		cobj17.setLanCount("");
+		cobj17.setUploadInst("");
+		cobj17.setAdditionalReq("");
+		excelFileDtoList2.add(cobj17);
+		ExcelFileDto cobj18 = new ExcelFileDto();
+		cobj18.setLanFieldNumber("25");
+		cobj18.setLanFieldName("25-ASSE MAIL: STREET DIRECTION-LEFT");
+		cobj18.setLength("");
+		cobj18.setTo("");
+		cobj18.setFrom("");
+		cobj18.setFileName(getUsedTableNames(25,generateReportService,territoryName));
+		cobj18.setStartPosition(getUsedColumnNames(25,generateReportService,territoryName));
+		/*cobj18.setFileName("");
+		cobj18.setStartPosition("");*/
+		cobj18.setEndPosition("");
+		cobj18.setPullForward("");
+		cobj18.setSourceCount("");
+		cobj18.setLanCount("");
+		cobj18.setUploadInst("");
+		cobj18.setAdditionalReq("");
+		excelFileDtoList2.add(cobj18);
+		ExcelFileDto cobj19 = new ExcelFileDto();
+		cobj19.setLanFieldNumber("26");
+		cobj19.setLanFieldName("26-ASSE MAIL: STREET NAME");
+		cobj19.setLength("");
+		cobj19.setTo("");
+		cobj19.setFrom("");
+		cobj19.setFileName(getUsedTableNames(26,generateReportService,territoryName));
+		cobj19.setStartPosition(getUsedColumnNames(26,generateReportService,territoryName));
+		/*cobj19.setFileName("");
+		cobj19.setStartPosition("");*/
+		cobj19.setEndPosition("");
+		cobj19.setPullForward("");
+		cobj19.setSourceCount("");
+		cobj19.setLanCount("");
+		cobj19.setUploadInst("");
+		cobj19.setAdditionalReq("");
+		excelFileDtoList2.add(cobj19);
+		ExcelFileDto cobj20 = new ExcelFileDto();
+		cobj20.setLanFieldNumber("27");
+		cobj20.setLanFieldName("27-ASSE MAIL: STREET SUFFIX");
+		cobj20.setLength("");
+		cobj20.setTo("");
+		cobj20.setFrom("");
+		cobj20.setFileName(getUsedTableNames(27,generateReportService,territoryName));
+		cobj20.setStartPosition(getUsedColumnNames(27,generateReportService,territoryName));
+		/*cobj20.setFileName("");
+		cobj20.setStartPosition("");*/
+		cobj20.setEndPosition("");
+		cobj20.setPullForward("");
+		cobj20.setSourceCount("");
+		cobj20.setLanCount("");
+		cobj20.setUploadInst("");
+		cobj20.setAdditionalReq("");
+		excelFileDtoList2.add(cobj20);
+		ExcelFileDto cobj21 = new ExcelFileDto();
+		cobj21.setLanFieldNumber("28");
+		cobj21.setLanFieldName("28-ASSE MAIL: STREET DIRECTION-RIGHT");
+		cobj21.setLength("");
+		cobj21.setTo("");
+		cobj21.setFrom("");
+		cobj21.setFileName(getUsedTableNames(28,generateReportService,territoryName));
+		cobj21.setStartPosition(getUsedColumnNames(28,generateReportService,territoryName));
+	/*	cobj21.setFileName("");
+		cobj21.setStartPosition("");*/
+		cobj21.setEndPosition("");
+		cobj21.setPullForward("");
+		cobj21.setSourceCount("");
+		cobj21.setLanCount("");
+		cobj21.setUploadInst("");
+		cobj21.setAdditionalReq("");
+		excelFileDtoList2.add(cobj21);
+		ExcelFileDto cobj22 = new ExcelFileDto();
+		cobj22.setLanFieldNumber("29");
+		cobj22.setLanFieldName("29-ASSE MAIL: UNIT NUMBER");
+		cobj22.setLength("");
+		cobj22.setTo("");
+		cobj22.setFrom("");
+		cobj22.setFileName(getUsedTableNames(29,generateReportService,territoryName));
+		cobj22.setStartPosition(getUsedColumnNames(29,generateReportService,territoryName));
+		/*cobj22.setFileName("");
+		cobj22.setStartPosition("");*/
+		cobj22.setEndPosition("");
+		cobj22.setPullForward("");
+		cobj22.setSourceCount("");
+		cobj22.setLanCount("");
+		cobj22.setUploadInst("");
+		cobj22.setAdditionalReq("");
+		excelFileDtoList2.add(cobj22);
+		ExcelFileDto cobj23 = new ExcelFileDto();
+		cobj23.setLanFieldNumber("30");
+		cobj23.setLanFieldName("30-ASSE MAIL: FULL STREET ADDRESS");
+		cobj23.setLength("");
+		cobj23.setTo("");
+		cobj23.setFrom("");
+		cobj23.setFileName(getUsedTableNames(30,generateReportService,territoryName));
+		cobj23.setStartPosition(getUsedColumnNames(30,generateReportService,territoryName));
+		/*cobj23.setFileName("AK_Sitka_06_Main");
+		cobj23.setStartPosition("Address_Mail\nCity_Mail\nState\nZip_Mail");*/
+		cobj23.setEndPosition("");
+		cobj23.setPullForward("");
+		cobj23.setSourceCount("");
+		cobj23.setLanCount("");
+		cobj23.setUploadInst("Please find the additional document");
+		cobj23.setAdditionalReq("");
+		excelFileDtoList2.add(cobj23);
+		ExcelFileDto cobj24 = new ExcelFileDto();
+		cobj24.setLanFieldNumber("31");
+		cobj24.setLanFieldName("31-ASSE MAIL: CITY NAME");
+		cobj24.setLength("");
+		cobj24.setTo("");
+		cobj24.setFrom("");
+		cobj24.setFileName(getUsedTableNames(31,generateReportService,territoryName));
+		cobj24.setStartPosition(getUsedColumnNames(31,generateReportService,territoryName));
+		/*cobj24.setFileName("AK_Sitka_06_Main");
+		cobj24.setStartPosition("City_Mail");*/
+		cobj24.setEndPosition("");
+		cobj24.setPullForward("");
+		cobj24.setSourceCount("");
+		cobj24.setLanCount("");
+		cobj24.setUploadInst("Please find the additional document");
+		cobj24.setAdditionalReq("");
+		excelFileDtoList2.add(cobj24);
+		ExcelFileDto cobj25 = new ExcelFileDto();
+		cobj25.setLanFieldNumber("32");
+		cobj25.setLanFieldName("32-ASSE MAIL: STATE");
+		cobj25.setLength("");
+		cobj25.setTo("");
+		cobj25.setFrom("");
+		cobj25.setFileName(getUsedTableNames(32,generateReportService,territoryName));
+		cobj25.setStartPosition(getUsedColumnNames(32,generateReportService,territoryName));
+		/*cobj25.setFileName("AK_Sitka_06_Main");
+		cobj25.setStartPosition("STATE");*/
+		cobj25.setEndPosition("");
+		cobj25.setPullForward("");
+		cobj25.setSourceCount("");
+		cobj25.setLanCount("");
+		cobj25.setUploadInst("Please find the additional document");
+		cobj25.setAdditionalReq("");
+		excelFileDtoList2.add(cobj25);
+		ExcelFileDto cobj26 = new ExcelFileDto();
+		cobj26.setLanFieldNumber("33");
+		cobj26.setLanFieldName("33-ASSE MAIL: ZIP CODE");
+		cobj26.setLength("");
+		cobj26.setTo("");
+		cobj26.setFrom("");
+		cobj26.setFileName(getUsedTableNames(33,generateReportService,territoryName));
+		cobj26.setStartPosition(getUsedColumnNames(33,generateReportService,territoryName));
+	/*	cobj26.setFileName("AK_Sitka_06_Main");
+		cobj26.setStartPosition("Zip_Mail");*/
+		cobj26.setEndPosition("");
+		cobj26.setPullForward("");
+		cobj26.setSourceCount("");
+		cobj26.setLanCount("");
+		cobj26.setUploadInst("Please find the additional document");
+		cobj26.setAdditionalReq("");
+		excelFileDtoList2.add(cobj26);
+		ExcelFileDto cobj27 = new ExcelFileDto();
+		cobj27.setLanFieldNumber("34");
+		cobj27.setLanFieldName("34-ASSE MAIL: ZIP+4");
+		cobj27.setLength("");
+		cobj27.setTo("");
+		cobj27.setFrom("");
+		cobj27.setFileName(getUsedTableNames(34,generateReportService,territoryName));
+		cobj27.setStartPosition(getUsedColumnNames(34,generateReportService,territoryName));
+		/*cobj27.setFileName("AK_Sitka_06_Main");
+		cobj27.setStartPosition("Zip_Mail");*/
+		cobj27.setEndPosition("");
+		cobj27.setPullForward("");
+		cobj27.setSourceCount("");
+		cobj27.setLanCount("");
+		cobj27.setUploadInst("Please find the additional document");
+		cobj27.setAdditionalReq("");
+		excelFileDtoList2.add(cobj27);
+		ExcelFileDto cobj28 = new ExcelFileDto();
+		cobj28.setLanFieldNumber("89");
+		cobj28.setLanFieldName("89-MAIL: CITY, ST & ZIP");
+		cobj28.setLength("");
+		cobj28.setTo("");
+		cobj28.setFrom("");
+		cobj28.setFileName(getUsedTableNames(89,generateReportService,territoryName));
+		cobj28.setStartPosition(getUsedColumnNames(89,generateReportService,territoryName));
+		/*cobj28.setFileName("AK_Sitka_06_Main");
+		cobj28.setStartPosition("MAIL CITY [31], MAIL STATE [32], MAIL ZIP [33] ");*/
+		cobj28.setEndPosition("");
+		cobj28.setPullForward("");
+		cobj28.setSourceCount("");
+		cobj28.setLanCount("");
+		cobj28.setUploadInst("Please find the additional document");
+		cobj28.setAdditionalReq("");
+		excelFileDtoList2.add(cobj28);
+
+		//// End
+
+		Map<String, List<ExcelFileDto>> subMap4 = new LinkedHashMap<String, List<ExcelFileDto>>();
+		List<ExcelFileDto> excelFileDtoList3 = new ArrayList<ExcelFileDto>();
+		subMap4.put("Class Comment:", excelFileDtoList3);
+
+		ExcelFileDto dobj1 = new ExcelFileDto();
+		dobj1.setLanFieldNumber("37");
+		dobj1.setLanFieldName("37-ASSESSED LAND VALUE");
+		dobj1.setLength("");
+		dobj1.setTo("");
+		dobj1.setFrom("");
+		dobj1.setFileName(getUsedTableNames(37,generateReportService,territoryName));
+		dobj1.setStartPosition(getUsedColumnNames(37,generateReportService,territoryName));
+		/*dobj1.setFileName("AK_Sitka_06_Main");
+		dobj1.setStartPosition("[LAND $]");*/
+		dobj1.setEndPosition("");
+		dobj1.setPullForward("");
+		dobj1.setSourceCount("");
+		dobj1.setLanCount("");
+		dobj1.setUploadInst(
+				"Load the Column [LAND $]  by padding zeros to make it a length of 10. If it contains duplicate then Sum the values and load the resultant value by padding prefix zeros till it reaches length of ten");
+		dobj1.setAdditionalReq("");
+		excelFileDtoList3.add(dobj1);
+
+		ExcelFileDto dobj2 = new ExcelFileDto();
+		dobj2.setLanFieldNumber("38");
+		dobj2.setLanFieldName("38-ASSESSED IMPROVEMENT VALUE");
+		dobj2.setLength("");
+		dobj2.setTo("");
+		dobj2.setFrom("");
+		dobj2.setFileName(getUsedTableNames(38,generateReportService,territoryName));
+		dobj2.setStartPosition(getUsedColumnNames(38,generateReportService,territoryName));
+		/*dobj2.setFileName("AK_Sitka_06_Main");
+		dobj2.setStartPosition("[Imprv $]");*/
+		dobj2.setEndPosition("");
+		dobj2.setPullForward("");
+		dobj2.setSourceCount("");
+		dobj2.setLanCount("");
+		dobj2.setUploadInst(
+				"Load the Column [Imprv $] by padding zeros to make it a length of 10. If it contains duplicate then Sum the values and load the resultant value by padding prefix zeros till it reaches length of ten");
+		dobj2.setAdditionalReq("");
+		excelFileDtoList3.add(dobj2);
+
+		ExcelFileDto dobj3 = new ExcelFileDto();
+		dobj3.setLanFieldNumber("39");
+		dobj3.setLanFieldName("39-TOTAL ASSESSED VALUE");
+		dobj3.setLength("");
+		dobj3.setTo("");
+		dobj3.setFrom("");
+		dobj3.setFileName(getUsedTableNames(39,generateReportService,territoryName));
+		dobj3.setStartPosition(getUsedColumnNames(39,generateReportService,territoryName));
+		/*dobj3.setFileName("AK_Sitka_06_Main");
+		dobj3.setStartPosition("[Total $]");*/
+		dobj3.setEndPosition("");
+		dobj3.setPullForward("");
+		dobj3.setSourceCount("");
+		dobj3.setLanCount("");
+		dobj3.setUploadInst(
+				"Load the Column [Total $]  by padding zeros to make it a length of 11. If it contains duplicate then Sum the values and load the resultant value by padding prefix zeros till it reaches length of 11");
+		dobj3.setAdditionalReq("");
+		excelFileDtoList3.add(dobj3);
+
+		ExcelFileDto dobj4 = new ExcelFileDto();
+		dobj4.setLanFieldNumber("94");
+		dobj4.setLanFieldName("94-MARKET VALUE: LAND");
+		dobj4.setLength("");
+		dobj4.setTo("");
+		dobj4.setFrom("");
+		dobj4.setFileName(getUsedTableNames(94,generateReportService,territoryName));
+		dobj4.setStartPosition(getUsedColumnNames(94,generateReportService,territoryName));
+		/*dobj4.setFileName("");
+		dobj4.setStartPosition("");*/
+		dobj4.setEndPosition("");
+		dobj4.setPullForward("");
+		dobj4.setSourceCount("");
+		dobj4.setLanCount("");
+		dobj4.setUploadInst("");
+		dobj4.setAdditionalReq("");
+		excelFileDtoList3.add(dobj4);
+
+		ExcelFileDto dobj5 = new ExcelFileDto();
+		dobj5.setLanFieldNumber("95");
+		dobj5.setLanFieldName("95-MARKET VALUE: IMPROVEMENT");
+		dobj5.setLength("");
+		dobj5.setTo("");
+		dobj5.setFrom("");
+		dobj5.setFileName(getUsedTableNames(95,generateReportService,territoryName));
+		dobj5.setStartPosition(getUsedColumnNames(95,generateReportService,territoryName));
+	/*	dobj5.setFileName("");
+		dobj5.setStartPosition("");*/
+		dobj5.setEndPosition("");
+		dobj5.setPullForward("");
+		dobj5.setSourceCount("");
+		dobj5.setLanCount("");
+		dobj5.setUploadInst("");
+		dobj5.setAdditionalReq("");
+		excelFileDtoList3.add(dobj5);
+
+		ExcelFileDto dobj6 = new ExcelFileDto();
+		dobj6.setLanFieldNumber("96");
+		dobj6.setLanFieldName("96-TOTAL MARKET VALUE");
+		dobj6.setLength("");
+		dobj6.setTo("");
+		dobj6.setFrom("");
+		dobj6.setFileName(getUsedTableNames(96,generateReportService,territoryName));
+		dobj6.setStartPosition(getUsedColumnNames(96,generateReportService,territoryName));
+		/*dobj6.setFileName("");
+		dobj6.setStartPosition("");*/
+		dobj6.setEndPosition("");
+		dobj6.setPullForward("");
+		dobj6.setSourceCount("");
+		dobj6.setLanCount("");
+		dobj6.setUploadInst("");
+		dobj6.setAdditionalReq("");
+		excelFileDtoList3.add(dobj6);
+
+		ExcelFileDto dobj7 = new ExcelFileDto();
+		dobj7.setLanFieldNumber("97");
+		dobj7.setLanFieldName("97-MARKET VALUE YEAR");
+		dobj7.setLength("");
+		dobj7.setTo("");
+		dobj7.setFrom("");
+		dobj7.setFileName(getUsedTableNames(97,generateReportService,territoryName));
+		dobj7.setStartPosition(getUsedColumnNames(97,generateReportService,territoryName));
+	/*	dobj7.setFileName("");
+		dobj7.setStartPosition("");*/
+		dobj7.setEndPosition("");
+		dobj7.setPullForward("");
+		dobj7.setSourceCount("");
+		dobj7.setLanCount("");
+		dobj7.setUploadInst("");
+		dobj7.setAdditionalReq("");
+		excelFileDtoList3.add(dobj7);
+
+		Map<String, List<ExcelFileDto>> subMap5 = new LinkedHashMap<String, List<ExcelFileDto>>();
+		List<ExcelFileDto> excelFileDtoList4 = new ArrayList<ExcelFileDto>();
+		subMap5.put("Class Comment:", excelFileDtoList4);
+		ExcelFileDto eobj1 = new ExcelFileDto();
+		eobj1.setLanFieldNumber("71");
+		eobj1.setLanFieldName("71-COUNTY LAND USE DESCRIPTION");
+		eobj1.setLength("");
+		eobj1.setTo("");
+		eobj1.setFrom("");
+		eobj1.setFileName(getUsedTableNames(71,generateReportService,territoryName));
+		eobj1.setStartPosition(getUsedColumnNames(71,generateReportService,territoryName));
+		/*eobj1.setFileName("AK_Sitka_06_Main");
+		eobj1.setStartPosition("[Legal Description]");*/
+		eobj1.setEndPosition("");
+		eobj1.setPullForward("");
+		eobj1.setSourceCount("");
+		eobj1.setLanCount("");
+		eobj1.setUploadInst("");
+		eobj1.setAdditionalReq("");
+		excelFileDtoList4.add(eobj1);
+		ExcelFileDto eobj2 = new ExcelFileDto();
+		eobj2.setLanFieldNumber("72");
+		eobj2.setLanFieldName("72-COUNTY LAND USE CODE");
+		eobj2.setLength("");
+		eobj2.setTo("");
+		eobj2.setFrom("");
+		eobj2.setFileName(getUsedTableNames(72,generateReportService,territoryName));
+		eobj2.setStartPosition(getUsedColumnNames(72,generateReportService,territoryName));
+		/*eobj2.setFileName("AK_Sitka_06_Main");
+		eobj2.setStartPosition("[Legal Description]");*/
+		eobj2.setEndPosition("");
+		eobj2.setPullForward("");
+		eobj2.setSourceCount("");
+		eobj2.setLanCount("");
+		eobj2.setUploadInst("");
+		eobj2.setAdditionalReq("");
+		excelFileDtoList4.add(eobj2);
+		ExcelFileDto eobj3 = new ExcelFileDto();
+		eobj3.setLanFieldNumber("73");
+		eobj3.setLanFieldName("73-STANDARDIZED LAND USE CODE");
+		eobj3.setLength("");
+		eobj3.setTo("");
+		eobj3.setFrom("");
+		eobj3.setFileName(getUsedTableNames(73,generateReportService,territoryName));
+		eobj3.setStartPosition(getUsedColumnNames(73,generateReportService,territoryName));
+		/*eobj3.setFileName("AK_Sitka_06_Main");
+		eobj3.setStartPosition("[Legal Description]");*/
+		eobj3.setEndPosition("");
+		eobj3.setPullForward("");
+		eobj3.setSourceCount("");
+		eobj3.setLanCount("");
+		eobj3.setUploadInst("");
+		eobj3.setAdditionalReq("");
+		excelFileDtoList4.add(eobj3);
+		ExcelFileDto eobj4 = new ExcelFileDto();
+		eobj4.setLanFieldNumber("74");
+		eobj4.setLanFieldName("74-TIMESHARE CODE");
+		eobj4.setLength("");
+		eobj4.setTo("");
+		eobj4.setFrom("");
+		eobj4.setFileName(getUsedTableNames(74,generateReportService,territoryName));
+		eobj4.setStartPosition(getUsedColumnNames(74,generateReportService,territoryName));
+		/*eobj4.setFileName("");
+		eobj4.setStartPosition("");*/
+		eobj4.setEndPosition("");
+		eobj4.setPullForward("");
+		eobj4.setSourceCount("");
+		eobj4.setLanCount("");
+		eobj4.setUploadInst("");
+		eobj4.setAdditionalReq("");
+		excelFileDtoList4.add(eobj4);
+		ExcelFileDto eobj5 = new ExcelFileDto();
+		eobj5.setLanFieldNumber("35");
+		eobj5.setLanFieldName("35-STATE LAND USE CODE");
+		eobj5.setLength("");
+		eobj5.setTo("");
+		eobj5.setFrom("");
+		eobj5.setFileName(getUsedTableNames(35,generateReportService,territoryName));
+		eobj5.setStartPosition(getUsedColumnNames(35,generateReportService,territoryName));
+		eobj5.setEndPosition("");
+		eobj5.setPullForward("");
+		eobj5.setSourceCount("");
+		eobj5.setLanCount("");
+		eobj5.setUploadInst("");
+		eobj5.setAdditionalReq("");
+		excelFileDtoList4.add(eobj5);
+
+		Map<String, List<ExcelFileDto>> subMap6 = new LinkedHashMap<String, List<ExcelFileDto>>();
+		List<ExcelFileDto> excelFileDtoList5 = new ArrayList<ExcelFileDto>();
+		subMap6.put("Class Comment:", excelFileDtoList5);
+		ExcelFileDto fobj1 = new ExcelFileDto();
+		fobj1.setLanFieldNumber("21");
+		fobj1.setLanFieldName("21-TAX ACCOUNT NUMBER");
+		fobj1.setLength("");
+		fobj1.setTo("");
+		fobj1.setFrom("");
+		fobj1.setFileName(getUsedTableNames(21,generateReportService,territoryName));
+		fobj1.setStartPosition(getUsedColumnNames(21,generateReportService,territoryName));
+/*		fobj1.setFileName("");
+		fobj1.setStartPosition("");*/
+		fobj1.setEndPosition("");
+		fobj1.setPullForward("");
+		fobj1.setSourceCount("");
+		fobj1.setLanCount("");
+		fobj1.setUploadInst("");
+		fobj1.setAdditionalReq("");
+		excelFileDtoList5.add(fobj1);
+
+		ExcelFileDto fobj2 = new ExcelFileDto();
+		fobj2.setLanFieldNumber("42");
+		fobj2.setLanFieldName("42-TAX EXEMPTION CODE");
+		fobj2.setLength("");
+		fobj2.setTo("");
+		fobj2.setFrom("");
+		fobj2.setFileName(getUsedTableNames(42,generateReportService,territoryName));
+		fobj2.setStartPosition(getUsedColumnNames(42,generateReportService,territoryName));
+		/*fobj2.setFileName("AK_Sitka_06_Main");
+		fobj2.setStartPosition("ExCode");*/
+		fobj2.setEndPosition("");
+		fobj2.setPullForward("");
+		fobj2.setSourceCount("");
+		fobj2.setLanCount("");
+		fobj2.setUploadInst("Please refer the additional document");
+		fobj2.setAdditionalReq("");
+		excelFileDtoList5.add(fobj2);
+
+		ExcelFileDto fobj3 = new ExcelFileDto();
+		fobj3.setLanFieldNumber("43");
+		fobj3.setLanFieldName("43-TAX RATE CODE AREA");
+		fobj3.setLength("");
+		fobj3.setTo("");
+		fobj3.setFrom("");
+		fobj3.setFileName(getUsedTableNames(43,generateReportService,territoryName));
+		fobj3.setStartPosition(getUsedColumnNames(43,generateReportService,territoryName));
+		/*fobj3.setFileName("");
+		fobj3.setStartPosition("");*/
+		fobj3.setEndPosition("");
+		fobj3.setPullForward("");
+		fobj3.setSourceCount("");
+		fobj3.setLanCount("");
+		fobj3.setUploadInst("");
+		fobj3.setAdditionalReq("");
+		excelFileDtoList5.add(fobj3);
+
+		ExcelFileDto fobj4 = new ExcelFileDto();
+		fobj4.setLanFieldNumber("44");
+		fobj4.setLanFieldName("44-TAX AMOUNT");
+		fobj4.setLength("");
+		fobj4.setTo("");
+		fobj4.setFrom("");
+		fobj4.setFileName(getUsedTableNames(44,generateReportService,territoryName));
+		fobj4.setStartPosition(getUsedColumnNames(44,generateReportService,territoryName));
+		/*fobj4.setFileName("AK_Sitka_06_Main");
+		fobj4.setStartPosition("Taxable$");*/
+		fobj4.setEndPosition("");
+		fobj4.setPullForward("");
+		fobj4.setSourceCount("");
+		fobj4.setLanCount("");
+		fobj4.setUploadInst("Load   in the format of  (8,2) add leading zero's to make a length of 10(0000000000).");
+		fobj4.setAdditionalReq("");
+		excelFileDtoList5.add(fobj4);
+
+		ExcelFileDto fobj5 = new ExcelFileDto();
+		fobj5.setLanFieldNumber("45");
+		fobj5.setLanFieldName("45-TAX YEAR");
+		fobj5.setLength("");
+		fobj5.setTo("");
+		fobj5.setFrom("");
+		fobj5.setFileName(getUsedTableNames(45,generateReportService,territoryName));
+		fobj5.setStartPosition(getUsedColumnNames(45,generateReportService,territoryName));
+		/*fobj5.setFileName("AK_Sitka_06_Main");
+		fobj5.setStartPosition("[Tax Year]");*/
+		fobj5.setEndPosition("");
+		fobj5.setPullForward("");
+		fobj5.setSourceCount("");
+		fobj5.setLanCount("");
+		fobj5.setUploadInst("Load [Tax Year] column as it is to 045-Tax Year");
+		fobj5.setAdditionalReq("");
+		excelFileDtoList5.add(fobj5);
+
+		ExcelFileDto fobj6 = new ExcelFileDto();
+		fobj6.setLanFieldNumber("46");
+		fobj6.setLanFieldName("46-TAX DELINQUENT YEAR");
+		fobj6.setLength("");
+		fobj6.setTo("");
+		fobj6.setFrom("");
+		fobj6.setFileName(getUsedTableNames(46,generateReportService,territoryName));
+		fobj6.setStartPosition(getUsedColumnNames(46,generateReportService,territoryName));
+		/*fobj6.setFileName("");
+		fobj6.setStartPosition("");*/
+		fobj6.setEndPosition("");
+		fobj6.setPullForward("");
+		fobj6.setSourceCount("");
+		fobj6.setLanCount("");
+		fobj6.setUploadInst("");
+		fobj6.setAdditionalReq("");
+		excelFileDtoList5.add(fobj6);
+
+		ExcelFileDto fobj7 = new ExcelFileDto();
+		fobj7.setLanFieldNumber("155");
+		fobj7.setLanFieldName("155-SCHOOL/TAX DISTRICT 1");
+		fobj7.setLength("");
+		fobj7.setTo("");
+		fobj7.setFrom("");
+		fobj7.setFileName(getUsedTableNames(155,generateReportService,territoryName));
+		fobj7.setStartPosition(getUsedColumnNames(155,generateReportService,territoryName));
+		/*fobj7.setFileName("");
+		fobj7.setStartPosition("");*/
+		fobj7.setEndPosition("");
+		fobj7.setPullForward("");
+		fobj7.setSourceCount("");
+		fobj7.setLanCount("");
+		fobj7.setUploadInst("");
+		fobj7.setAdditionalReq("");
+		excelFileDtoList5.add(fobj7);
+
+		ExcelFileDto fobj8 = new ExcelFileDto();
+		fobj8.setLanFieldNumber("156");
+		fobj8.setLanFieldName("156-SCHOOL/TAX DISTRICT 1 INDICATOR");
+		fobj8.setLength("");
+		fobj8.setTo("");
+		fobj8.setFrom("");
+		fobj8.setFileName(getUsedTableNames(156,generateReportService,territoryName));
+		fobj8.setStartPosition(getUsedColumnNames(156,generateReportService,territoryName));
+	/*	fobj8.setFileName("");
+		fobj8.setStartPosition("");*/
+		fobj8.setEndPosition("");
+		fobj8.setPullForward("");
+		fobj8.setSourceCount("");
+		fobj8.setLanCount("");
+		fobj8.setUploadInst("");
+		fobj8.setAdditionalReq("");
+		excelFileDtoList5.add(fobj8);
+
+		ExcelFileDto fobj9 = new ExcelFileDto();
+		fobj9.setLanFieldNumber("157");
+		fobj9.setLanFieldName("157-SCHOOL/TAX DISTRICT 2");
+		fobj9.setLength("");
+		fobj9.setTo("");
+		fobj9.setFrom("");
+		fobj9.setFileName(getUsedTableNames(157,generateReportService,territoryName));
+		fobj9.setStartPosition(getUsedColumnNames(157,generateReportService,territoryName));
+		/*fobj9.setFileName("");
+		fobj9.setStartPosition("");*/
+		fobj9.setEndPosition("");
+		fobj9.setPullForward("");
+		fobj9.setSourceCount("");
+		fobj9.setLanCount("");
+		fobj9.setUploadInst("");
+		fobj9.setAdditionalReq("");
+		excelFileDtoList5.add(fobj9);
+
+		ExcelFileDto fobj10 = new ExcelFileDto();
+		fobj10.setLanFieldNumber("158");
+		fobj10.setLanFieldName("158-SCHOOL/TAX DISTRICT 2 INDICATOR");
+		fobj10.setLength("");
+		fobj10.setTo("");
+		fobj10.setFrom("");
+		fobj10.setFileName(getUsedTableNames(158,generateReportService,territoryName));
+		fobj10.setStartPosition(getUsedColumnNames(158,generateReportService,territoryName));
+		/*fobj10.setFileName("");
+		fobj10.setStartPosition("");*/
+		fobj10.setEndPosition("");
+		fobj10.setPullForward("");
+		fobj10.setSourceCount("");
+		fobj10.setLanCount("");
+		fobj10.setUploadInst("");
+		fobj10.setAdditionalReq("");
+		excelFileDtoList5.add(fobj10);
+
+		ExcelFileDto fobj11 = new ExcelFileDto();
+		fobj11.setLanFieldNumber("159");
+		fobj11.setLanFieldName("159-SCHOOL/TAX DISTRICT 3");
+		fobj11.setLength("");
+		fobj11.setTo("");
+		fobj11.setFrom("");
+		fobj11.setFileName(getUsedTableNames(159,generateReportService,territoryName));
+		fobj11.setStartPosition(getUsedColumnNames(159,generateReportService,territoryName));
+		/*fobj11.setFileName("");
+		fobj11.setStartPosition("");*/
+		fobj11.setEndPosition("");
+		fobj11.setPullForward("");
+		fobj11.setSourceCount("");
+		fobj11.setLanCount("");
+		fobj11.setUploadInst("");
+		fobj11.setAdditionalReq("");
+		excelFileDtoList5.add(fobj11);
+
+		ExcelFileDto fobj12 = new ExcelFileDto();
+		fobj12.setLanFieldNumber("160");
+		fobj12.setLanFieldName("160-SCHOOL/TAX DISTRICT 3 INDICATOR");
+		fobj12.setLength("");
+		fobj12.setTo("");
+		fobj12.setFrom("");
+		fobj12.setFileName(getUsedTableNames(160,generateReportService,territoryName));
+		fobj12.setStartPosition(getUsedColumnNames(160,generateReportService,territoryName));
+		/*fobj12.setFileName("");
+		fobj12.setStartPosition("");*/
+		fobj12.setEndPosition("");
+		fobj12.setPullForward("");
+		fobj12.setSourceCount("");
+		fobj12.setLanCount("");
+		fobj12.setUploadInst("");
+		fobj12.setAdditionalReq("");
+		excelFileDtoList5.add(fobj12);
+
+		ExcelFileDto fobj13 = new ExcelFileDto();
+		fobj13.setLanFieldNumber("41");
+		fobj13.setLanFieldName("41-CALIF. HOMEOWNER'S EXEMPTION");
+		fobj13.setLength("");
+		fobj13.setTo("");
+		fobj13.setFrom("");
+		fobj13.setFileName(getUsedTableNames(41,generateReportService,territoryName));
+		fobj13.setStartPosition(getUsedColumnNames(41,generateReportService,territoryName));
+		/*fobj13.setFileName("");
+		fobj13.setStartPosition("");*/
+		fobj13.setEndPosition("");
+		fobj13.setPullForward("");
+		fobj13.setSourceCount("");
+		fobj13.setLanCount("");
+		fobj13.setUploadInst("");
+		fobj13.setAdditionalReq("");
+		excelFileDtoList5.add(fobj13);
+
+		Map<String, List<ExcelFileDto>> subMap7 = new LinkedHashMap<String, List<ExcelFileDto>>();
+		List<ExcelFileDto> excelFileDtoList6 = new ArrayList<ExcelFileDto>();
+		subMap7.put("Class Comment:", excelFileDtoList6);
+
+		ExcelFileDto gobj1 = new ExcelFileDto();
+		gobj1.setLanFieldNumber("36");
+		gobj1.setLanFieldName("36-OWNER OCCUPIED (SFR/CONDO)");
+		gobj1.setLength("");
+		gobj1.setTo("");
+		gobj1.setFrom("");
+		gobj1.setFileName(getUsedTableNames(36,generateReportService,territoryName));
+		gobj1.setStartPosition(getUsedColumnNames(36,generateReportService,territoryName));
+		/*gobj1.setFileName("AK_Sitka_06_Main");
+		gobj1.setStartPosition("");*/
+		gobj1.setEndPosition("");
+		gobj1.setPullForward("");
+		gobj1.setSourceCount("");
+		gobj1.setLanCount("");
+		gobj1.setUploadInst("Please find the additional document");
+		gobj1.setAdditionalReq("");
+		excelFileDtoList6.add(gobj1);
+
+		ExcelFileDto gobj2 = new ExcelFileDto();
+		gobj2.setLanFieldNumber("93");
+		gobj2.setLanFieldName("93-RECORD TYPE");
+		gobj2.setLength("");
+		gobj2.setTo("");
+		gobj2.setFrom("");
+		gobj2.setFileName(getUsedTableNames(93,generateReportService,territoryName));
+		gobj2.setStartPosition(getUsedColumnNames(93,generateReportService,territoryName));
+		/*gobj2.setFileName("AK_Sitka_06_Main");
+		gobj2.setStartPosition("");*/
+		gobj2.setEndPosition("");
+		gobj2.setPullForward("");
+		gobj2.setSourceCount("");
+		gobj2.setLanCount("");
+		gobj2.setUploadInst("Please find the additional document");
+		gobj2.setAdditionalReq("");
+		excelFileDtoList6.add(gobj2);
+
+		Map<String, List<ExcelFileDto>> subMap8 = new LinkedHashMap<String, List<ExcelFileDto>>();
+		List<ExcelFileDto> excelFileDtoList7 = new ArrayList<ExcelFileDto>();
+		subMap8.put("Class Comment:", excelFileDtoList7);
+
+		ExcelFileDto hobj1 = new ExcelFileDto();
+		hobj1.setLanFieldNumber("47");
+		hobj1.setLanFieldName("47-RECORDER'S DOCUMENT NUMBER");
+		hobj1.setLength("");
+		hobj1.setTo("");
+		hobj1.setFrom("");
+		hobj1.setFileName(getUsedTableNames(47,generateReportService,territoryName));
+		hobj1.setStartPosition(getUsedColumnNames(47,generateReportService,territoryName));
+		/*hobj1.setFileName("");
+		hobj1.setStartPosition("");*/
+		hobj1.setEndPosition("");
+		hobj1.setPullForward("");
+		hobj1.setSourceCount("");
+		hobj1.setLanCount("");
+		hobj1.setUploadInst("");
+		hobj1.setAdditionalReq("");
+		excelFileDtoList7.add(hobj1);
+
+		ExcelFileDto hobj2 = new ExcelFileDto();
+		hobj2.setLanFieldNumber("48");
+		hobj2.setLanFieldName("48-RECORDER'S BOOK NUMBER");
+		hobj2.setLength("");
+		hobj2.setTo("");
+		hobj2.setFrom("");
+		hobj2.setFileName(getUsedTableNames(48,generateReportService,territoryName));
+		hobj2.setStartPosition(getUsedColumnNames(48,generateReportService,territoryName));
+	/*	hobj2.setFileName("");
+		hobj2.setStartPosition("");*/
+		hobj2.setEndPosition("");
+		hobj2.setPullForward("");
+		hobj2.setSourceCount("");
+		hobj2.setLanCount("");
+		hobj2.setUploadInst("");
+		hobj2.setAdditionalReq("");
+		excelFileDtoList7.add(hobj2);
+
+		ExcelFileDto hobj3 = new ExcelFileDto();
+		hobj3.setLanFieldNumber("49");
+		hobj3.setLanFieldName("49-RECORDER'S PAGE NUMBER");
+		hobj3.setLength("");
+		hobj3.setTo("");
+		hobj3.setFrom("");
+		hobj3.setFileName(getUsedTableNames(49,generateReportService,territoryName));
+		hobj3.setStartPosition(getUsedColumnNames(49,generateReportService,territoryName));
+		/*hobj3.setFileName("");
+		hobj3.setStartPosition("");*/
+		hobj3.setEndPosition("");
+		hobj3.setPullForward("");
+		hobj3.setSourceCount("");
+		hobj3.setLanCount("");
+		hobj3.setUploadInst("");
+		hobj3.setAdditionalReq("");
+		excelFileDtoList7.add(hobj3);
+		ExcelFileDto hobj4 = new ExcelFileDto();
+		hobj4.setLanFieldNumber("50");
+		hobj4.setLanFieldName("50-RECORDING DATE");
+		hobj4.setLength("");
+		hobj4.setTo("");
+		hobj4.setFrom("");
+		hobj4.setFileName(getUsedTableNames(50,generateReportService,territoryName));
+		hobj4.setStartPosition(getUsedColumnNames(50,generateReportService,territoryName));
+		/*hobj4.setFileName("");
+		hobj4.setStartPosition("");*/
+		hobj4.setEndPosition("");
+		hobj4.setPullForward("");
+		hobj4.setSourceCount("");
+		hobj4.setLanCount("");
+		hobj4.setUploadInst("");
+		hobj4.setAdditionalReq("");
+		excelFileDtoList7.add(hobj4);
+
+		ExcelFileDto hobj5 = new ExcelFileDto();
+		hobj5.setLanFieldNumber("51");
+		hobj5.setLanFieldName("51-DOCUMENT TYPE (COUNTY DESCRIPTION)");
+		hobj5.setLength("");
+		hobj5.setTo("");
+		hobj5.setFrom("");
+		hobj5.setFileName(getUsedTableNames(51,generateReportService,territoryName));
+		hobj5.setStartPosition(getUsedColumnNames(51,generateReportService,territoryName));
+		/*hobj5.setFileName("");
+		hobj5.setStartPosition("");*/
+		hobj5.setEndPosition("");
+		hobj5.setPullForward("");
+		hobj5.setSourceCount("");
+		hobj5.setLanCount("");
+		hobj5.setUploadInst("");
+		hobj5.setAdditionalReq("");
+		excelFileDtoList7.add(hobj5);
+		
+		Map<String, List<ExcelFileDto>> subMap9 = new LinkedHashMap<String, List<ExcelFileDto>>();
+		List<ExcelFileDto> excelFileDtoList8 = new ArrayList<ExcelFileDto>();
+		subMap9.put("Class Comment:", excelFileDtoList8);
+
+		ExcelFileDto iobj1 = new ExcelFileDto();
+		iobj1.setLanFieldNumber("52");
+		iobj1.setLanFieldName("52-SALES PRICE");
+		iobj1.setLength("");
+		iobj1.setTo("");
+		iobj1.setFrom("");
+		iobj1.setFileName(getUsedTableNames(52,generateReportService,territoryName));
+		iobj1.setStartPosition(getUsedColumnNames(52,generateReportService,territoryName));
+		iobj1.setEndPosition("");
+		iobj1.setPullForward("");
+		iobj1.setSourceCount("");
+		iobj1.setLanCount("");
+		iobj1.setUploadInst("");
+		iobj1.setAdditionalReq("");
+		excelFileDtoList8.add(iobj1);
+
+		ExcelFileDto iobj2 = new ExcelFileDto();
+		iobj2.setLanFieldNumber("53");
+		iobj2.setLanFieldName("53-SALES PRICE CODE");
+		iobj2.setLength("");
+		iobj2.setTo("");
+		iobj2.setFrom("");
+		iobj2.setFileName(getUsedTableNames(53,generateReportService,territoryName));
+		iobj2.setStartPosition(getUsedColumnNames(53,generateReportService,territoryName));
+		/*iobj2.setFileName("");
+		iobj2.setStartPosition("");*/
+		iobj2.setEndPosition("");
+		iobj2.setPullForward("");
+		iobj2.setSourceCount("");
+		iobj2.setLanCount("");
+		iobj2.setUploadInst("");
+		iobj2.setAdditionalReq("");
+		excelFileDtoList8.add(iobj2);
+
+		ExcelFileDto iobj3 = new ExcelFileDto();
+		iobj3.setLanFieldNumber("54");
+		iobj3.setLanFieldName("54-PRIOR SALES DATE");
+		iobj3.setLength("");
+		iobj3.setTo("");
+		iobj3.setFrom("");
+		iobj3.setFileName(getUsedTableNames(54,generateReportService,territoryName));
+		iobj3.setStartPosition(getUsedColumnNames(54,generateReportService,territoryName));
+	/*	iobj3.setFileName("");
+		iobj3.setStartPosition("");*/
+		iobj3.setEndPosition("");
+		iobj3.setPullForward("");
+		iobj3.setSourceCount("");
+		iobj3.setLanCount("");
+		iobj3.setUploadInst("");
+		iobj3.setAdditionalReq("");
+		excelFileDtoList8.add(iobj3);
+		ExcelFileDto iobj4 = new ExcelFileDto();
+		iobj4.setLanFieldNumber("55");
+		iobj4.setLanFieldName("55-PRIOR SALES PRICE");
+		iobj4.setLength("");
+		iobj4.setTo("");
+		iobj4.setFrom("");
+		iobj4.setFileName(getUsedTableNames(55,generateReportService,territoryName));
+		iobj4.setStartPosition(getUsedColumnNames(55,generateReportService,territoryName));
+		/*iobj4.setFileName("");
+		iobj4.setStartPosition("");*/
+		iobj4.setEndPosition("");
+		iobj4.setPullForward("");
+		iobj4.setSourceCount("");
+		iobj4.setLanCount("");
+		iobj4.setUploadInst("");
+		iobj4.setAdditionalReq("");
+		excelFileDtoList8.add(iobj4);
+
+		ExcelFileDto iobj5 = new ExcelFileDto();
+		iobj5.setLanFieldNumber("56");
+		iobj5.setLanFieldName("56-PRIOR SALES CODE");
+		iobj5.setLength("");
+		iobj5.setTo("");
+		iobj5.setFrom("");
+		iobj5.setFileName(getUsedTableNames(56,generateReportService,territoryName));
+		iobj5.setStartPosition(getUsedColumnNames(56,generateReportService,territoryName));
+		/*iobj5.setFileName("");
+		iobj5.setStartPosition("");*/
+		iobj5.setEndPosition("");
+		iobj5.setPullForward("");
+		iobj5.setSourceCount("");
+		iobj5.setLanCount("");
+		iobj5.setUploadInst("");
+		iobj5.setAdditionalReq("");
+		excelFileDtoList8.add(iobj5);
+		
+		Map<String, List<ExcelFileDto>> subMap10 = new LinkedHashMap<String, List<ExcelFileDto>>();
+		List<ExcelFileDto> excelFileDtoList9 = new ArrayList<ExcelFileDto>();
+		subMap10.put("Class Comment: Should Not Have Populated Values in LAN2.3", excelFileDtoList9);
+		ExcelFileDto jobj1 = new ExcelFileDto();
+		jobj1.setLanFieldNumber("112");
+		jobj1.setLanFieldName("112-PROP ADDR: MATCH CODE");
+		jobj1.setLength("");
+		jobj1.setTo("");
+		jobj1.setFrom("");
+		jobj1.setFileName(getUsedTableNames(112,generateReportService,territoryName));
+		jobj1.setStartPosition(getUsedColumnNames(112,generateReportService,territoryName));
+		/*jobj1.setFileName("");
+		jobj1.setStartPosition("");*/
+		jobj1.setEndPosition("");
+		jobj1.setPullForward("");
+		jobj1.setSourceCount("");
+		jobj1.setLanCount("");
+		jobj1.setUploadInst("");
+		jobj1.setAdditionalReq("");
+		excelFileDtoList9.add(jobj1);
+ExcelFileDto jobj2 = new ExcelFileDto();
+		jobj2.setLanFieldNumber("113");
+		jobj2.setLanFieldName("113-PROP ADDR: UNIT DESIGNATOR");
+		jobj2.setLength("");
+		jobj2.setTo("");
+		jobj2.setFrom("");
+		jobj2.setFileName(getUsedTableNames(113,generateReportService,territoryName));
+		jobj2.setStartPosition(getUsedColumnNames(113,generateReportService,territoryName));
+		/*jobj2.setFileName("");
+		jobj2.setStartPosition("");*/
+		jobj2.setEndPosition("");
+		jobj2.setPullForward("");
+		jobj2.setSourceCount("");
+		jobj2.setLanCount("");
+		jobj2.setUploadInst("");
+		jobj2.setAdditionalReq("");
+		excelFileDtoList9.add(jobj2);
+		ExcelFileDto jobj3 = new ExcelFileDto();
+		jobj3.setLanFieldNumber("114");
+		jobj3.setLanFieldName("114-PROP ADDR: UNIT NUMBER");
+		jobj3.setLength("");
+		jobj3.setTo("");
+		jobj3.setFrom("");
+		jobj3.setFileName(getUsedTableNames(114,generateReportService,territoryName));
+		jobj3.setStartPosition(getUsedColumnNames(114,generateReportService,territoryName));
+		/*jobj3.setFileName("");
+		jobj3.setStartPosition("");*/
+		jobj3.setEndPosition("");
+		jobj3.setPullForward("");
+		jobj3.setSourceCount("");
+		jobj3.setLanCount("");
+		jobj3.setUploadInst("");
+		jobj3.setAdditionalReq("");
+		excelFileDtoList9.add(jobj3);
+		ExcelFileDto jobj4 = new ExcelFileDto();
+		jobj4.setLanFieldNumber("115");
+		jobj4.setLanFieldName("115-PROP ADDR: CARRIER ROUTE");
+		jobj4.setLength("");
+		jobj4.setTo("");
+		jobj4.setFrom("");
+		jobj4.setFileName(getUsedTableNames(115,generateReportService,territoryName));
+		jobj4.setStartPosition(getUsedColumnNames(115,generateReportService,territoryName));
+		/*jobj4.setFileName("");
+		jobj4.setStartPosition("");*/
+		jobj4.setEndPosition("");
+		jobj4.setPullForward("");
+		jobj4.setSourceCount("");
+		jobj4.setLanCount("");
+		jobj4.setUploadInst("");
+		jobj4.setAdditionalReq("");
+		excelFileDtoList9.add(jobj4);
+		ExcelFileDto jobj5 = new ExcelFileDto();
+		jobj5.setLanFieldNumber("116");
+		jobj5.setLanFieldName("116-PROP ADDR GEOCODE MATCH CODE");
+		jobj5.setLength("");
+		jobj5.setTo("");
+		jobj5.setFrom("");
+		jobj5.setFileName(getUsedTableNames(116,generateReportService,territoryName));
+		jobj5.setStartPosition(getUsedColumnNames(116,generateReportService,territoryName));
+	/*	jobj5.setFileName("");
+		jobj5.setStartPosition("");*/
+		jobj5.setEndPosition("");
+		jobj5.setPullForward("");
+		jobj5.setSourceCount("");
+		jobj5.setLanCount("");
+		jobj5.setUploadInst("");
+		jobj5.setAdditionalReq("");
+		excelFileDtoList9.add(jobj5);
+		ExcelFileDto jobj6 = new ExcelFileDto();
+		jobj6.setLanFieldNumber("117");
+		jobj6.setLanFieldName("117-PROP ADDR: LATITUDE");
+		jobj6.setLength("");
+		jobj6.setTo("");
+		jobj6.setFrom("");
+		jobj6.setFileName(getUsedTableNames(117,generateReportService,territoryName));
+		jobj6.setStartPosition(getUsedColumnNames(117,generateReportService,territoryName));
+		/*jobj6.setFileName("");
+		jobj6.setStartPosition("");*/
+		jobj6.setEndPosition("");
+		jobj6.setPullForward("");
+		jobj6.setSourceCount("");
+		jobj6.setLanCount("");
+		jobj6.setUploadInst("");
+		jobj6.setAdditionalReq("");
+		excelFileDtoList9.add(jobj6);
+		ExcelFileDto jobj7 = new ExcelFileDto();
+		jobj7.setLanFieldNumber("118");
+		jobj7.setLanFieldName("118-PROP ADDR: LONGITUDE");
+		jobj7.setLength("");
+		jobj7.setTo("");
+		jobj7.setFrom("");
+		jobj7.setFileName(getUsedTableNames(118,generateReportService,territoryName));
+		jobj7.setStartPosition(getUsedColumnNames(118,generateReportService,territoryName));
+		/*jobj7.setFileName("");
+		jobj7.setStartPosition("");*/
+		jobj7.setEndPosition("");
+		jobj7.setPullForward("");
+		jobj7.setSourceCount("");
+		jobj7.setLanCount("");
+		jobj7.setUploadInst("");
+		jobj7.setAdditionalReq("");
+		excelFileDtoList9.add(jobj7);
+		ExcelFileDto jobj8 = new ExcelFileDto();
+		jobj8.setLanFieldNumber("119");
+		jobj8.setLanFieldName("119-PROP ADDR: CENSUS TRACT & BLOCK");
+		jobj8.setLength("");
+		jobj8.setTo("");
+		jobj8.setFrom("");
+		jobj8.setFileName(getUsedTableNames(119,generateReportService,territoryName));
+		jobj8.setStartPosition(getUsedColumnNames(119,generateReportService,territoryName));
+		/*jobj8.setFileName("");
+		jobj8.setStartPosition("");*/
+		jobj8.setEndPosition("");
+		jobj8.setPullForward("");
+		jobj8.setSourceCount("");
+		jobj8.setLanCount("");
+		jobj8.setUploadInst("");
+		jobj8.setAdditionalReq("");
+		excelFileDtoList9.add(jobj8);
+		
+		ExcelFileDto jobj9 = new ExcelFileDto();
+		jobj9.setLanFieldNumber("120");
+		jobj9.setLanFieldName("120-MAIL ADDR: MATCH CODE");
+		jobj9.setLength("");
+		jobj9.setTo("");
+		jobj9.setFrom("");
+		jobj9.setFileName(getUsedTableNames(120,generateReportService,territoryName));
+		jobj9.setStartPosition(getUsedColumnNames(120,generateReportService,territoryName));
+		/*jobj9.setFileName("");
+		jobj9.setStartPosition("");*/
+		jobj9.setEndPosition("");
+		jobj9.setPullForward("");
+		jobj9.setSourceCount("");
+		jobj9.setLanCount("");
+		jobj9.setUploadInst("");
+		jobj9.setAdditionalReq("");
+		excelFileDtoList9.add(jobj9);
+		ExcelFileDto jobj10 = new ExcelFileDto();
+		jobj10.setLanFieldNumber("121");
+		jobj10.setLanFieldName("121-MAIL ADDR: UNIT DESIGNATOR");
+		jobj10.setLength("");
+		jobj10.setTo("");
+		jobj10.setFrom("");
+		jobj10.setFileName(getUsedTableNames(121,generateReportService,territoryName));
+		jobj10.setStartPosition(getUsedColumnNames(121,generateReportService,territoryName));
+		/*jobj10.setFileName("");
+		jobj10.setStartPosition("");*/
+		jobj10.setEndPosition("");
+		jobj10.setPullForward("");
+		jobj10.setSourceCount("");
+		jobj10.setLanCount("");
+		jobj10.setUploadInst("");
+		jobj10.setAdditionalReq("");
+		excelFileDtoList9.add(jobj10);
+		ExcelFileDto jobj11 = new ExcelFileDto();
+		jobj11.setLanFieldNumber("122");
+		jobj11.setLanFieldName("122-MAIL ADDR: UNIT NUMBER");
+		jobj11.setLength("");
+		jobj11.setTo("");
+		jobj11.setFrom("");
+		jobj11.setFileName(getUsedTableNames(122,generateReportService,territoryName));
+		jobj11.setStartPosition(getUsedColumnNames(122,generateReportService,territoryName));
+		/*jobj11.setFileName("");
+		jobj11.setStartPosition("");*/
+		jobj11.setEndPosition("");
+		jobj11.setPullForward("");
+		jobj11.setSourceCount("");
+		jobj11.setLanCount("");
+		jobj11.setUploadInst("");
+		jobj11.setAdditionalReq("");
+		excelFileDtoList9.add(jobj11);
+		ExcelFileDto jobj12 = new ExcelFileDto();
+		jobj12.setLanFieldNumber("123");
+		jobj12.setLanFieldName("123-MAIL ADDR: CARRIER ROUTE");
+		jobj12.setLength("");
+		jobj12.setTo("");
+		jobj12.setFrom("");
+		jobj12.setFileName(getUsedTableNames(123,generateReportService,territoryName));
+		jobj12.setStartPosition(getUsedColumnNames(123,generateReportService,territoryName));
+	/*	jobj12.setFileName("");
+		jobj12.setStartPosition("");*/
+		jobj12.setEndPosition("");
+		jobj12.setPullForward("");
+		jobj12.setSourceCount("");
+		jobj12.setLanCount("");
+		jobj12.setUploadInst("");
+		jobj12.setAdditionalReq("");
+		excelFileDtoList9.add(jobj12);
+
+		Map<String, Map<String, ?>> childMapWithKey = new LinkedHashMap<String, Map<String, ?>>();
+
+		Map<String, List<ExcelFileDto>> childMap = new LinkedHashMap<String, List<ExcelFileDto>>();
+		childMap.put(headerList.get(0), list1);
+		childMap.put(headerList.get(1), list2);
+		childMap.put(headerList.get(2), list3);
+		childMapWithKey.put("Class  Comment", childMap);
+		// DATA ADDING
+		parentMap.put("Header Fields", subMap1);
+		parentMap.put("Name Fields", subMap2);
+		parentMap.put("AddressFields", subMap3);
+		parentMap.put("Assessment & Market Value Fields", subMap4);
+		parentMap.put("Land Use Fields", subMap5);
+		parentMap.put("Tax & Exemption Fields", subMap6);
+		parentMap.put("Multi-Class Dependent Fields", subMap7);
+		parentMap.put("County Recorder (Official Record) Fields", subMap8);
+		parentMap.put("Sales Fields", subMap9);
+		parentMap.put("PCR (Property Characteristic) Fields", childMapWithKey);
+		parentMap.put("Filler Fields (Not Used Currently)", subMap10);
+		
+
+		return parentMap;
+	}
+
+	public static XSSFCellStyle getDifferentColor(int i, XSSFCellStyle style) {
+		switch (i) {
+		case 1:
+			style.setFillForegroundColor(ExcelColorUtility.ARMYGREEN);
+			style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			break;
+		case 2:
+			style.setFillForegroundColor(ExcelColorUtility.OLIVE);
+			style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			break;
+		case 3:
+			style.setFillForegroundColor(ExcelColorUtility.SADDLEBROWN);
+			style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			break;
+		case 4:
+			style.setFillForegroundColor(ExcelColorUtility.REGALBLUE);
+			style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			break;
+		case 5:
+			style.setFillForegroundColor(ExcelColorUtility.ARMYGREEN);
+			style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			break;
+		case 6:
+			style.setFillForegroundColor(ExcelColorUtility.OLIVE);
+			style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			break;
+		case 7:
+			style.setFillForegroundColor(ExcelColorUtility.MORTAR);
+			style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			break;
+		case 8:
+			style.setFillForegroundColor(ExcelColorUtility.REGALBLUE);
+			style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			break;
+		case 9:
+			style.setFillForegroundColor(ExcelColorUtility.ARMYGREEN);
+			style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			break;
+		case 10:
+			style.setFillForegroundColor(ExcelColorUtility.OLIVE);
+			style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			break;
+		case 11:
+			style.setFillForegroundColor(ExcelColorUtility.DARKGOLDENROD);
+			style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			break;
+		case 12:
+			style.setFillForegroundColor(ExcelColorUtility.MORTAR);
+			style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			break;
+
+		default:
+			style.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+			style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		}
+		return style;
+	}
+
+	public static XSSFCellStyle getDifferentColorForRows(int i, XSSFCellStyle style, int colorCount) {
+		switch (colorCount) {
+	/*     case 1:
+		        style.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex()); 
+		        style.setFillPattern(CellStyle.SOLID_FOREGROUND); break; 
+		  case 2:
+		        style.setFillForegroundColor(IndexedColors.LIGHT_CORNFLOWER_BLUE.getIndex()); 
+		        style.setFillPattern(CellStyle.SOLID_FOREGROUND); break;
+		  case 3:
+		        style.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
+		        style.setFillPattern(CellStyle.SOLID_FOREGROUND); break; 
+		  case 4:
+		        style.setFillForegroundColor(IndexedColors.LIGHT_CORNFLOWER_BLUE.getIndex()); 
+		        style.setFillPattern(CellStyle.SOLID_FOREGROUND); break;
+		   case 5:
+		         style.setFillForegroundColor(IndexedColors.LIGHT_TURQUOISE.getIndex()); 
+		         style.setFillPattern(CellStyle.SOLID_FOREGROUND); break; 
+		   case 6:
+		         style.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
+		         style.setFillPattern(CellStyle.SOLID_FOREGROUND); break; 
+		   case 7:
+		         style.setFillForegroundColor(IndexedColors.OLIVE_GREEN.getIndex());
+		         style.setFillPattern(CellStyle.SOLID_FOREGROUND); break; 
+		   case 8:
+		         style.setFillForegroundColor(IndexedColors.CORAL.getIndex());
+		         style.setFillPattern(CellStyle.SOLID_FOREGROUND); break; case 9:
+		         style.setFillForegroundColor(IndexedColors.ROSE.getIndex());
+		         style.setFillPattern(CellStyle.SOLID_FOREGROUND); break; case 10:
+		         style.setFillForegroundColor(IndexedColors.INDIGO.getIndex());
+		         style.setFillPattern(CellStyle.SOLID_FOREGROUND); break; case 11:
+		         style.setFillForegroundColor(IndexedColors.BRIGHT_GREEN.getIndex());
+		         style.setFillPattern(CellStyle.SOLID_FOREGROUND); break; case 12:
+		         style.setFillForegroundColor(IndexedColors.MAROON.getIndex());
+		         style.setFillPattern(CellStyle.SOLID_FOREGROUND); break;
+		    
+		   default:
+		         style.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+		         style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		 
+*/
+		case 1:
+			switch (i) {
+			case 1:
+			case 3:
+			case 5:
+			case 7:
+			case 9:
+			case 11:
+				
+				 /* HSSFColor lightGray = style2.setColor(workbook,(byte) 0xE0,(byte)0xE0,(byte) 0xE0);
+				  style2.setFillForegroundColor(lightGray.getIndex());
+				  style2.setFillPattern(CellStyle.SOLID_FOREGROUND);*/
+				 
+				style.setFillForegroundColor(ExcelColorUtility.MOSSGREEN);
+				style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+				break;
+			case 2:
+			case 4:
+			case 6:
+			case 8:
+			case 10:
+			case 12:
+				style.setFillForegroundColor(ExcelColorUtility.TARA);
+				style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+				break;
+			default:
+				style.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+				style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			}
+			break;
+		case 2:
+			switch (i) {
+			case 1:
+			case 3:
+			case 5:
+			case 7:
+			case 9:
+			case 11:
+				style.setFillForegroundColor(ExcelColorUtility.CREAMBRULEE);
+				style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+				break;
+			case 2:
+			case 4:
+			case 6:
+			case 8:
+			case 10:
+			case 12:
+				style.setFillForegroundColor(ExcelColorUtility.LEMONCHIFFON);
+				style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+				break;
+			default:
+				style.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+				style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			}
+			break;
+		case 3:
+			switch (i) {
+			case 1:
+			case 3:
+			case 5:
+			case 7:
+			case 9:
+			case 11:
+				style.setFillForegroundColor(ExcelColorUtility.APRICOT);
+				style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+				break;
+			case 2:
+			case 4:
+			case 6:
+			case 8:
+			case 10:
+			case 12:
+				style.setFillForegroundColor(ExcelColorUtility.SERENDAE);
+				style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+				break;
+			default:
+				style.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+				style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			}
+			break;
+		case 4:
+			switch (i) {
+			case 1:
+			case 3:
+			case 5:
+			case 7:
+			case 9:
+			case 11:
+				style.setFillForegroundColor(ExcelColorUtility.TROPICALBLUE);
+				style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+				break;
+			case 2:
+			case 4:
+			case 6:
+			case 8:
+			case 10:
+			case 12:
+				style.setFillForegroundColor(ExcelColorUtility.LAVENDER);
+				style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+				break;
+			default:
+				style.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+				style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			}
+			break;
+		case 5:
+			switch (i) {
+			case 1:
+			case 3:
+			case 5:
+			case 7:
+			case 9:
+			case 11:
+				style.setFillForegroundColor(ExcelColorUtility.MOSSGREEN);
+				style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+				break;
+			case 2:
+			case 4:
+			case 6:
+			case 8:
+			case 10:
+			case 12:
+				style.setFillForegroundColor(ExcelColorUtility.TARA);
+				style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+				break;
+			default:
+				style.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+				style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			}
+			break;
+		case 6:
+			switch (i) {
+			case 1:
+			case 3:
+			case 5:
+			case 7:
+			case 9:
+			case 11:
+				style.setFillForegroundColor(ExcelColorUtility.CREAMBRULEE);
+				style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+				break;
+			case 2:
+			case 4:
+			case 6:
+			case 8:
+			case 10:
+			case 12:
+				style.setFillForegroundColor(ExcelColorUtility.LEMONCHIFFON);
+				style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+				break;
+			default:
+				style.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+				style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			}
+			break;
+		case 7:
+			switch (i) {
+			case 1:
+			case 3:
+			case 5:
+			case 7:
+			case 9:
+			case 11:
+			case 13:
+			case 15:
+			case 17:
+				style.setFillForegroundColor(ExcelColorUtility.NERO);
+				style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+				break;
+			case 2:
+			case 4:
+			case 6:
+			case 8:
+			case 10:
+			case 12:
+			case 14:
+			case 16:
+			case 18:
+				style.setFillForegroundColor(ExcelColorUtility.MORTAR);
+				style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+				break;
+			default:
+				style.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+				style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			}
+			break;
+		case 8:
+			switch (i) {
+			case 1:
+			case 3:
+			case 5:
+			case 7:
+			case 9:
+			case 11:
+			case 13:
+			case 15:
+			case 17:
+				style.setFillForegroundColor(ExcelColorUtility.TROPICALBLUE);
+				style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+				break;
+			case 2:
+			case 4:
+			case 6:
+			case 8:
+			case 10:
+			case 12:
+			case 14:
+			case 16:
+			case 18:
+				style.setFillForegroundColor(ExcelColorUtility.PATTENSBLUE);
+				style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+				break;
+			default:
+				style.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+				style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			}
+			break;
+		case 9:
+			switch (i) {
+			case 1:
+			case 3:
+			case 5:
+			case 7:
+			case 9:
+			case 11:
+			case 13:
+			case 15:
+			case 17:
+			case 19:
+			case 21:
+			case 23:
+			case 25:
+			case 27:
+				style.setFillForegroundColor(ExcelColorUtility.MOSSGREEN);
+				style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+				break;
+			case 2:
+			case 4:
+			case 6:
+			case 8:
+			case 10:
+			case 12:
+			case 14:
+			case 16:
+			case 18:
+			case 20:
+			case 22:
+			case 24:
+			case 26:
+			case 28:
+				style.setFillForegroundColor(ExcelColorUtility.TARA);
+				style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+				break;
+			default:
+				style.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+				style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			}
+			break;
+		case 10:
+			switch (i) {
+			case 1:
+			case 3:
+			case 5:
+			case 7:
+			case 9:
+			case 11:
+			case 13:
+			case 15:
+			case 17:
+			case 19:
+			case 21:
+			case 23:
+			case 25:
+			case 27:
+				style.setFillForegroundColor(ExcelColorUtility.CREAMBRULEE);
+				style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+				break;
+			case 2:
+			case 4:
+			case 6:
+			case 8:
+			case 10:
+			case 12:
+			case 14:
+			case 16:
+			case 18:
+			case 20:
+			case 22:
+			case 24:
+			case 26:
+			case 28:
+				style.setFillForegroundColor(ExcelColorUtility.LEMONCHIFFON);
+				style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+				break;
+			default:
+				style.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+				style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			}
+			break;
+		case 11:
+			switch (i) {
+			case 1:
+			case 3:
+			case 5:
+			case 7:
+			case 9:
+			case 11:
+			case 13:
+			case 15:
+			case 17:
+			case 19:
+			case 21:
+			case 23:
+			case 25:
+			case 27:
+				style.setFillForegroundColor(ExcelColorUtility.DARKGRAY);
+				style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+				break;
+			case 2:
+			case 4:
+			case 6:
+			case 8:
+			case 10:
+			case 12:
+			case 14:
+			case 16:
+			case 18:
+			case 20:
+			case 22:
+			case 24:
+			case 26:
+			case 28:
+				style.setFillForegroundColor(ExcelColorUtility.VERYLIGHTGRAY);
+				style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+				break;
+			default:
+				style.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+				style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			}
+			break;
+		}
+		return style;
+	}
+}

@@ -1,0 +1,129 @@
+package com.appstek.dc.dto;
+
+import java.util.List;
+
+public class DataConversionRuleDto {
+
+	private int countryFipsCode;
+	private int stateFipsCode;
+	private int countyFipsCode;
+	private String ruleQuery;
+	//private String fieldNumber;
+	private int fieldNumber;
+	private String countryName;
+	private String stateName;
+	private String countyName;
+	private String ruleScope;
+	private String ruleName;
+	private int ruleQueryId;
+	private String query;
+	private List<Integer> fieldList;
+	private String baseQuery;
+	private String tables;
+	private String columns;
+	private String edition;
+	
+	public String getEdition() {
+		return edition;
+	}
+	public void setEdition(String edition) {
+		this.edition = edition;
+	}
+	public String getTables() {
+		return tables;
+	}
+	public void setTables(String tables) {
+		this.tables = tables;
+	}
+	public String getColumns() {
+		return columns;
+	}
+	public void setColumns(String columns) {
+		this.columns = columns;
+	}
+	public String getBaseQuery() {
+		return baseQuery;
+	}
+	public void setBaseQuery(String baseQuery) {
+		this.baseQuery = baseQuery;
+	}
+	public List<Integer> getFieldList() {
+		return fieldList;
+	}
+	public void setFieldList(List<Integer> fieldList) {
+		this.fieldList = fieldList;
+	}
+	public int getRuleQueryId() {
+		return ruleQueryId;
+	}
+	public void setRuleQueryId(int ruleQueryId) {
+		this.ruleQueryId = ruleQueryId;
+	}
+	public String getRuleName() {
+		return ruleName;
+	}
+	public void setRuleName(String ruleName) {
+		this.ruleName = ruleName;
+	}
+	public String getRuleScope() {
+		return ruleScope;
+	}
+	public void setRuleScope(String ruleScope) {
+		this.ruleScope = ruleScope;
+	}
+	public String getCountryName() {
+		return countryName;
+	}
+	public void setCountryName(String countryName) {
+		this.countryName = countryName;
+	}
+	public String getStateName() {
+		return stateName;
+	}
+	public void setStateName(String stateName) {
+		this.stateName = stateName;
+	}
+	public String getCountyName() {
+		return countyName;
+	}
+	public void setCountyName(String countyName) {
+		this.countyName = countyName;
+	}
+	public int getFieldNumber() {
+		return fieldNumber;
+	}
+	public void setFieldNumber(int fieldNumber) {
+		this.fieldNumber = fieldNumber;
+	}
+	public int getCountryFipsCode() {
+		return countryFipsCode;
+	}
+	public void setCountryFipsCode(int countryFipsCode) {
+		this.countryFipsCode = countryFipsCode;
+	}
+	public int getStateFipsCode() {
+		return stateFipsCode;
+	}
+	public void setStateFipsCode(int stateFipsCode) {
+		this.stateFipsCode = stateFipsCode;
+	}
+	public int getCountyFipsCode() {
+		return countyFipsCode;
+	}
+	public void setCountyFipsCode(int countyFipsCode) {
+		this.countyFipsCode = countyFipsCode;
+	}
+	public String getRuleQuery() {
+		return ruleQuery;
+	}
+	public void setRuleQuery(String ruleQuery) {
+		this.ruleQuery = ruleQuery;
+	}
+	public String getQuery() {
+		return query;
+	}
+	public void setQuery(String query) {
+		this.query = query;
+	}
+	
+}

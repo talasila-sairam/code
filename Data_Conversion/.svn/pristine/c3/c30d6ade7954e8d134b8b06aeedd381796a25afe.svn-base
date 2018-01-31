@@ -1,0 +1,85 @@
+$(document).ready(function() {
+    $(".userStatus").change(function() {
+    	var selectedUser=$('#status').val();
+    	$('#userSelected').text(selectedUser);
+ 	});
+    var userLogged=$('#userLoggedin').val();
+    $.ajax({
+    	type: "POST",
+		url: 'userReportFetch',
+		async: false,
+		data: {
+		'userLogged':userLogged
+		},
+        success: function(response) {
+        	var table = $("<table class='table table-bordered'/>").addClass('tftable');
+        	  table.append('<thead><th>CountyName</th><th style="">Current Status</th><th>Assigned Time</th><th>Processed Time</th><th>Completed Time</th><th>Duration</th><th>Count</th><th>Comment</th></thead>');
+        	  var tbody = $("<tbody></tbody>");
+        	  $.each(response, function(rowIndex, r) {
+	                var row = $("<tr></tr>");
+	                row.append($("<td id='county"+rowIndex+"'></td>").text(r.countyStateCode));
+	                row.append($("<td></td>").append(r.status+''+'<span><select id="status'+rowIndex+'" class="form-control userStatus""><option value="">--select--</option><option value="Ready For Processing">Ready For Processing</option><option value="Completed">Completed</option> </select></span>'));
+	                row.append($("<td id='assignedtime"+rowIndex+"'></td>").text(r.assignedtime));
+	                row.append($("<td id='processintime"+rowIndex+"'></td>").text(r.processintime));
+	                row.append($("<td id='completedtime"+rowIndex+"'></td>").text(r.completedtime));
+	                row.append($("<td id='duration"+rowIndex+"'></td>").text(r.duration));
+	                row.append($("<td id='count"+rowIndex+"'></td>").text(r.count));
+	                row.append($("<td id='county"+rowIndex+"'></td>").append('<textarea class="form-control inputstl" id="usercomments'+rowIndex+'" rows="5" style="height: 40px !important;width: 133px; float:left; border-color: darkseagreen;"></textarea><input type="checkbox" id="signOffStatus'+rowIndex+'" value="Sign Off">Sign Off</input><button type="button" id="submitClick-'+rowIndex+'" class="btn btn-success subbutton"  style="height: 30px;">Submit</button>'));
+	                tbody.append(row);
+	                table.append(tbody);
+	                if(r.signoff=="Sign Off"){
+	            		$('#signOffStatus'+rowIndex).attr('checked', true);
+	            	}
+	            });
+	           $("#userReportDetails").append(table);
+        	  /*$('#assignedCounty').text(response[0].county);
+        	$('#userSelected').text(response[0].status);
+        	$('#userTaskAssigned').text(response[0].assignedtime);
+        	$('#userProcesed').text(response[0].processintime);
+        	$('#userTaskCompleted').text(response[0].completedtime);
+        	$('#userTaskDuration').text(response[0].duration);
+        	$('#userTaskCount').text(response[0].count);
+        	if(response[0].signoff=="Sign Off"){
+        		$('#signOffStatus').attr('checked', true);
+        	}
+        	*/
+        	
+        },
+        error:function(){
+    	}
+    });
+    $(".subbutton").click(function(){
+    	var button=this.id;
+    	var buttonSplit=button.split("-");
+    	var reference=buttonSplit[1];
+    	var county_state=$('#county'+reference).text();
+    	var selectedUser=$('#userLoggedin').val();
+    	var comments=$('#usercomments'+reference).val();
+    	var currentStatus=$('#status'+reference).val();
+    	var sifnoffValue='';
+    	if($('#signOffStatus'+reference).is(':checked')==true){
+    		sifnoffValue='Sign Off';
+    	}
+    	else{
+    		sifnoffValue='';
+    	}
+        $.ajax({
+        	type: "POST",
+    		url: 'userStatusInsert',
+    		async: false,
+    		data: {
+    		'comments':comments,
+    		'currentStatus':currentStatus,
+    		'selectedUser':selectedUser,
+    		'signOffStatus':sifnoffValue,
+    		'county_state':county_state
+    		},
+            success: function(response) {
+            	alert("Updated successfully.");
+            	 location.reload();
+            },
+            error:function(){
+        	}
+        });
+    });
+});

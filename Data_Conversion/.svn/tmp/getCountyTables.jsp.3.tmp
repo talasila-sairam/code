@@ -1,0 +1,513 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@page contentType="text/html" import="java.util.Calendar" %>
+<%@page import="java.text.SimpleDateFormat"%>
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="css/bootstrap-multiselect.css">
+<link rel="stylesheet" href="css/jquery-ui.css">
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script src="js/bootstrap-multiselect.js"></script>
+<script src="js/jquery-ui.js"></script>
+<script src=js/buildQueryJavaScript.js></script>
+<script src="js/dataConversion.js"></script>
+<script src="js/modelJavaScript.js"></script>
+<script src="js/copyRule.js"></script>
+
+	
+<script type="text/javascript">
+
+$('#countyTablesSelect').multiselect({
+	includeSelectAllOption: false,
+    /* enableFiltering: true, */
+    enableCaseInsensitiveFiltering : true,
+    filterBehavior: 'value',
+    onChange : function(event){
+    	getCountyTableColumns();
+    },
+    nonSelectedText: '--Please Select--',
+    disableIfEmpty: true
+});
+
+    $(document).ready(function() {
+    	
+    	var fieldName = $("#fieldName").val();
+	    var defaultFlag = $("#defaultFlag").val();
+	    var aliasName = $("#mappingFieldName").val();
+	    $("#fieldAliasName").val("");
+	    $("#fieldAliasName").val(aliasName);
+	    $("#fields").val('');
+	    $("#fields").val(fieldName);
+	    $("#fieldNameLabel").text('')
+	    $("#fieldNameLabel").text('Field: '+fieldName);
+	    
+	    $("#defaultFlagName").val('');
+	    
+	    $("#defaultFlagName").val(defaultFlag);
+	    $("#ruleQueryGet").hide();
+    	
+    	$("#ruleQueryGet").css('display','none');
+    	var fixedTablesNameArr = [];
+    	$('#countyTablesSelect option').each(function(i,tableName) {
+    		fixedTablesNameArr[i] = $(tableName).val();
+    	});
+    	
+        $("#editonNumber").change(function(){
+        	
+        	var tablesNameArr = [];
+        	var editionNumber =  $("#editonNumber").val();
+        	var newTablesNameArr = [];
+        	if (editionNumber < 10){
+        		editionNumber = '0'+editionNumber;
+        	}
+			var option = ""
+    		for(var j= 0;j<fixedTablesNameArr.length;j++){
+    			option += '<option value="'+fixedTablesNameArr[j]+'">'+fixedTablesNameArr[j]+'</option>';
+			}
+			console.log(option);
+        	$('#countyTablesSelect').html(option);
+			$('#countyTablesSelect').multiselect('rebuild');
+			
+        	for(var i = 0 ; i< fixedTablesNameArr.length;i++){
+        		var tableName = fixedTablesNameArr[i];
+        		var tableEditionNumber = "";
+        		tableEditionNumber = tableName.split('_');
+        		tableEditionNumber = tableEditionNumber[2];
+        		
+        		if(editionNumber == tableEditionNumber){
+        			newTablesNameArr.push(fixedTablesNameArr[i]); 
+        		}
+        	}
+        	$('option', $('#countyTablesSelect')).each(function (element) {
+			  	$(this).removeAttr('selected').prop('selected', false);
+			});
+			$('#countyTablesSelect').empty();
+        	$('#countyTablesSelect').multiselect('refresh');
+        	var newOption = ""
+			for(var j= 0;j<newTablesNameArr.length;j++){
+				 newOption += '<option value="'+newTablesNameArr[j]+'">'+newTablesNameArr[j]+'</option>';
+			}
+        	$('#countyTablesSelect').empty();
+			$('#countyTablesSelect').html(newOption);
+			$('#countyTablesSelect').multiselect('rebuild');			
+        });
+
+        $("#addRule").click(function(){
+        	console.log("addRule");
+        	
+        	$("#editionNumberCheck").show();
+        	$("#countySelect").show();
+        	$("#ruleOperation").val("ADD");
+        	if (defaultFlag == "Y"){
+        		$("#countyAssessmentYearDiv").hide();
+        		$("#countyTableField").show();
+        		$("#countyInput").show();
+    			$("#saveButton").show();
+    			$('option', $('#countyTablesSelect')).each(function (element) {
+    			  	$(this).removeAttr('selected').prop('selected', false);
+    			});
+    			$('#countyTablesSelect').multiselect('refresh');
+        	}
+        	else{
+        		$("#countyTableField").show();
+        		$("#countyInput").hide();
+    			$("#saveButton").hide();
+    			$("#countyAssessmentYearDiv").hide();
+    			
+    			$('option', $('#countyTablesSelect')).each(function (element) {
+    			  	$(this).removeAttr('selected').prop('selected', false);
+    			});
+    			$('#countyTablesSelect').multiselect('refresh');
+        	}
+        	var data =$('#ruleQueryId').val();
+        	loadingImage('countyTableColumnsDiv');
+    		jqueryAjaxfunction('getCountyTableColumns','countyTableColumnsDiv', data);
+    		$("#addRule").hide();
+    		$("#showRule").show();
+    		var fieldValue = $("#fields").val();
+    		if(fieldValue == "State (Postal Code)-1"){
+    			var stateName = $("#stateCode").val();
+    			$("#countyAssessmentYearDiv").hide();
+    			$("#countySelect").hide();
+    			$("#editionNumberCheck").hide();
+    			$("#countyInput").show();
+        		$("#countyInput").empty();
+        		$("#countyInput").val("");
+        		$("#countyTablesInput").val("");
+        		$("#countyInput").append("<label class='control-label' id = 'countyTableLabelSelect'>Input</label><input id = 'countyTablesInput' class = 'form-control' disabled/>");
+        		$("#countyInput").attr("disabled", true);
+        		$("#countyInput").val(fieldValue);
+        		$("#countyTablesInput").val(stateName);
+        		$("#saveButton").css("display","block");
+        		$("#showRule").hide();
+    		}
+    		else if(fieldValue == "County Name-2"){
+    			$("#countyAssessmentYearDiv").hide();
+    			$("#countySelect").hide();
+    			$("#editionNumberCheck").hide();
+    			$("#countyInput").empty();
+    			$("#countyInput").show();
+    			$("#countyTablesInput").val("");
+        		$("#countyInput").append("<label class='control-label' id = 'countyTableLabelSelect'>Input</label><input id = 'countyTablesInput' class = 'form-control' disabled/><span id = 'editCounty' class='pull-right' onclick = 'editTheCounty();' style = 'margin-right: -36px;'><img src='img/edit_normal.png' title='Edit' style = 'float: right;margin-top: -28px;'></span>");
+        		var countyName = $("#countyName").val();
+        		$("#countyTablesInput").val(countyName);
+        		$("#saveButton").css("display","block");
+        		$("#showRule").hide();
+    			
+    		}
+    		
+    		else if(fieldValue == "APN-A-3"){
+    			$("#countyAssessmentYearDiv").hide();
+    			$("#countyInput").hide();
+    			$("#countySelect").show();
+    			$("#editionNumberCheck").show();
+        		$('option', $('#countyTablesSelect')).each(function (element) {
+    			  	$(this).removeAttr('selected').prop('selected', false);
+    			});
+
+    			$('#countyTablesSelect').multiselect('refresh');
+    			$("#saveButton").css("display","none");
+    			
+        	}
+    		else if(fieldValue == "Assessment Year-40"){
+    			$("#countySelect").hide();
+    			$("#editionNumberCheck").hide();
+    			$("#countyInput").empty();
+        		$("#countyInput").val("");
+    			$("#countySelect").hide();
+    			$("#countyAssessmentYearDiv").show();
+    			$("#saveButton").css("display","block");
+        		$("#showRule").hide();
+        	}
+        	else if(fieldValue == "Edition number-109"){
+        		$("#countyAssessmentYearDiv").hide();
+        		$("#countySelect").hide();
+    			$("#editionNumberCheck").hide();
+        		$("#countyInput").show();
+        		$("#countyInput").empty();
+        		$("#countyInput").val("");
+        		$("#countyInput").append("<label id = 'countyEditionNumberLabel' class='control-label'>Number</label><input id='countyEditionNumber' value=''  type='number' class=' form-control editorNumber'  min='0' max='99' required size = '2'/>")
+        		$("#saveButton").css("display","block");
+        		$("#showRule").hide();
+        		  $("#countyEditionNumber").bind('keydown', function(e){
+        		       var targetValue = $(this).val();
+        		       console.log(e.which)
+        		       if (e.which ===8 || e.which === 13 || e.which === 37 || e.which === 39 || e.which === 46) { return; }
+
+        		       if (((e.which > 47 &&  e.which < 58) || (e.which > 96 && e.which < 105) )&& targetValue.length < 2 ) {
+        		          var c = String.fromCharCode(e.which);
+        		          var val = parseInt(c);
+        		          var textVal = parseInt(targetValue || "0");
+        		          var result = textVal + val;
+
+        		          if (result < 0 || result > 99) {
+        		             e.preventDefault();
+        		          }
+
+        		          if (targetValue === "0") {
+        		            $(this).val(val);
+        		            e.preventDefault();
+        		          }
+        		       }
+        		       else {
+        		           e.preventDefault();
+        		       }
+        		    });
+        	}
+        	else if(fieldValue == "Certification Date-130"){
+        		$("#countyAssessmentYearDiv").hide();
+        		$("#countyInput").show();
+        		$("#countySelect").hide();
+    			$("#editionNumberCheck").hide();
+        		$("#countyInput").empty();
+        		$("#countyInput").val("");
+        		$("#saveButton").css("display","block");
+        		$("#showRule").hide();
+        		$("#countyInput").append("<label id = 'countyCertificationDateLabel' class='control-label'>Date</label><input id='countyCertificationDate' value='' maxlength='8' size='8' placeholder='ddmmyyyy' type='text' class=' form-control datefield'  style = 'background-color:white' readonly required/>")
+        		 	var date = new Date();
+        		    var nextYear = date.getFullYear();
+        		    $("#countyCertificationDate").datepicker({
+        		        dateFormat: "ddmmyy",
+        		        yearRange: '2000:' + nextYear,
+        		        persistent: true
+        		    });
+        		    $(".ui-datepicker-calendar").css('display','block');
+        	}
+        	else if(fieldValue.match("Tape Cut Date-91")){
+        		$("#countyAssessmentYearDiv").hide();
+        		$("#countyInput").show();
+        		$("#countySelect").hide();
+    			$("#editionNumberCheck").hide();
+        		$("#countyInput").empty();
+        		$("#countyInput").val("");
+        		$("#countyInput").append("<label id = 'countyTapeCutDateLabel' class='control-label'>Month&Year</label><input id='countyTapeCutDate' value='' placeholder='mmyyyy' maxlength='6' size='6' type='text' class=' form-control datefieldTapCut'   style = 'background-color:white' readonly required/>");
+        		$("#saveButton").css("display","block");
+        		$("#showRule").hide();
+        		 	var date = new Date();
+        		    var nextYear = date.getFullYear();
+        			$("#countyTapeCutDate").datepicker( {
+        			yearRange: '2000:' + nextYear,
+        		    changeMonth: true,
+        	        changeYear: true,
+        	        showButtonPanel: true,
+        	        dateFormat: 'mmyy',
+        	        onClose: function(dateText, inst) { 
+        	            var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+        	            var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+        	            $(this).datepicker('setDate', new Date(year, month, 1));
+        	        },
+        	        beforeShow : function() {
+        	        	$(".ui-datepicker-calendar").css('display','none');    
+        	        }
+        		});
+        	}
+        	/* else if(fieldValue.match("Old/Alternate APN")){
+        		$('#countyTablesAtOldAlternateDiv').show();	
+        		$("#countyTapeCutDateDiv").hide();
+        		$("#countyCertificationDateDiv").hide();
+        		$("#countyInput").hide();
+        		$("#countySelect").hide();
+        		$("#countyEditionNumberDiv").hide();
+        		$("#countyAssessmentYearDiv").hide();
+        		$("#countyTableLabel").hide();
+        	} */
+        	
+        	else if(fieldValue.match("FIPS Code-90")){
+        		if($('#countyFipsCode').val() < 100){
+        			var fipsCode = $("#stateFipsCode").val()+0+$('#countyFipsCode').val();	
+        		}
+        		else{
+        			var fipsCode = $("#stateFipsCode").val()+$('#countyFipsCode').val();
+        		}
+        		$("#countyAssessmentYearDiv").hide();
+        		$("#countyInput").show();
+        		$("#countySelect").hide();
+    			$("#editionNumberCheck").hide();
+        		$("#countyInput").empty();
+        		$("#countyInput").val("");
+        		$("#countyInput").append("<label id = 'countyFipsCodeLabel' class='control-label'>FIPS CODE</label><input id='countyFipsCodeCheck' value='' size='5' type='text' class=' form-control' readonly required/>");
+        		$("#countyFipsCodeCheck").val(fipsCode);
+        		$("#saveButton").css("display","block");
+        		$("#showRule").hide();
+        	}
+        });
+        function loadingImage(divId){
+        	$("#"+divId).html("<center><img src='img/ajax-loader.gif'  /></center>");
+        }
+        
+    });
+    
+    
+    function editTheRule(ruleQueryId){
+    	console.log(ruleQueryId + "getCountyColumns");
+    	$("#editionNumberCheck").show();
+    	$("#countySelect").show();
+    	$("#ruleOperation").val("EDIT");
+    	var data = "ruleQueryId="+ruleQueryId;
+    	loadingImage('countyTableColumnsDiv');
+    	jqueryAjaxfunction('getCountyTableColumns','countyTableColumnsDiv', data);
+    	$("#addRule").hide();
+    	$("#showRule").show();
+    }
+    /* function copyTheRule(ruleQueryId){
+    	$("#editionNumberCheck").show();
+    	$("#countySelect").show();
+    	$("#ruleOperation").val("COPY");
+    	var data = "ruleQueryId="+ruleQueryId;
+    	loadingImage('countyTableColumnsDiv');
+    	jqueryAjaxfunction('getCountyTableColumns','countyTableColumnsDiv', data);
+    	$("#addRule").hide();
+    	$("#showRule").show();
+    } */
+    function exceptRun(ruleQueryId){
+    	console.log(ruleQueryId + "getCountyColumns");
+    	$("#editionNumberCheck").show();
+    	$("#countySelect").show();
+    	$("#ruleOperation").val("EXCEPT");
+    	var data = "ruleQueryId="+ruleQueryId;
+    	loadingImage('countyTableColumnsDiv');
+    	jqueryAjaxfunction('getCountyTableColumns','countyTableColumnsDiv', data);
+    	$("#addRule").hide();
+    	$("#showRule").show();
+    }
+    
+    
+    $(document).ready(function(){ 
+        $(window).scroll(function(){ 
+            if ($(this).scrollTop() > 100) { 
+                $('#scroll').fadeIn(); 
+            } else { 
+                $('#scroll').fadeOut(); 
+            } 
+        }); 
+        $('#scroll').click(function(){ 
+            $("html, body").animate({ scrollTop: 0 }, 600); 
+            return false; 
+        }); 
+    });
+  
+    $(document).on('click', '#editCounty', function() {
+    	$("#countyTablesInput").removeAttr('disabled');
+    });	
+    
+    
+    $('textarea[name=textarea]').tooltip({
+    	placement: "top",
+    	trigger: "focus",
+    	width:'auto',
+    	height:'auto'
+    }); 
+</script>
+
+<style>
+
+	 #editCounty:hover {
+    	content: url('img/edit.png');
+    	float: right;
+    	margin-top: -28px;
+	 }
+	.ui-datepicker {
+	    width: 22em !important;
+	}
+	#countyTapeCutDate .ui-datepicker-calendar {
+    	display: none;
+	}
+	.ui-datepicker-month{
+		color : rebeccapurple;
+	}
+	.ui-datepicker-year{
+		color : rebeccapurple;
+	}€‹
+	
+</style>
+
+</head>
+<body>
+  <div  class="col-md-9 col-sm-6 col-xs-12">
+			<div class="widget box" style = "margin-left: 20px;margin-top: -51px"> 
+			      <div class="widget-header">
+			        <h4>Rule</h4>
+			        <input type="hidden" id="fieldAliasName" name="fieldAliasName">
+			        <input type="hidden" id="pageNumber" name="pageNumber" value=1>
+			      </div>
+			      <div class="form-group">
+			      	<div class="col-md-12 headertop">
+			          <div class="row">
+			          	<div class="tab-pane" style = "margin-top:0px !important;">
+				      		<div class="padding">
+				          		<div class="col-md-3">
+			              			<label class="control-label" id = "fieldNameLabel">Field:</label>
+			              			<input id = "fields" class = "form-control" value = "" disabled style = "display:none"/>
+			              			<input id = "defaultFlagName" class = "form-control" value = "" style = "display:none"/>
+								</div>
+							
+								<div class="col-md-3"  >
+								<div id ="editionNumberCheck" hidden = true>
+				              		<label class="control-label">Edition:</label>
+				              		<select id="editonNumber" class="form-control ">
+		                    			<% 
+		                    			Calendar cal = Calendar.getInstance();
+		                    			SimpleDateFormat sdf = new SimpleDateFormat("yy"); // Just the year, with 2 digits
+		                    			int yearRange = Integer.parseInt(sdf.format(Calendar.getInstance().getTime()));
+		                    			%>
+						            	<option value="">--Please Select--</option>
+						            	<%for(int i = 00;i<= yearRange ; i++){ 
+						            	if(i<10){
+						            		i=Integer.parseInt("0"+i);
+						            	}%>
+						            		<option value=<%=i%>><%=i%></option>
+						            	<% };%>
+						            </select>
+								</div>
+						</div>
+							
+			            	<div class="col-md-3">
+				            	<div id="countyTableField" >
+				              		<div id = "countySelect" hidden = true>
+				              			<label class="control-label" id = "countyTableLabel">Tables</label>
+										<select id="countyTablesSelect" style="width: 54% !important;" class="form-control countyTables" multiple="multiple">
+								    		<c:forEach items="${countyTableNames}" var="tableNames">
+				 				    			<option value="${tableNames.oracleTableName}">${tableNames.oracleTableName}</option>
+								    		</c:forEach>
+										</select>
+									</div>
+									<div id = "countyInput" style= "display: none"></div>
+								
+								<div id = "countyAssessmentYearDiv" hidden = true>
+									<label id = 'countyAssessmentYearLabel' class='control-label'>Year</label><select id='countyAssessmentYear' class='form-control countyAssessmentYearCheck '><% Calendar now = Calendar.getInstance();int year = now.get(Calendar.YEAR);%><option value=''>--Please Select--</option><%for(int i = 2000;i<= year ; i++){ %><option value=<%=i%>><%=i%></option><% };%></select>
+								</div>
+								</div>
+							</div>
+							
+						
+						<!-- <div class="col-md-3" id="specificforfield"></div> -->
+						</div>
+						
+				         <div class="col-md-6 margin-top41 " style="margin-left: 30px; width:0px !important; margin-top:0px !important">
+			
+						 <div class="col-md-3" id = "saveButton" style = "display:none;margin-top: 44px;">
+			                <button id="save" class="btn btn-success" onclick = "saveHeaderRule();">Save</button>
+			             </div>
+			             
+				        <div class="col-md-3 margin-top40 ">
+				         	<button id="addRule" class="btn pull-right btn-warning"> <span class="glyphicon glyphicon-plus"></span> Add Rule </button>
+			             </div>
+			             <div class="col-md-6 margin-top40 " style="margin-left: 50px;margin-top: 3px;">
+			             	<button id="showRule" class="btn pull-right btn-warning" style = "display:none" onclick = "getTheRulesFieldWise()" > <span class="glyphicon glyphicon-eye-open" ></span> show Rule </button>
+			             </div>
+			             
+				     </div>
+				     <div class="row">
+		                <div class="col-md-12"> </div>
+		              </div>
+				       <div id="countyTableColumnsDiv">
+					     
+					     <c:forEach items="${rules}" var="rule">
+					     <script> $("#addRule").show();</script>
+					     	<div class="form-group">
+				                <label class="control-label col-md-2 text-right margin-top47">Field-${rule.ruleMaster.fieldNumber} :: Pattern ${rule.ruleMaster.ruleName}<span class="required">*</span></label>
+				                <div class="col-md-4">
+				                  <textarea rows="3" cols="3" id="${rule.ruleQueryId}ruleQuery"  title = "${rule.query}" name="textarea" class="auto form-control fieldRuleQuery margin-top20" style="overflow: hidden; word-wrap: break-word; resize: horizontal; height: 68px;"readOnly>
+				                  ${fn:trim(rule.rule)}</textarea>
+				                  <input id = "ruleQueryGet" value = "${rule.query}"class = "form-control" hidden = true style = "display:none"/>
+				                </div>
+				                <div class="col-md-4">
+				                 	<div class="btn-group margin-top40">
+										<button id="copyRule" class="btn btn-success margin-right" onclick="copyTheRule(${rule.ruleQueryId})">Copy</button>
+										<button id="editRule" class="btn btn-default margin-right" onclick="editTheRule(${rule.ruleQueryId})">Edit</button>
+										<button id="deleteRule" class="delete btn btn-warning" onclick="deleteTheRule(${rule.ruleMaster.ruleId})">Delete</button>
+										<button id="except" class="btn btn-default margin-right" onclick="exceptRun(${rule.ruleQueryId})">Except</button>
+									</div>
+				                </div>
+				              </div>
+					     </c:forEach>
+					     
+			           </div>
+			           <div align="center">
+			           <a href="javascript:getPage('PREVIOUS');">Previous</a>&nbsp;&nbsp;<a href="javascript:getPage('NEXT');">Next</a>
+			           </div>
+					</div>
+		        </div>
+		      </div>
+		      <div class="divider" style="clear:both; padding-top:20px;"></div>
+			</div>
+	
+	  <!-- <div align="right">
+       
+     </div> -->
+			<a href="javascript:void(0);" id="scroll" title="Scroll to Top" style="display: none;">Top<span></span></a>
+   </div>
+ </div>
+ <input type="hidden" id="ruleOperation">
+ <input type="hidden" id="fieldName">
+ <input type="hidden" id="queryCopy"/>
+<input type="hidden" id="tableString"/>
+<input type="hidden" id="columnString"/>
+<input type="hidden" id="ruleQueryId" value="${rule.ruleQueryId}">
+<input type="hidden" id="editonCopy"/>
+<span id="showDialogForCopyRule"></span>
+
+</body>
+</html>

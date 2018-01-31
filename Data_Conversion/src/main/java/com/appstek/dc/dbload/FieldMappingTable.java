@@ -1,0 +1,35 @@
+package com.appstek.dc.dbload;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "FIELD_MAPPINGTABLES")
+public class FieldMappingTable {
+	
+	@Id
+	@Column(name = "Common_Column")
+	private String commonColumn;
+	@Column(name = "Dependent_Column")
+	private String dependentColumn;
+
+	public String getCommonColumn() {
+		return commonColumn;
+	}
+
+	public void setCommonColumn(String commonColumn) {
+		this.commonColumn = commonColumn;
+	}
+
+	public String getDependentColumn() {
+		return dependentColumn;
+
+	}
+
+	public void setDependentColumn(String dependentColumn) {
+		this.dependentColumn = dependentColumn;
+	}
+	
+}

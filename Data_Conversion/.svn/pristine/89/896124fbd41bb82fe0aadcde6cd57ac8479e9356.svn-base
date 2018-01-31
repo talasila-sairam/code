@@ -1,0 +1,47 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html ng-app="app">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Insert title here</title>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular-touch.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular-animate.js"></script>
+    <script src="http://ui-grid.info/docs/grunt-scripts/csv.js"></script>
+    <script src="http://ui-grid.info/docs/grunt-scripts/pdfmake.js"></script>
+    <script src="http://ui-grid.info/docs/grunt-scripts/vfs_fonts.js"></script>
+    <script src="http://ui-grid.info/release/ui-grid.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular-sanitize.js"></script>
+    <link rel="stylesheet" href="http://ui-grid.info/release/ui-grid.css" type="text/css">
+ <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+<link href="css/main.css" rel="stylesheet" type="text/css"/>
+<link href="css/manual-style.css" rel="stylesheet" type="text/css"/>
+<link rel="stylesheet" href="css/font-awesome.min.css" type="text/css">
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/app.js"></script>
+<% String baseQuery=request.getParameter("baseQuery");
+String ruleQuery=request.getParameter("ruleQuery"); 
+%>
+<style>
+
+.ui-grid{
+
+height:500px;
+}
+</style>
+</head>
+<body ng-controller="MainCtrl">
+  <div ui-grid="gridOptions" ui-grid-edit ui-grid-pagination ui-grid-resize-columns class="grid">
+  <div class="well grid-loading" ng-show="grid.rows.length == 0">
+    <img src="img/ajax-loader.gif " id="loadingImage" style="display: block; margin: 0 auto; width: 100px; height:100px;">
+ </div>
+<pagination boundary-links="true" num-pages="noOfPages" total-items="totalItems" page="currentPage" items-per-page="10" class="pagination-sm nomargin" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
+</div> 
+<input type=hidden id="baseQuery" value="<%=baseQuery%>"/>
+<input type=hidden id="ruleQuery" value="<%=ruleQuery%>"/> 
+<!-- 
+<input type=hidden id="baseQuery" />
+<input type=hidden id="ruleQuery" /> -->
+</body>
+</html>

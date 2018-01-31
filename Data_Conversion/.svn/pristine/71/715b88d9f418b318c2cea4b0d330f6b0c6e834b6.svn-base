@@ -1,0 +1,100 @@
+package com.appstek.dc.dao;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+/*import org.apache.poi.hssf.usermodel.HSSFWorkbook;*/
+import org.hibernate.HibernateException;
+
+import com.appstek.dc.dbload.FnfLanCountries;
+import com.appstek.dc.dbload.FnfLanCountyTables;
+import com.appstek.dc.dbload.FnfLanDictionary;
+import com.appstek.dc.dbload.RuleMaster;
+import com.appstek.dc.dbload.RuleQuery;
+import com.appstek.dc.dbload.Territory;
+import com.appstek.dc.dto.DataConversionDto;
+import com.appstek.dc.dto.DataConversionRuleDto;
+
+public interface DataConversionDAO {
+
+	List<FnfLanCountries> loadCountries();
+
+	List<FnfLanDictionary> loadAllFields();
+
+	List<FnfLanCountyTables> loadTableNames(DataConversionDto dataConversionDto);
+
+	Map<String, List<DataConversionDto>> loadTableColumnNames(DataConversionDto dataConversionDto);
+
+	List<LinkedHashMap<String, Object>> getQueryData(String inputQuery) throws HibernateException,SQLException;
+
+	int executeUpdate(String inputQuery);
+
+	List<RuleQuery> loadAllTheRules(DataConversionDto dataConversionDto);
+
+	void deleteRule(RuleQuery ruleQuery);
+
+	RuleQuery loadRule(DataConversionRuleDto dataConversionRuleDto);
+
+	/*List<List<LinkedHashMap<String, Object>>> executeQueryForDefalutFlag(String selectedValue);*/
+
+	boolean saveRule(RuleQuery ruleQuery);
+
+	Territory getTerritoryDetailsByNameFips(String countyName, int countyFipsCode);
+
+	boolean saveTerritory(Territory countyTerritory);
+
+	RuleMaster getRuleMasterByRuleName(String ruleName);
+
+	List<RuleQuery> getFieldRules(List<Integer> fieldList, int territoryId);
+	
+	boolean updateRule(RuleQuery ruleQuery);
+
+	HSSFWorkbook getQueryDataXl(String inputQuery,String realPath);
+
+	List<List<LinkedHashMap<String, Object>>> executeQueryForJoinCondition(String tableNames);
+
+
+	List<RuleQuery> getPerticularField(int fieldNumber, int territoryId);
+
+	public List<RuleQuery> getQueryDataForField(String fildNumber);
+	public int getTotalRecordsOfBaseQuery(String query);
+
+	List<String> getTablesNames(String countyName);
+
+	int ruleCountForCountyField(int territoryId, int fieldNumber);
+	
+	public List<String> getUsedTableNames(int fieldNumber, String territoryName); 
+	public List<String> getUsedColumnNames(int fieldNumber, String territoryName);
+	
+	/**
+	 * chandu
+	 */
+	ArrayList<Object> FetchCounties(String inputQuery);
+
+	ArrayList<Object> Fetchusers(String inputQuery);
+
+	void saveUserTaskmanagement(String user, String county,String state,String editionYear,String assignedTime);
+
+	List<LinkedHashMap<String, Object>> showUserTaskmanagement();
+
+	void showValidateUser(HttpServletRequest request, HttpServletResponse response,
+			String username, String password);
+
+	List<LinkedHashMap<String, Object>>  UserReportfetchRecords(HttpServletRequest request, HttpServletResponse response, String userName);
+
+	void UserReportInsertRecords(HttpServletRequest request, HttpServletResponse response, String comments,
+			String currentStatus,String selectedUser,String signOffStatus);
+
+	ArrayList<Object> FetchStates(String selectQuery);
+
+	int getRuleCount(DataConversionDto dataConversionDto);
+
+	
+}

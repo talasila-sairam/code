@@ -1,0 +1,830 @@
+package com.appstek.dc.serviceImpl;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
+import org.apache.poi.xwpf.usermodel.UnderlinePatterns;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.appstek.dc.dao.DataConversionDAO;
+import com.appstek.dc.dao.FnfLan23Dao;
+import com.appstek.dc.dao.FnfLanDictionaryDao;
+import com.appstek.dc.dbload.FnfLanCountyTables;
+import com.appstek.dc.dbload.FnfLanDictionary;
+import com.appstek.dc.dbload.RuleQuery;
+import com.appstek.dc.dbload.SourceVerificationAnswer;
+import com.appstek.dc.dto.DataConversionDto;
+import com.appstek.dc.dto.ExcelFileDto;
+import com.appstek.dc.dto.ExcelQuestionAnswerDto;
+import com.appstek.dc.service.GenerateReportService;
+import com.appstek.dc.util.MappingConstants;
+
+@Service
+public class GenerateReportServiceImpl implements GenerateReportService{
+	
+	private static Logger log4j = Logger.getLogger("com.appstek.dc.serviceImpl.GenerateReportServiceImpl");
+	
+	@Autowired
+	FnfLanDictionaryDao fnfLanDictionaryDao;
+	@Autowired
+	FnfLan23Dao fnfLan23Dao;
+	@Autowired
+	DataConversionDAO dataConversionDAO;
+	
+	@Override
+	public List<ExcelFileDto> getFirstTableRecordsList() {
+		// TODO Auto-generated method stub
+		List<ExcelFileDto> firesultSettTableList = getFirtTableRecord();
+		return firesultSettTableList;
+	}
+
+	@Override
+	public List<ExcelFileDto> getSecondTableRecordsList() {
+		// TODO Auto-generated method stub
+		List<ExcelFileDto> excelFileDtoList = getSecondTableRecord();
+		return excelFileDtoList;
+	}
+
+	@Override
+	public List<ExcelFileDto> getThirdTableRecordsList() {
+		// TODO Auto-generated method stub
+		List<ExcelFileDto> excelFileDtoList = getThirdTableRecord();
+		return excelFileDtoList;
+	}
+
+	@Override
+	public Map<String, Map<String,?>> getForthTableRecordsList() {
+		// TODO Auto-generated method stub
+		 Map<String, Map<String,?>> map = getForthTableRecord();
+		return map;
+	}
+  private List<ExcelFileDto> getFirtTableRecord()
+  {
+	  List<ExcelFileDto> excelFileDtoList = new ArrayList<ExcelFileDto>();
+	  excelFileDtoList.add(new ExcelFileDto("TFS#:", ""));
+	  excelFileDtoList.add(new ExcelFileDto("Assessement Year:", "2016"));
+	  excelFileDtoList.add(new ExcelFileDto("Edition#:", "06"));
+	  excelFileDtoList.add(new ExcelFileDto("Data Source:", ""));
+	  excelFileDtoList.add(new ExcelFileDto("Tapecut date", "'072016"));
+	  excelFileDtoList.add(new ExcelFileDto("Certification date", "''06012016"));
+	  excelFileDtoList.add(new ExcelFileDto("Tapecut date", "'072016"));
+	  excelFileDtoList.add(new ExcelFileDto("County URL:", ""));
+	  excelFileDtoList.add(new ExcelFileDto("File Format: (Positional,Delimited, Fixed Width)", ""));
+	  excelFileDtoList.add(new ExcelFileDto("File Type: (XML, TXT, XLS)", "Excel"));
+	  excelFileDtoList.add(new ExcelFileDto("Number of Expected Fields:", ""));
+	  excelFileDtoList.add(new ExcelFileDto("Record Layout Available:", ""));
+	  return excelFileDtoList;
+  }
+  
+  private List<ExcelFileDto> getSecondTableRecord()
+  {
+	  List<ExcelFileDto> excelFileDtoList = new ArrayList<ExcelFileDto>();
+		 excelFileDtoList.add(new ExcelFileDto("Did you get the same files/tables?", "Y"));
+		 excelFileDtoList.add(new ExcelFileDto("Same Layouts?", "Y"));
+		 excelFileDtoList.add(new ExcelFileDto("Do record counts differ between Editions?", "Y"));
+		 excelFileDtoList.add(new ExcelFileDto("Did you verify the Assessment Year and Values?", "Y"));
+		 excelFileDtoList.add(new ExcelFileDto(" Does the APN format comply with the current APN format?", "N"));
+		 excelFileDtoList.add(new ExcelFileDto("On Residential Properties:", ""));
+		 excelFileDtoList.add(new ExcelFileDto("Does the source file(s) have a PARCEL NUMBER ?", "Y"));
+		 excelFileDtoList.add(new ExcelFileDto(" Does the source file(s) have OWNER NAMES ?", "Y"));
+		 excelFileDtoList.add(new ExcelFileDto(" Does the source file(s) have a MAIL FULL STREET ADDRESS ?", "Y"));
+		 excelFileDtoList.add(new ExcelFileDto("Does the source file(s) have LAND USE CODES/DESCRIPTION ?", "N"));
+		 excelFileDtoList.add(new ExcelFileDto("Is the source file(s) usable or readable?", "Y"));
+	  return excelFileDtoList;
+  }
+  private List<ExcelFileDto> getThirdTableRecord()
+  {
+	  List<ExcelFileDto> excelFileDtoList = new ArrayList<ExcelFileDto>();
+	  
+		 excelFileDtoList.add(new ExcelFileDto("AK_Sitka_06_Main", "4100"));
+		 excelFileDtoList.add(new ExcelFileDto("", ""));
+		 excelFileDtoList.add(new ExcelFileDto("", ""));
+		 excelFileDtoList.add(new ExcelFileDto("", ""));
+		 excelFileDtoList.add(new ExcelFileDto("", ""));
+		 excelFileDtoList.add(new ExcelFileDto("", ""));
+		 excelFileDtoList.add(new ExcelFileDto("", ""));
+		 excelFileDtoList.add(new ExcelFileDto("", ""));
+		 excelFileDtoList.add(new ExcelFileDto("", ""));
+		 excelFileDtoList.add(new ExcelFileDto("", ""));
+		 excelFileDtoList.add(new ExcelFileDto("", ""));
+		 excelFileDtoList.add(new ExcelFileDto("", ""));
+		 excelFileDtoList.add(new ExcelFileDto("", ""));
+		 excelFileDtoList.add(new ExcelFileDto("", ""));
+		 excelFileDtoList.add(new ExcelFileDto("", ""));
+		 excelFileDtoList.add(new ExcelFileDto("", ""));
+		 excelFileDtoList.add(new ExcelFileDto("", ""));
+		 excelFileDtoList.add(new ExcelFileDto("", ""));
+	  return excelFileDtoList;
+  }
+  private  Map<String, Map<String,?>> getForthTableRecord()
+  {
+	  Map<String, Map<String, ?>> parentMap = new LinkedHashMap<String, Map<String,?>>();
+		List<ExcelFileDto> excelFileDtoList = new ArrayList<ExcelFileDto>();
+		ExcelFileDto obj1 = new ExcelFileDto();
+		obj1.setLanFieldNumber("1");obj1.setLanFieldName("1-STATE (POSTAL CODE)");obj1.setLength("2");
+		obj1.setTo("1");obj1.setFrom("2");obj1.setFileName("");obj1.setStartPosition("");obj1.setEndPosition("");
+		obj1.setPullForward("");obj1.setSourceCount("");obj1.setLanCount("");obj1.setUploadInst("Load as 'AK'");
+		obj1.setAdditionalReq("");
+		excelFileDtoList.add(obj1);
+		ExcelFileDto obj2 = new ExcelFileDto();
+		obj2.setLanFieldNumber("2");obj2.setLanFieldName("2-County Name)");obj2.setLength("25");
+		obj2.setTo("3");obj2.setFrom("27");obj2.setFileName("");obj2.setStartPosition("");obj2.setEndPosition("");
+		obj2.setPullForward("");obj2.setSourceCount("");obj2.setLanCount("");obj2.setUploadInst("Load as 'SITKA'");
+		obj2.setAdditionalReq("");
+		excelFileDtoList.add(obj2);
+		ExcelFileDto obj3 = new ExcelFileDto();
+		obj3.setLanFieldNumber("90");obj3.setLanFieldName("90-FIPS CODE");obj3.setLength("5");
+		obj3.setTo("1330");obj3.setFrom("1334");obj3.setFileName("");obj3.setStartPosition("");obj3.setEndPosition("");
+		obj3.setPullForward("");obj3.setSourceCount("");obj3.setLanCount("");obj3.setUploadInst("Load as 02220");
+		obj3.setAdditionalReq("");
+		excelFileDtoList.add(obj3);
+		ExcelFileDto obj4 = new ExcelFileDto();
+		obj4.setLanFieldNumber("3");obj4.setLanFieldName("3-APN-A (OR PIN NUMBER)");obj4.setLength("2");
+		obj4.setTo("1395");obj4.setFrom("1396");obj4.setFileName("AK_Sitka_06_Main");obj4.setStartPosition("");obj4.setEndPosition("");
+		obj4.setPullForward("");obj4.setSourceCount("");obj4.setLanCount("");obj4.setUploadInst("Load  from [Property #] .");
+		obj4.setAdditionalReq("");
+		excelFileDtoList.add(obj4);
+		ExcelFileDto obj5 = new ExcelFileDto();
+		obj5.setLanFieldNumber("109");obj5.setLanFieldName("109-ADDITION NUMBER");obj5.setLength("45");
+		obj5.setTo("25");obj5.setFrom("72");obj5.setFileName("AK_Sitka_06_Main");obj5.setStartPosition("");obj5.setEndPosition("");
+		obj5.setPullForward("");obj5.setSourceCount("");obj5.setLanCount("");obj5.setUploadInst("Load as 2016");
+		obj5.setAdditionalReq("");
+		excelFileDtoList.add(obj5);
+		Map<String,List<ExcelFileDto>> subMap1 = new LinkedHashMap<String,List<ExcelFileDto>>();
+		subMap1.put("Class Comment:", excelFileDtoList);
+		
+		
+		
+		List<ExcelFileDto> excelFileDtoList1 = new ArrayList<ExcelFileDto>();
+		ExcelFileDto aobj1 = new ExcelFileDto();
+		aobj1.setLanFieldNumber("1");aobj1.setLanFieldName("1-STATE (POSTAL CODE)");aobj1.setLength("2");
+		aobj1.setTo("1");aobj1.setFrom("2");aobj1.setFileName("");aobj1.setStartPosition("");aobj1.setEndPosition("");
+		aobj1.setPullForward("");aobj1.setSourceCount("");aobj1.setLanCount("");aobj1.setUploadInst("Load as 'AK'");
+		aobj1.setAdditionalReq("");
+		excelFileDtoList1.add(aobj1);
+		ExcelFileDto aobj2 = new ExcelFileDto();
+		aobj2.setLanFieldNumber("2");aobj2.setLanFieldName("2-County Name)");aobj2.setLength("25");
+		aobj2.setTo("3");aobj2.setFrom("27");aobj2.setFileName("");aobj2.setStartPosition("");aobj2.setEndPosition("");
+		aobj2.setPullForward("");aobj2.setSourceCount("");aobj2.setLanCount("");aobj2.setUploadInst("Load as 'SITKA'");
+		aobj2.setAdditionalReq("");
+		excelFileDtoList1.add(aobj2);
+		ExcelFileDto aobj3 = new ExcelFileDto();
+		aobj3.setLanFieldNumber("90");aobj3.setLanFieldName("90-FIPS CODE");aobj3.setLength("5");
+		aobj3.setTo("1330");aobj3.setFrom("1334");aobj3.setFileName("");aobj3.setStartPosition("");obj3.setEndPosition("");
+		aobj3.setPullForward("");aobj3.setSourceCount("");aobj3.setLanCount("");aobj3.setUploadInst("Load as 02220");
+		aobj3.setAdditionalReq("");
+		excelFileDtoList1.add(aobj3);
+		ExcelFileDto aobj4 = new ExcelFileDto();
+		aobj4.setLanFieldNumber("3");aobj4.setLanFieldName("3-APN-A (OR PIN NUMBER)");aobj4.setLength("2");
+		aobj4.setTo("1395");aobj4.setFrom("1396");aobj4.setFileName("AK_Sitka_06_Main");aobj4.setStartPosition("");obj4.setEndPosition("");
+		aobj4.setPullForward("");aobj4.setSourceCount("");aobj4.setLanCount("");aobj4.setUploadInst("Load  from [Property #] .");
+		aobj4.setAdditionalReq("");
+		excelFileDtoList1.add(aobj4);
+		ExcelFileDto aobj5 = new ExcelFileDto();
+		aobj5.setLanFieldNumber("109");aobj5.setLanFieldName("109-ADDITION NUMBER");aobj5.setLength("45");
+		aobj5.setTo("25");obj5.setFrom("72");aobj5.setFileName("AK_Sitka_06_Main");aobj5.setStartPosition("");obj5.setEndPosition("");
+		aobj5.setPullForward("");aobj5.setSourceCount("");aobj5.setLanCount("");aobj5.setUploadInst("Load as 2016");
+		aobj5.setAdditionalReq("");
+		excelFileDtoList1.add(aobj5);
+		Map<String,List<ExcelFileDto>> subMap2 = new LinkedHashMap<String,List<ExcelFileDto>>();
+		subMap2.put("Class Comment:", excelFileDtoList1);
+		
+		
+		
+		parentMap.put("Header Fields", subMap1);
+		parentMap.put("Name Fields", subMap2);
+		
+		
+		List<String> headerList = new ArrayList<String>();
+		headerList.add("Lot/Building Fields");
+		headerList.add("Exterior Fields");
+		headerList.add("Interior Fields");
+		//headerList.add("Speciality Fields");
+		
+		List<ExcelFileDto> list1 = new ArrayList<ExcelFileDto>();
+		ExcelFileDto bobj1 = new ExcelFileDto();
+		bobj1.setLanFieldNumber("1");bobj1.setLanFieldName("1-STATE (POSTAL CODE)");bobj1.setLength("2");
+		bobj1.setTo("1");bobj1.setFrom("2");bobj1.setFileName("");bobj1.setStartPosition("");bobj1.setEndPosition("");
+		bobj1.setPullForward("");bobj1.setSourceCount("");bobj1.setLanCount("");bobj1.setUploadInst("Load as 'AK'");
+		bobj1.setAdditionalReq("");
+		list1.add(bobj1);
+		ExcelFileDto bobj2 = new ExcelFileDto();
+		bobj2.setLanFieldNumber("2");bobj2.setLanFieldName("2-County Name)");bobj2.setLength("25");
+		bobj2.setTo("3");bobj2.setFrom("27");bobj2.setFileName("");bobj2.setStartPosition("");bobj2.setEndPosition("");
+		bobj2.setPullForward("");bobj2.setSourceCount("");bobj2.setLanCount("");bobj2.setUploadInst("Load as 'SITKA'");
+		bobj2.setAdditionalReq("");
+		list1.add(bobj2);
+		ExcelFileDto bobj3 = new ExcelFileDto();
+		bobj3.setLanFieldNumber("90");bobj3.setLanFieldName("90-FIPS CODE");bobj3.setLength("5");
+		bobj3.setTo("1330");bobj3.setFrom("1334");bobj3.setFileName("");bobj3.setStartPosition("");bobj3.setEndPosition("");
+		bobj3.setPullForward("");bobj3.setSourceCount("");obj3.setLanCount("");bobj3.setUploadInst("Load as 02220");
+		bobj3.setAdditionalReq("");
+		list1.add(bobj3);
+		ExcelFileDto bobj4 = new ExcelFileDto();
+		bobj4.setLanFieldNumber("3");bobj4.setLanFieldName("3-APN-A (OR PIN NUMBER)");bobj4.setLength("2");
+		bobj4.setTo("1395");bobj4.setFrom("1396");bobj4.setFileName("AK_Sitka_06_Main");bobj4.setStartPosition("");bobj4.setEndPosition("");
+		bobj4.setPullForward("");bobj4.setSourceCount("");bobj4.setLanCount("");bobj4.setUploadInst("Load  from [Property #] .");
+		bobj4.setAdditionalReq("");
+		list1.add(bobj4);
+		ExcelFileDto bobj5 = new ExcelFileDto();
+		bobj5.setLanFieldNumber("109");bobj5.setLanFieldName("109-ADDITION NUMBER");bobj5.setLength("45");
+		bobj5.setTo("25");bobj5.setFrom("72");bobj5.setFileName("AK_Sitka_06_Main");bobj5.setStartPosition("");bobj5.setEndPosition("");
+		bobj5.setPullForward("");bobj5.setSourceCount("");bobj5.setLanCount("");bobj5.setUploadInst("Load as 2016");
+		bobj5.setAdditionalReq("");
+		list1.add(bobj5);
+		
+		List<ExcelFileDto> list2 = new ArrayList<ExcelFileDto>();
+		ExcelFileDto cbobj1 = new ExcelFileDto();
+		cbobj1.setLanFieldNumber("1");cbobj1.setLanFieldName("1-STATE (POSTAL CODE)");cbobj1.setLength("2");
+		cbobj1.setTo("1");cbobj1.setFrom("2");cbobj1.setFileName("");cbobj1.setStartPosition("");cbobj1.setEndPosition("");
+		cbobj1.setPullForward("");cbobj1.setSourceCount("");cbobj1.setLanCount("");cbobj1.setUploadInst("Load as 'AK'");
+		cbobj1.setAdditionalReq("");
+		list2.add(cbobj1);
+		ExcelFileDto dbobj2 = new ExcelFileDto();
+		dbobj2.setLanFieldNumber("2");dbobj2.setLanFieldName("2-County Name)");dbobj2.setLength("25");
+		dbobj2.setTo("3");dbobj2.setFrom("27");dbobj2.setFileName("");dbobj2.setStartPosition("");dbobj2.setEndPosition("");
+		dbobj2.setPullForward("");dbobj2.setSourceCount("");dbobj2.setLanCount("");dbobj2.setUploadInst("Load as 'SITKA'");
+		dbobj2.setAdditionalReq("");
+		list2.add(dbobj2);
+		ExcelFileDto ebobj3 = new ExcelFileDto();
+		ebobj3.setLanFieldNumber("90");ebobj3.setLanFieldName("90-FIPS CODE");ebobj3.setLength("5");
+		ebobj3.setTo("1330");ebobj3.setFrom("1334");ebobj3.setFileName("");ebobj3.setStartPosition("");ebobj3.setEndPosition("");
+		ebobj3.setPullForward("");ebobj3.setSourceCount("");ebobj3.setLanCount("");ebobj3.setUploadInst("Load as 02220");
+		ebobj3.setAdditionalReq("");
+		list2.add(ebobj3);
+		ExcelFileDto dbobj4 = new ExcelFileDto();
+		dbobj4.setLanFieldNumber("3");dbobj4.setLanFieldName("3-APN-A (OR PIN NUMBER)");dbobj4.setLength("2");
+		dbobj4.setTo("1395");dbobj4.setFrom("1396");dbobj4.setFileName("AK_Sitka_06_Main");dbobj4.setStartPosition("");dbobj4.setEndPosition("");
+		dbobj4.setPullForward("");dbobj4.setSourceCount("");dbobj4.setLanCount("");dbobj4.setUploadInst("Load  from [Property #] .");
+		dbobj4.setAdditionalReq("");
+		list2.add(dbobj4);
+		ExcelFileDto fbobj5 = new ExcelFileDto();
+		fbobj5.setLanFieldNumber("109");fbobj5.setLanFieldName("109-ADDITION NUMBER");fbobj5.setLength("45");
+		fbobj5.setTo("25");fbobj5.setFrom("72");fbobj5.setFileName("AK_Sitka_06_Main");fbobj5.setStartPosition("");fbobj5.setEndPosition("");
+		fbobj5.setPullForward("");fbobj5.setSourceCount("");fbobj5.setLanCount("");fbobj5.setUploadInst("Load as 2016");
+		fbobj5.setAdditionalReq("");
+		list2.add(fbobj5);
+		
+		List<ExcelFileDto> list3 = new ArrayList<ExcelFileDto>();
+		ExcelFileDto gbobj1 = new ExcelFileDto();
+		gbobj1.setLanFieldNumber("1");gbobj1.setLanFieldName("1-STATE (POSTAL CODE)");gbobj1.setLength("2");
+		gbobj1.setTo("1");gbobj1.setFrom("2");cbobj1.setFileName("");gbobj1.setStartPosition("");gbobj1.setEndPosition("");
+		gbobj1.setPullForward("");gbobj1.setSourceCount("");gbobj1.setLanCount("");gbobj1.setUploadInst("Load as 'AK'");
+		gbobj1.setAdditionalReq("");
+		list3.add(gbobj1);
+		ExcelFileDto hdbobj2 = new ExcelFileDto();
+		hdbobj2.setLanFieldNumber("2");hdbobj2.setLanFieldName("2-County Name)");hdbobj2.setLength("25");
+		hdbobj2.setTo("3");hdbobj2.setFrom("27");hdbobj2.setFileName("");hdbobj2.setStartPosition("");hdbobj2.setEndPosition("");
+		hdbobj2.setPullForward("");hdbobj2.setSourceCount("");hdbobj2.setLanCount("");hdbobj2.setUploadInst("Load as 'SITKA'");
+		hdbobj2.setAdditionalReq("");
+		list3.add(hdbobj2);
+		ExcelFileDto iebobj3 = new ExcelFileDto();
+		iebobj3.setLanFieldNumber("90");iebobj3.setLanFieldName("90-FIPS CODE");iebobj3.setLength("5");
+		iebobj3.setTo("1330");iebobj3.setFrom("1334");iebobj3.setFileName("");iebobj3.setStartPosition("");iebobj3.setEndPosition("");
+		iebobj3.setPullForward("");iebobj3.setSourceCount("");iebobj3.setLanCount("");iebobj3.setUploadInst("Load as 02220");
+		iebobj3.setAdditionalReq("");
+		list3.add(iebobj3);
+		ExcelFileDto jdbobj4 = new ExcelFileDto();
+		jdbobj4.setLanFieldNumber("3");jdbobj4.setLanFieldName("3-APN-A (OR PIN NUMBER)");jdbobj4.setLength("2");
+		jdbobj4.setTo("1395");jdbobj4.setFrom("1396");jdbobj4.setFileName("AK_Sitka_06_Main");jdbobj4.setStartPosition("");jdbobj4.setEndPosition("");
+		jdbobj4.setPullForward("");jdbobj4.setSourceCount("");jdbobj4.setLanCount("");jdbobj4.setUploadInst("Load  from [Property #] .");
+		jdbobj4.setAdditionalReq("");
+		list3.add(jdbobj4);
+		ExcelFileDto kbobj5 = new ExcelFileDto();
+		kbobj5.setLanFieldNumber("109");kbobj5.setLanFieldName("109-ADDITION NUMBER");kbobj5.setLength("45");
+		kbobj5.setTo("25");kbobj5.setFrom("72");kbobj5.setFileName("AK_Sitka_06_Main");kbobj5.setStartPosition("");kbobj5.setEndPosition("");
+		kbobj5.setPullForward("");kbobj5.setSourceCount("");kbobj5.setLanCount("");kbobj5.setUploadInst("Load as 2016");
+		kbobj5.setAdditionalReq("");
+		list3.add(kbobj5);
+		
+		
+		Map<String,Map<String,?>> childMapWithKey = new LinkedHashMap<String,Map<String,?>>();
+		
+		
+		Map<String,List<ExcelFileDto>> childMap = new LinkedHashMap<String,List<ExcelFileDto>>();
+		childMap.put(headerList.get(0), list1);
+		childMap.put(headerList.get(1), list2);
+		childMap.put(headerList.get(2), list3);
+		childMapWithKey.put("Class  Comment", childMap);
+	
+		parentMap.put("Header Fields", subMap1);
+		parentMap.put("Name Fields", subMap2);
+		parentMap.put("PCR (Property Characteristic) Fields", childMapWithKey);
+		
+		return parentMap;
+  }
+
+@Override
+public BufferedWriter generateTextReport(String realPath) {
+	 BufferedWriter br = null;
+	log4j.info("GenerateReportServiceImpl - generateTextReport :: Start");
+	List<FnfLanDictionary> fnfLanDictionaryList = fnfLanDictionaryDao.getMappingColumnInfo();
+	 try
+	 {
+		 br  = fnfLan23Dao.callProcedureForTXTGeneration(fnfLanDictionaryList,realPath);
+	 }catch(Exception e)
+	 {
+		 log4j.info("Exception in GenerateReportServiceImpl - generateTextReport :: "+e.getMessage()); 
+		 e.printStackTrace();
+	 }
+	log4j.info("GenerateReportServiceImpl - generateTextReport :: End");
+	// TODO Auto-generated method stub
+	return br;
+}
+
+@Override
+public HSSFWorkbook getQueryDataXl(String inputQuery,String realPath) {
+	// TODO Auto-generated method stub
+	HSSFWorkbook Workbook = dataConversionDAO.getQueryDataXl(inputQuery,realPath);
+	return Workbook;
+}
+
+@Override
+public List<String> createWordDocumentForExcelReportGeneration(String realPath,String countyName,String stateName,String edition) {
+	List<String> fileNameList = new ArrayList<String>();
+	try{
+	     String doc1 = MappingConstants.DOC1;
+		 String doc2 = MappingConstants.DOC2;
+		 String doc3 = MappingConstants.DOC3;
+		 String doc4 = MappingConstants.DOC4;
+		 String doc5 = MappingConstants.DOC5;
+		 String doc6 = MappingConstants.DOC6;
+		 String doc7 = MappingConstants.DOC7;
+		 String doc8 = MappingConstants.DOC8;
+		 String doc9 = MappingConstants.DOC9;
+		 String[] s = (doc1).split("#");
+		 fileNameList.add(generateDocument((doc1).split("#"),realPath,countyName,stateName,edition));
+		 fileNameList.add(generateDocument((doc2).split("#"),realPath,countyName,stateName,edition));
+		 fileNameList.add(generateDocument((doc3).split("#"),realPath,countyName,stateName,edition));
+		 fileNameList.add(generateDocument((doc4).split("#"),realPath,countyName,stateName,edition));
+		 fileNameList.add(generateDocument((doc5).split("#"),realPath,countyName,stateName,edition));
+		 fileNameList.add(generateDocument((doc6).split("#"),realPath,countyName,stateName,edition));
+		 fileNameList.add(generateDocument((doc7).split("#"),realPath,countyName,stateName,edition));
+		 fileNameList.add(generateDocument((doc8).split("#"),realPath,countyName,stateName,edition));
+		 fileNameList.add(generateDocument((doc9).split("#"),realPath,countyName,stateName,edition));
+	     System.out.println("createdocument.docx written successully");
+
+	}catch(Exception e)
+	{
+		e.printStackTrace();
+	}
+	
+		return fileNameList;
+   }
+
+ public String generateDocument( String[] s,String realPath,String countyName,String stateName,String edition)
+ {
+	 System.out.print(realPath);
+	 String fileName ="";
+	 XWPFDocument document= new XWPFDocument(); 
+	 String filename = null;
+	 int fcount = 0;
+	 try {
+		for(int j=0;j<s.length;j++)
+		  {
+			 if(fcount == 0)
+			 {
+				 filename = s[j];
+				 filename = filename.replace('/','-');
+				 fcount++;
+			 }
+			 
+			 XWPFParagraph fieldNameHeaderPara = document.createParagraph();
+			 XWPFRun fieldNameHeaderRh = fieldNameHeaderPara.createRun();
+			 fieldNameHeaderRh.setFontSize(14);
+			 fieldNameHeaderRh.setFontFamily("Calibri Light (Headings)");
+			 fieldNameHeaderRh.setBold(true);
+			 fieldNameHeaderRh.setUnderline(UnderlinePatterns.SINGLE);
+			 fieldNameHeaderRh.setColor("5b9bd5");
+			 fieldNameHeaderPara.setAlignment(ParagraphAlignment.LEFT);
+		     fieldNameHeaderRh.setText(s[j]);
+		     fieldNameHeaderRh.addBreak();
+		     fieldNameHeaderRh.addBreak();
+		     String[] s1=s[j].split("-");
+			 List<RuleQuery> ruleQueryList = dataConversionDAO.getQueryDataForField(s1[0].trim(),countyName,stateName,edition);
+			 for(Iterator iterator = ruleQueryList.iterator(); iterator.hasNext();)
+			  { 
+				Object[] rq =   (Object[])iterator.next(); 
+				XWPFParagraph patternPara = document.createParagraph();
+				XWPFRun patternRh = fieldNameHeaderPara.createRun();
+				patternRh.setFontSize(13);
+				patternRh.setFontFamily("Calibri Light (Headings)");
+				patternRh.setColor("2e74b5");
+				patternRh.setText("Pattern "+rq[0].toString()+":");
+				patternRh.addBreak();
+				int count = 0;
+				//get Total number of records according to base query
+				if(rq[1] != null)
+				{
+				 count = dataConversionDAO.getTotalRecordsOfBaseQuery(rq[1].toString());
+				}
+				else
+				{
+					count=0;	
+				}
+				
+				XWPFParagraph totRecordPara = document.createParagraph();
+				XWPFRun totRecordRh = fieldNameHeaderPara.createRun();
+				totRecordRh.setFontSize(11);
+				totRecordRh.setFontFamily("Calibri (Body)");
+				totRecordRh.setColor("000000");
+				totRecordRh.setText("--"+String.valueOf(count)+" Records");
+				totRecordRh.addBreak();
+				totRecordRh.addBreak();
+				
+				XWPFParagraph queryHeaderPara = document.createParagraph();
+				XWPFRun queryHeaderRh = fieldNameHeaderPara.createRun();
+				queryHeaderRh.setFontSize(11);
+				queryHeaderRh.setFontFamily("Calibri (Body)");
+				queryHeaderRh.setBold(true);
+				queryHeaderRh.setUnderline(UnderlinePatterns.SINGLE);
+				queryHeaderRh.setColor("000000");
+				queryHeaderRh.setText("Query:");
+				queryHeaderRh.addBreak();
+				queryHeaderRh.addBreak();
+				
+				XWPFParagraph queryDataPara = document.createParagraph();
+				XWPFRun queryDataRh = fieldNameHeaderPara.createRun();
+				queryDataRh.setFontSize(11);
+				queryDataRh.setFontFamily("Times New Roman");
+				queryDataRh.setText(String.valueOf(rq[1]==null?" ":rq[1]));
+				queryDataRh.addBreak();
+				queryDataRh.addBreak();
+				queryDataRh.addBreak();
+				
+				XWPFParagraph ruleHeaderPara = document.createParagraph();
+				XWPFRun ruleHeaderRh = fieldNameHeaderPara.createRun();
+				ruleHeaderRh.setFontSize(11);
+				ruleHeaderRh.setFontFamily("Calibri (Body)");
+				ruleHeaderRh.setBold(true);
+				ruleHeaderRh.setUnderline(UnderlinePatterns.SINGLE);
+				ruleHeaderRh.setColor("000000");
+				ruleHeaderRh.setText("RULE:");
+				ruleHeaderRh.addBreak();
+				ruleHeaderRh.addBreak();
+				
+				XWPFParagraph ruleValuePara = document.createParagraph();
+				XWPFRun ruleValueRh = fieldNameHeaderPara.createRun();
+				ruleValueRh.setFontSize(11);
+				ruleValueRh.setFontFamily("Times New Roman");
+				ruleValueRh.setText(String.valueOf(rq[2]==null?" ":rq[2]));
+				ruleValueRh.addBreak();
+				ruleValueRh.addBreak();
+				
+				XWPFParagraph sampleHeaderPara6= document.createParagraph();
+				XWPFRun sampleHeaderRh = fieldNameHeaderPara.createRun();
+				sampleHeaderRh.setFontSize(11);
+				sampleHeaderRh.setFontFamily("Calibri (Body)");
+				sampleHeaderRh.setBold(true);
+				sampleHeaderRh.setUnderline(UnderlinePatterns.SINGLE);
+				sampleHeaderRh.setColor("000000");
+				sampleHeaderRh.setText("SAMPLES:");
+				sampleHeaderRh.addBreak();
+				sampleHeaderRh.addBreak();
+			  } 
+		  }
+		 
+			    System.out.print(realPath+filename+".docx");
+			    File fl = new File(realPath+filename+".docx");
+			    if(fl.exists())
+			    {
+			    	fl.delete();
+			    }
+				FileOutputStream out = new FileOutputStream(realPath+filename+".docx");
+				fileName = filename+".docx";
+			    document.write(out);
+			    out.close();
+	} catch (FileNotFoundException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (Exception e) {
+		// TODO: handle exception
+	}
+		
+	 return fileName;
+ }
+
+@Override
+public String getUsedTableNames(int fieldNumber, String territoryName,String edition) {
+	String usedTableNames = "";
+	Set<String> usedTableNameSet = new HashSet<String>();
+	try {
+		List<String> usedTableNameList = dataConversionDAO.getUsedTableNames(fieldNumber, territoryName,edition);
+		for(String usedTableName : usedTableNameList){
+			String [] tableNames = usedTableName.split(",");
+			for(int i=0; i<tableNames.length; i++){
+				usedTableNameSet.add(tableNames[i]);
+			}
+		}
+		
+		for(String tableName : usedTableNameSet){
+			usedTableNames = usedTableNames+tableName+"\n";
+		}
+	} catch (Exception e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	
+	return usedTableNames;
+}
+
+@Override
+public String getUsedColumnNames(int fieldNumber, String territoryName,String edition) {
+	String usedColumnNames = "";
+	Set<String> usedColumnNameSet = new HashSet<String>();
+	try {
+		List<String> usedColumnNameList = dataConversionDAO.getUsedColumnNames(fieldNumber, territoryName,edition);
+		for(String usedColumnName : usedColumnNameList){
+			String [] ColumnNames = usedColumnName.split(",");
+			for(int i=0; i<ColumnNames.length; i++){
+				usedColumnNameSet.add(ColumnNames[i]);
+			}
+		}
+		
+		for(String columnName : usedColumnNameSet){
+			usedColumnNames = usedColumnNames+columnName+"\n";
+		}
+	} catch (Exception e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	return usedColumnNames;
+}
+
+@Override
+public String getUsedRUL(int fieldNumber, String territoryName, String edition) {
+	// TODO Auto-generated method stub
+	String usedRUL = "";
+	try {
+		 usedRUL = dataConversionDAO.getUsedRUL(fieldNumber, territoryName,edition);
+		
+	} catch (Exception e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	return usedRUL;
+ }
+
+@Override
+public List<SourceVerificationAnswer> getSourceVerificationAnswers(DataConversionDto dataConversionDto) {
+	return dataConversionDAO.getSourceVerificationAnswers(dataConversionDto);
+}
+
+@Override
+public boolean saveSourceVerificationResult(ExcelQuestionAnswerDto exclQADto) {
+	return dataConversionDAO.saveSourceVerificationResult(exclQADto);
+}
+
+@Override
+public List<ExcelFileDto> getFirstTableRecordsList(String editon, Long countryFipsCode, Long stateFipsCode, Long countyFipsCode) {
+	List<ExcelFileDto> excelFileDtoList = new ArrayList<ExcelFileDto>();
+	  try {
+		excelFileDtoList.add(new ExcelFileDto("TFS#:", ""));
+		  excelFileDtoList.add(new ExcelFileDto("Assessement Year:", String.valueOf(2010+Integer.parseInt(editon))));
+		  excelFileDtoList.add(new ExcelFileDto("Edition#:", editon));
+		  excelFileDtoList.add(new ExcelFileDto("Data Source:", ""));
+		  //excelFileDtoList.add(new ExcelFileDto("Tapecut date", "'072016"));
+		  //excelFileDtoList.add(new ExcelFileDto("Certification date", "''06012016"));
+		  excelFileDtoList.add(new ExcelFileDto("Tapecut date", getTapecutDate(editon, countryFipsCode, stateFipsCode, countyFipsCode)));
+		  excelFileDtoList.add(new ExcelFileDto("Certification date", getCertificationDate(editon, countryFipsCode, stateFipsCode, countyFipsCode)));
+		  excelFileDtoList.add(new ExcelFileDto("County URL:", ""));
+		  excelFileDtoList.add(new ExcelFileDto("File Format: (Positional,Delimited, Fixed Width)", ""));
+		  excelFileDtoList.add(new ExcelFileDto("File Type: (XML, TXT, XLS)", "Excel"));
+		  excelFileDtoList.add(new ExcelFileDto("Number of Expected Fields:", ""));
+		  excelFileDtoList.add(new ExcelFileDto("Record Layout Available:", ""));
+	} catch (NumberFormatException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}catch (Exception ex) {
+		// TODO: handle exception
+		ex.printStackTrace();
+	}
+	  return excelFileDtoList;
+}
+
+private String getCertificationDate(String editon, Long countryFipsCode, Long stateFipsCode, Long countyFipsCode) {
+	String certificationDate = "";
+	DataConversionDto dto = new DataConversionDto();
+	dto.setCountryFipsCode(countryFipsCode);
+	dto.setStateFipsCode(stateFipsCode);
+	dto.setCountyFipsCode(countyFipsCode);
+	dto.setEdition(editon);
+	dto.setFieldNumber(130);
+	dto.setPageNumber(1);
+	dto.setPageSize(1);
+	dto.setRuleLevel("edition");
+	List<RuleQuery> rules = dataConversionDAO.loadAllTheRules(dto);
+	if(rules.size() > 0){
+		RuleQuery rule = rules.get(0);
+		certificationDate = rule.getQuery().trim().substring(7, 15);
+	}
+	return certificationDate;
+}
+
+private String getTapecutDate(String editon, Long countryFipsCode, Long stateFipsCode, Long countyFipsCode) {
+	String tapecutDate = "";
+	DataConversionDto dto = new DataConversionDto();
+	dto.setCountryFipsCode(countryFipsCode);
+	dto.setStateFipsCode(stateFipsCode);
+	dto.setCountyFipsCode(countyFipsCode);
+	dto.setEdition(editon);
+	dto.setFieldNumber(91);
+	dto.setPageNumber(1);
+	dto.setPageSize(1);
+	dto.setRuleLevel("edition");
+	List<RuleQuery> rules = dataConversionDAO.loadAllTheRules(dto);
+	if(rules.size() > 0){
+		RuleQuery rule = rules.get(0);
+		tapecutDate = rule.getQuery().trim().substring(7, 13);
+	}
+	return tapecutDate;
+}
+
+@Override
+public List<ExcelFileDto> getSecondTableRecordsList(String editon, Long countryFipsCode, Long stateFipsCode, Long countyFipsCode) {
+	List<ExcelFileDto> excelFileDtoList = new ArrayList<ExcelFileDto>();
+	DataConversionDto dataConversionDto = new DataConversionDto();
+	dataConversionDto.setEdition(editon);
+	dataConversionDto.setCountryFipsCode(countryFipsCode);
+	dataConversionDto.setCountyFipsCode(countyFipsCode);
+	dataConversionDto.setStateFipsCode(stateFipsCode);
+	List<SourceVerificationAnswer> answerList = dataConversionDAO.getSourceVerificationAnswers(dataConversionDto);
+	
+	for(SourceVerificationAnswer answer : answerList){
+		if (answer.getQuestionId() == 1){
+			excelFileDtoList.add(0,new ExcelFileDto("Did you get the same files/tables?", answer.getAnswer()));
+		}else if (answer.getQuestionId() == 2) {
+			excelFileDtoList.add(1,new ExcelFileDto("Same Layouts?", answer.getAnswer()));
+		}else if (answer.getQuestionId() == 3) {
+			excelFileDtoList.add(2,new ExcelFileDto("Do record counts differ between Editions?", answer.getAnswer()));
+		}else if (answer.getQuestionId() == 4) {
+			excelFileDtoList.add(3,new ExcelFileDto("Did you verify the Assessment Year and Values?", answer.getAnswer()));
+		}else if (answer.getQuestionId() == 5) {
+			excelFileDtoList.add(4,new ExcelFileDto("Does the APN format comply with the current APN format?", answer.getAnswer()));
+			excelFileDtoList.add(5,new ExcelFileDto("On Residential Properties:", ""));
+		}else if (answer.getQuestionId() == 6) {
+			excelFileDtoList.add(6,new ExcelFileDto("Does the source file(s) have a PARCEL NUMBER ?", answer.getAnswer()));
+		}else if (answer.getQuestionId() == 7) {
+			excelFileDtoList.add(7,new ExcelFileDto(" Does the source file(s) have OWNER NAMES ?", answer.getAnswer()));
+		}else if (answer.getQuestionId() == 8) {
+			excelFileDtoList.add(8,new ExcelFileDto(" Does the source file(s) have a MAIL FULL STREET ADDRESS ?", answer.getAnswer()));
+		}else if (answer.getQuestionId() == 9) {
+			excelFileDtoList.add(9,new ExcelFileDto("Does the source file(s) have LAND USE CODES/DESCRIPTION ?", answer.getAnswer()));
+		}else if (answer.getQuestionId() == 10) {
+			excelFileDtoList.add(10,new ExcelFileDto("Is the source file(s) usable or readable?", answer.getAnswer()));
+		}
+	}
+	return excelFileDtoList;
+}
+
+@Override
+public List<ExcelFileDto> getThirdTableRecordsList(String editon, String stateCode, String countyName) {
+	 List<ExcelFileDto> excelFileDtoList = new ArrayList<ExcelFileDto>();
+	  List<FnfLanCountyTables> tablesRecordCount = dataConversionDAO.tablesRecordCount(stateCode,countyName,editon);
+	  for(FnfLanCountyTables table : tablesRecordCount){
+		  String tableName = table.getOracleTableName();
+		  String recordCount = new Integer(table.getTableRecordCount()).toString();
+		 excelFileDtoList.add(new ExcelFileDto(tableName, recordCount)); 
+	  }
+	  
+	return excelFileDtoList;
+}
+
+@Override
+public String createWordDocumentForIndividualField(HttpServletResponse response,String realPath, String countyName, String stateName, String edition,int fieldNumber,String fieldName) {
+	String fileName ="";
+	 XWPFDocument document= new XWPFDocument(); 
+	 String filename = null;
+	 int fcount = 0;
+	 try { 
+			 XWPFParagraph fieldNameHeaderPara = document.createParagraph();
+			 XWPFRun fieldNameHeaderRh = fieldNameHeaderPara.createRun();
+			 fieldNameHeaderRh.setFontSize(14);
+			 fieldNameHeaderRh.setFontFamily("Calibri Light (Headings)");
+			 fieldNameHeaderRh.setBold(true);
+			 fieldNameHeaderRh.setUnderline(UnderlinePatterns.SINGLE);
+			 fieldNameHeaderRh.setColor("5b9bd5");
+			 fieldNameHeaderPara.setAlignment(ParagraphAlignment.LEFT);
+		     fieldNameHeaderRh.setText(fieldName);
+		     fieldNameHeaderRh.addBreak();
+		     fieldNameHeaderRh.addBreak();
+		  //   String[] s1=s[j].split("-");
+			 List<RuleQuery> ruleQueryList = dataConversionDAO.getQueryDataForField(String.valueOf(fieldNumber),countyName,stateName,edition);
+			 for(Iterator iterator = ruleQueryList.iterator(); iterator.hasNext();)
+			  { 
+				Object[] rq =   (Object[])iterator.next(); 
+				XWPFParagraph patternPara = document.createParagraph();
+				XWPFRun patternRh = fieldNameHeaderPara.createRun();
+				patternRh.setFontSize(13);
+				patternRh.setFontFamily("Calibri Light (Headings)");
+				patternRh.setColor("2e74b5");
+				patternRh.setText("Pattern "+rq[0].toString()+":");
+				patternRh.addBreak();
+				int count = 0;
+				//get Total number of records according to base query
+				if(rq[1] != null)
+				{
+				 count = dataConversionDAO.getTotalRecordsOfBaseQuery(rq[1].toString());
+				}
+				else
+				{
+					count=0;	
+				}
+				
+				XWPFParagraph totRecordPara = document.createParagraph();
+				XWPFRun totRecordRh = fieldNameHeaderPara.createRun();
+				totRecordRh.setFontSize(11);
+				totRecordRh.setFontFamily("Calibri (Body)");
+				totRecordRh.setColor("000000");
+				totRecordRh.setText("--"+String.valueOf(count)+" Records");
+				totRecordRh.addBreak();
+				totRecordRh.addBreak();
+				
+				XWPFParagraph queryHeaderPara = document.createParagraph();
+				XWPFRun queryHeaderRh = fieldNameHeaderPara.createRun();
+				queryHeaderRh.setFontSize(11);
+				queryHeaderRh.setFontFamily("Calibri (Body)");
+				queryHeaderRh.setBold(true);
+				queryHeaderRh.setUnderline(UnderlinePatterns.SINGLE);
+				queryHeaderRh.setColor("000000");
+				queryHeaderRh.setText("Query:");
+				queryHeaderRh.addBreak();
+				queryHeaderRh.addBreak();
+				
+				XWPFParagraph queryDataPara = document.createParagraph();
+				XWPFRun queryDataRh = fieldNameHeaderPara.createRun();
+				queryDataRh.setFontSize(11);
+				queryDataRh.setFontFamily("Times New Roman");
+				queryDataRh.setText(String.valueOf(rq[1]==null?" ":rq[1]));
+				queryDataRh.addBreak();
+				queryDataRh.addBreak();
+				queryDataRh.addBreak();
+				
+				XWPFParagraph ruleHeaderPara = document.createParagraph();
+				XWPFRun ruleHeaderRh = fieldNameHeaderPara.createRun();
+				ruleHeaderRh.setFontSize(11);
+				ruleHeaderRh.setFontFamily("Calibri (Body)");
+				ruleHeaderRh.setBold(true);
+				ruleHeaderRh.setUnderline(UnderlinePatterns.SINGLE);
+				ruleHeaderRh.setColor("000000");
+				ruleHeaderRh.setText("RULE:");
+				ruleHeaderRh.addBreak();
+				ruleHeaderRh.addBreak();
+				
+				XWPFParagraph ruleValuePara = document.createParagraph();
+				XWPFRun ruleValueRh = fieldNameHeaderPara.createRun();
+				ruleValueRh.setFontSize(11);
+				ruleValueRh.setFontFamily("Times New Roman");
+				ruleValueRh.setText(String.valueOf(rq[2]==null?" ":rq[2]));
+				ruleValueRh.addBreak();
+				ruleValueRh.addBreak();
+				
+				XWPFParagraph sampleHeaderPara6= document.createParagraph();
+				XWPFRun sampleHeaderRh = fieldNameHeaderPara.createRun();
+				sampleHeaderRh.setFontSize(11);
+				sampleHeaderRh.setFontFamily("Calibri (Body)");
+				sampleHeaderRh.setBold(true);
+				sampleHeaderRh.setUnderline(UnderlinePatterns.SINGLE);
+				sampleHeaderRh.setColor("000000");
+				sampleHeaderRh.setText("SAMPLES:");
+				sampleHeaderRh.addBreak();
+				sampleHeaderRh.addBreak();
+			  } 
+			 fileName = fieldName+".docx";
+			 FileOutputStream out = new FileOutputStream(realPath+fileName);
+		//	 fileName = filename+".docx";
+			 document.write(out);
+			 out.close();    
+	} 
+	catch (Exception e) {
+			// TODO: handle exception
+		e.printStackTrace();
+		}
+		
+	 return fieldName;
+}
+}

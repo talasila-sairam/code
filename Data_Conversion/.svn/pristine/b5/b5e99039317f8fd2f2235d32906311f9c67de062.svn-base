@@ -1,0 +1,166 @@
+package com.appstek.dc.daoImpl;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.apache.log4j.Logger;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.engine.spi.SessionImplementor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
+import com.appstek.dc.dao.FnfLan23Dao;
+import com.appstek.dc.dbload.FnfLanDictionary;
+
+
+@Repository
+@Transactional
+@EnableTransactionManagement
+public class FnfLan23DaoImpl implements FnfLan23Dao{
+	
+	Pattern pattern = Pattern.compile("[^a-zA-Z0-9]");
+	private static Logger log4j = Logger.getLogger("com.appstek.dc.daoImpl.FnfLanDictionaryDaoImpl");
+	
+	@Autowired
+	private SessionFactory sessionFactory;
+
+/*	@Override
+	public List<String> getColumn() {
+		log4j.info("FnfLan23DaoImpl - getColumn :: Start");
+		List<String> columnList = null;
+		try
+		{
+			Session session = sessionFactory.getCurrentSession();					
+			Query query = session.createSQLQuery("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'fnf_lan23'");
+			columnList =  query.list();
+	    	System.out.println(" columnList = " + columnList);
+			log4j.info("FnfLan23DaoImpl - getColumn :: End");
+		}catch(Exception e)
+		{
+			log4j.error("FnfLanDictionaryDaoImpl - FnfLanDictionaryDaoImpl :: Error " + e.getMessage());
+			e.printStackTrace();
+		}
+		return columnList;
+	}
+*/
+	@Override
+	public BufferedWriter callProcedureForTXTGeneration(List<FnfLanDictionary> fnfLanDictionaryList,String realPath) {
+		log4j.info("FnfLan23DaoImpl - callProcedureForTXTGeneration :: Start");
+		
+		BufferedWriter br = null;
+		ResultSet rs = null;
+		String s = "D:/textfile/filename.txt";
+		try
+		{
+			File fl = new File(realPath);
+			if(fl.exists())
+			{
+				fl.delete();
+			}
+		 	FileWriter file = new FileWriter(realPath,true);
+			//FileWriter file = new FileWriter(s,true);
+			Session session = sessionFactory.getCurrentSession();	
+			SessionImplementor sessionImplementor = (SessionImplementor)session;
+			Connection con = sessionImplementor.connection();
+			CallableStatement cs = con.prepareCall("{CALL dbo.dataConversionForFNFLAN23Table()}"); 
+			rs = cs.executeQuery();
+			System.out.println(fnfLanDictionaryList.size());
+			br = new BufferedWriter(file);
+			while(rs.next())
+			{
+				int i=0;
+				for(int j=1;j<=fnfLanDictionaryList.size();j++)
+				{
+					String columnValue = rs.getString(j);
+					String[] splitColumnValue = columnValue.split("DELMETER__");
+					//mapped with the column value
+					for(;i<fnfLanDictionaryList.size();)
+					{
+						FnfLanDictionary fnfLanDictionary = fnfLanDictionaryList.get(i);
+						i++;
+						String map1 = fnfLanDictionary.getMappingFieldName().replace("_","");
+						String map2 = splitColumnValue[1].replace("_","");
+						if(map1.trim().equalsIgnoreCase(map2.trim()))
+						{
+							applyRulesForGeneratingText(splitColumnValue[0],fnfLanDictionary.getLength(),br);
+							break;
+						}	
+					}
+				}
+			
+				br.newLine();
+			}
+		}catch(Exception e)
+		{
+			log4j.error("FnfLanDictionaryDaoImpl - callProcedureForTXTGeneration :: Error " + e.getMessage());
+			e.printStackTrace();
+		}
+		return br;
+	}
+	
+ public void applyRulesForGeneratingText(String mappedValue,int length,BufferedWriter br)
+ {
+	 if(!mappedValue.equals(""))
+	 {
+		 Matcher firstCharMatch = pattern.matcher(Character.toString(mappedValue.charAt(0)));
+		 Matcher secondCharMatch = pattern.matcher(Character.toString(mappedValue.charAt(mappedValue.length()-1)));
+		 if(firstCharMatch.find()) {
+		    	mappedValue = mappedValue.substring(1);
+			}
+	     if(secondCharMatch.find()) {
+	    	 mappedValue = mappedValue.substring(0,mappedValue.length()-2);
+		    }
+	 }
+	
+	 if(mappedValue.length()<length)
+	 {
+		 int len = length-mappedValue.length();
+		 for(int k=1;k<=len;k++)
+		 {
+			 mappedValue = mappedValue.concat(" "); 
+		 }
+	 }else if(mappedValue.length()>length)
+	 {
+		 mappedValue = mappedValue.substring(0, length-1);
+	 }
+     try
+     {
+    	 br.write(mappedValue);
+    	 br.flush();
+     }catch(Exception e)
+     {
+    	 log4j.error("FnfLanDictionaryDaoImpl - applyRulesForGeneratingText :: Error " + e.getMessage());
+		 e.printStackTrace();
+     }
+    
+ }
+
+@Override
+public String saveData(String countyName,String stateName) {
+	String msg;
+	try{
+		Session session = sessionFactory.getCurrentSession();	
+		SessionImplementor sessionImplementor = (SessionImplementor)session;
+		Connection con = sessionImplementor.connection();
+		CallableStatement cs = con.prepareCall("{CALL dbo.saveRuleQuery(?,?)}"); 
+		cs.setString(1, countyName);
+		cs.setString(2, stateName);
+		ResultSet rs = cs.executeQuery();
+		msg = "Data Saved Successfully";
+	}catch(Exception e)
+	{
+		msg = e.getCause().toString();
+		log4j.error("FnfLanDictionaryDaoImpl - saveData :: Error " + e.getCause());
+		
+	}
+	return msg;
+}
+}

@@ -1,0 +1,836 @@
+function getRulesFieldwise(countryFipsCode,stateFipsCode,countyFipsCode,countryName,stateName,countyName,ruleLevel,stateCode,fieldName,fieldNumber,defaultFlag,mappingFieldName){
+	$("#countryFipsCode").val(countryFipsCode);
+	$("#stateFipsCode").val(stateFipsCode);
+	$("#countyFipsCode").val(countyFipsCode);
+	$("#countryName").val(countryName);
+	$("#stateName").val(stateName);
+	$("#countyName").val(countyName);
+	$("#stateCode").val(stateCode);
+	$("#fieldName").val(fieldName+'-'+fieldNumber);
+	$("#fieldNumber").val(fieldNumber);
+	$("#defaultFlag").val(defaultFlag);
+	$("#mappingFieldName").val(mappingFieldName);
+	$("#ruleLevel").val(ruleLevel);
+	var data="countryFipsCode="+countryFipsCode
+	+"&stateFipsCode="+stateFipsCode
+	+"&countyFipsCode="+countyFipsCode
+	+"&ruleLevel="+ruleLevel
+	+"&countyName="+countyName
+	+"&stateCode="+stateCode
+	+"&fieldNumber="+fieldNumber
+	+"&pageSize="+5
+	+"&pageNumber="+1;
+	console.log(data);
+	loadingImage('rulesFrame');
+	jqueryAjaxfunction('getCountyTables','rulesFrame',data);
+	
+	//Moves the cursor to top
+	//window.location.hash='rulesFrame';
+	 $('html, body').animate({
+	        scrollTop: $("#rulesFrame").offset().top
+	    });
+}
+function loadingImage(divId){
+	$("#"+divId).html("<center><img src='img/ajax-loader.gif'  /></center>");
+}
+
+function deleteTheRule(ruleQueryId){
+
+	var jsonData = {"ruleQueryId": ruleQueryId
+					}
+	$.ajax({
+	type: "POST",
+	url: 'deleteRule',
+	dataType: 'json',
+	data: JSON.stringify(jsonData),
+	contentType: "application/json",
+	success: function (data) {
+	console.log(data);
+	if (data.status == "SUCCESS") {
+		alert("Rule successfully deleted.");
+	}
+	else {
+		alert("Processing Error.Please try after some time");
+	}
+	}
+	});
+}
+
+function updateRule(ruleQueryId){
+	var tableArr = [];
+	var colArr = [];
+	var colCount = 0;
+	var queryString = '';
+	var colString = '';
+	var tableString = '';
+	$('#countyTablesSelect :selected').each(function(i, tableName){ 
+	    tableArr[i] = $(tableName).val();
+	    tableString = tableString+$(tableName).val()+', ';
+	});
+	for(i=0; i<tableArr.length; i++){
+		$('#'+tableArr[i]+' :selected').each(function(j, colName){ 
+		    colArr[colCount] = $(colName).val();
+		    var col = $(colName).val().split("-");
+		    colString = colString+col[0]+', ';
+		    colCount = colCount+1;
+
+		});
+	}
+	tableString = tableString.slice(0,tableString.length-2);
+	colString = colString.slice(0,colString.length-2);
+	var editonNumber = $("#editonNumber").val();
+	var ruleQuery = $("#ruleQuery").val();
+	var query = $("#query").val();
+	var baseQuery = $("#baseQuery").val();
+	var jsonData = {"edition": editonNumber,
+					"ruleQuery": ruleQuery,
+					"query":query,
+					"baseQuery":baseQuery,
+					"tables":tableString,
+					"columns":colString,
+					"ruleQueryId": ruleQueryId
+					}
+	$.ajax({
+		type: "POST",
+		url: 'editRule',
+		dataType: 'json',
+		data: JSON.stringify(jsonData),
+		contentType: "application/json",
+		success: function (data) {
+			console.log(data);
+			if (data.status == "SUCCESS") {
+				alert("Rule successfully updated.");
+			}else {
+				alert("Processing Error.Please try after some time");
+			}
+		}
+	});
+	
+}
+
+
+
+function getCountyTableColumns() {
+	
+	var tableNames = $('#countyTablesSelect').val();
+	var fields = $("#fields").val();
+	var countyTableNames = "";
+	if (tableNames != null && tableNames != "") {
+		for (var i = 0; i < tableNames.length; i++) {
+			countyTableNames = countyTableNames + "'" + tableNames[i] + "',";
+		}
+		countyTableNames = countyTableNames.slice(0, -1);
+		var data = "countyTableNames=" + countyTableNames;
+		loadingImage('countyTableColumnsDiv');
+		jqueryAjaxfunction('getCountyTableColumns','countyTableColumnsDiv', data);
+		/*var model_dialog = $("#conformationDialog").dialog(
+				{
+					close: function(event, ui) {
+						$(".index").removeClass("mask");
+		             },
+					autoOpen : false,
+					title : "Confirmation window",
+					height : 150,
+					width : 400,
+					draggable : true,
+					resizable : false,
+					buttons : {
+						Submit : function() {
+							$(".index").removeClass("mask");
+							jqueryAjaxfunction('getCountyTableColumns','countyTableColumnsDiv', data);
+							$(this).dialog("close");
+							$("#addRule").prop("disabled",true);
+	
+						},
+					}
+				});
+		$("#conformationDialog").empty();
+		if(fields == "" || fields == null){
+			$(".index").addClass("mask");
+			$("#conformationDialog").append('<p>Field is not selected.DO you want save this rule in county level</p>');
+			model_dialog.dialog("open");
+		}else{
+			jqueryAjaxfunction('getCountyTableColumns','countyTableColumnsDiv', data);
+		}*/
+	}
+}
+
+function buildQuery(){
+	var tableArr = [];
+	var colArr = [];
+	var colCount = 0;
+	var queryString = '';
+	var colString = '';
+	var tableString = '';
+	var tableAlias = '';
+	var tableData;
+	var tableName;
+	var colConcatName;
+	var columnInfo;
+	var joinsData = "";
+    var joinRelation = "";
+    var joinCondtion = "";
+    var tableNamesSelected = "";
+    var selectedTableNames = [];
+    var selectedTableNamesWithAlias = [];
+	var aliasArray = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];
+	$('#countyTablesSelect :selected').each(function(i, tableNameCheck){ 
+	    tableArr[i] = $(tableNameCheck).val()+"|"+aliasArray[i];
+	    selectedTableNamesWithAlias[i] =$(tableNameCheck).val()+" "+aliasArray[i]; 
+	    tableString = tableString+$(tableNameCheck).val()+" "+aliasArray[i]+', ' ;
+	});
+	
+	for(var tableArray=0; tableArray < tableArr.length; tableArray++){
+		tableData  = tableArr[tableArray].split("|");
+		tableName = tableData[0];
+		tableAlias = tableData[1];
+		selectedTableNames[tableArray] = tableName;
+		console.log(selectedTableNames[tableArray]);
+		tableNamesSelected += (tableName+",");
+		console.log(tableNamesSelected);
+		var tableColCountCk = true;
+		if(tableArr.length > 1){
+			$('#'+tableName+' :selected').each(function(j, colName){ 
+				columnInfo = $(colName).val().split("-");
+    			colArr[colCount] = columnInfo[0];
+    		    colConcatName = tableAlias+"."+"["+columnInfo[0]+"]";
+    		    colString = colString+colConcatName+', ';
+    		    colCount = colCount+1;
+    		    tableColCountCk = false;
+			});
+			if(tableColCountCk == true){
+				var tableNameAsId = document.getElementById(tableName);		
+		       	for (var tableArrayCheck = 0; tableArrayCheck < tableNameAsId.length; tableArrayCheck++) { 
+		       		colConcatName = tableAlias+"."+"["+tableNameAsId.options[tableArrayCheck].text+"]";
+		       		colString = colString+colConcatName+', ';
+		       		console.log(colString);
+		       	}
+			}
+		}
+		else{
+			$('#'+tableName+' :selected').each(function(j, colName){ 
+				var columnInfo = $(colName).val().split("-");
+    			colArr[colCount] = columnInfo[0];
+    		    var colConcatName = "["+columnInfo[0]+"]";
+    		    colString = colString+colConcatName+', ';
+    		    colCount = colCount+1;
+			});	
+			tableString = tableString.slice(0,-2);
+		}
+	}
+	tableString.slice(0,-2);
+	colString.slice(0, -2);
+	
+	if(tableArr.length > 1){
+	
+	if(tableNamesSelected.endsWith(',')){
+		tableNamesSelected = tableNamesSelected.slice(0,-1);
+	}
+	
+    	$.ajax({
+        	type: "POST",
+    	    url: 'executeQueryToGetJoins',
+    	    async: false, 
+    	    data: {
+    	    	'tableNamesSelected' : tableNamesSelected
+    	    },
+    	     success : function(data) {
+    	    	 joinsData = data;
+    	    	 joinsData = joinsData.toString().split(",");
+    	    	 joinCondtion = joinsData[0];
+    	    	 joinRelation = joinsData[1];
+            }
+        });
+	}
+    setTimeout(function() {
+		if(tableArr.length == 1 && colCount == 0){
+			queryString = queryString+'SELECT * FROM '+tableString.slice(0,-2);
+		}
+		else{
+			if(joinsData != "" && joinRelation != undefined){
+				for(var t=0; t < tableArr.length; t++){
+					joinRelation = joinRelation.replace(selectedTableNames[t],selectedTableNamesWithAlias[t]);
+					joinCondtion = joinCondtion.replace(selectedTableNames[t],aliasArray[t]);
+				}
+        		queryString = queryString+'SELECT '+colString.slice(0, -2) + ' FROM ' + joinRelation + " ON " + joinCondtion;
+        	} 
+			else{
+        		queryString = queryString+'SELECT '+colString.slice(0, -2) +' FROM '+tableString.slice(0,-2) ;
+        	}
+		}
+		$("#baseQuery").val(queryString);
+		$("#baseQuery").attr('title',queryString);
+		option = "";
+		  $('#selected_columns').empty();
+			
+	      for (var i = 0; i < colArr.length; i++) {
+	          option += '<option value="' + colArr[i] + '">' + colArr[i] + '</option>';
+	      }
+	      $('#selected_columns').append(option);
+	      $('#selected_columns').multiselect('rebuild');
+	      $('#selected_columns').multiselect({
+	            includeSelectAllOption: true
+	      });
+    },0.1);
+	/*var baseQuery =$("#baseQuery").val();
+	var ruleQuery =$("#query").val();
+  	var specialChars = ['%','&','+','#'];
+	var codeNumbersForSplChars = ['%25','%26','%2B','%23'];
+
+	for(var sp = 0 ; sp < specialChars.length;sp++){
+		if(baseQuery.indexOf(specialChars[sp]) >0){
+			baseQuery = baseQuery.split(specialChars[sp]).join(codeNumbersForSplChars[sp]);
+    	}
+		if(ruleQuery.indexOf(specialChars[sp]) >0){
+    		ruleQuery = ruleQuery.split(specialChars[sp]).join(codeNumbersForSplChars[sp]);
+    }
+	}	
+	$("#GridDisplay").removeAttr("src");
+	$("#GridDisplay2").removeAttr("src");
+	$("#GridDisplay2").attr("src","./gridDisplay.jsp?baseQuery="+baseQuery+"&ruleQuery="+ruleQuery);*/
+}
+
+$(document).on('click', '#sampleQuery', function(){
+	
+	var baseQuery =$("#baseQuery").val();
+	var ruleQuery =$("#query").val();
+  	var specialChars = ['%','&','+','#'];
+	var codeNumbersForSplChars = ['%25','%26','%2B','%23'];
+
+	for(var sp = 0 ; sp < specialChars.length;sp++){
+		if(baseQuery.indexOf(specialChars[sp]) >0){
+			baseQuery = baseQuery.split(specialChars[sp]).join(codeNumbersForSplChars[sp]);
+    	}
+		if(ruleQuery.indexOf(specialChars[sp]) >0){
+    		ruleQuery = ruleQuery.split(specialChars[sp]).join(codeNumbersForSplChars[sp]);
+    }
+	}	
+	$("#GridDisplay").removeAttr("src");
+	$("#GridDisplay2").removeAttr("src");
+	$("#GridDisplay2").attr("src","./gridDisplay.jsp?baseQuery="+baseQuery+"&ruleQuery="+ruleQuery);
+});
+function fullSceen(){
+	fullScreen();
+	
+};
+/*$(document).keydown(function(e){
+	if (e.keyCode==27){
+		fullScreen();
+	}
+});*/
+function fullScreen(){
+	$("#GridDisplay").toggleClass("maximized");
+	$("#GridDisplay2").toggleClass("maximized");
+}
+function buildRule(){
+	var tableArr = [];
+	var colArr = [];
+	var colCount = 0;
+	var queryString = '';
+	var colString = '';
+	var tableString = '';
+	alert("buildRule");
+	
+	$('#countyTables :selected').each(function(i, tableName){ 
+	    tableArr[i] = $(tableName).val();
+	    tableString = tableString+$(tableName).val()+', ';
+	});
+	
+	for(i=0; i<tableArr.length; i++){
+		$('#'+tableArr[i]+' :selected').each(function(j, colName){ 
+		    colArr[colCount] = $(colName).val();
+		    colString = colString+$(colName).val()+', ';
+		    colCount = colCount+1;
+
+		});
+	}
+	tableString.slice(0,-2);
+	colString.slice(0, -2);
+	var selectedColumns=$('#selected_columns').val();
+	var operation=$('#column_operators').val();
+	if(operation=="CONCAT"){
+		queryString = queryString+'SELECT '+operation+"("+selectedColumns+') FROM '+tableString.slice(0,-2) ;
+		$("#ruleQuery").val(queryString);
+		$("#ruleQuery").attr('title',queryString);
+	}
+	else if(operation=="REPLACE"){	
+		var operationField1=$('#operation_field1').val();
+		var operationField2=$('#operation_field2').val();
+		queryString = queryString+'SELECT '+operation+"("+selectedColumns+') FROM '+tableString.slice(0,-2);
+		$("#ruleQuery").val(queryString);
+		console.log(queryString);
+		$("#ruleQuery").attr('title',queryString);
+    }
+	
+}
+
+function saveRule(){
+	var tableArr = [];
+	var colArr = [];
+	var colCount = 0;
+	var queryString = '';
+	var colString = '';
+	var tableString = '';
+	
+	$('#countyTablesSelect :selected').each(function(i, tableName){ 
+	    tableArr[i] = $(tableName).val();
+	    tableString = tableString+$(tableName).val()+', ';
+	});
+	
+	for(i=0; i<tableArr.length; i++){
+		$('#'+tableArr[i]+' :selected').each(function(j, colName){ 
+		    colArr[colCount] = $(colName).val();
+		    var col = $(colName).val().split("-");
+		    colString = colString+col[0]+', ';
+		    colCount = colCount+1;
+
+		});
+	}
+	tableString = tableString.slice(0,tableString.length-2);
+	colString = colString.slice(0,colString.length-2);
+	
+	if(tableString == "" || tableString == "undefined"){
+		tableString = $("#tables").val();
+	}
+	if(colString == "" || colString == undefined){
+		colString = $("#columns").val();
+	}
+	
+	var editonNumber = $("#editonNumber").val();
+	if(editonNumber == "" || editonNumber == undefined){
+		editonNumber = $("#editonHidden").val();
+	}
+	var countryFipsCode = $("#countryFipsCode").val();
+	var stateFipsCode = $("#stateFipsCode").val();
+	var countyFipsCode = $("#countyFipsCode").val();
+	var ruleQuery = $("#ruleQuery").val();
+	/*var fieldNumber = $("#fields").val().split("-");
+	var fieldName = fieldNumber[0];
+	fieldNumber = fieldNumber[1];
+	if(fieldName == "APN"){
+		fieldNumber = fieldNumber[2];
+	}*/
+	var fieldNumber = $("#fieldNumber").val();
+	var countryName = $("#countryName").val();
+	var stateName = $("#stateName").val();
+	var countyName = $("#countyName").val();
+	var ruleScope = 'STATE';
+	var ruleName = $("#ruleName").val();//'Some Rule';
+	//ruleName = "Rule For Field No "+fieldNumber;
+	var query = $("#query").val();
+	var baseQuery = $("#baseQuery").val();
+	console.log(baseQuery);
+	//
+	if(fieldNumber==18||fieldNumber==19||fieldNumber==22){
+		fieldNumber18To22Validation(fieldNumber,countyName,editonNumber,countryFipsCode,stateFipsCode,countyFipsCode,stateName,countryName);
+	}
+	var jsonData = {"edition": editonNumber,
+					"countryFipsCode": countryFipsCode, 
+					"stateFipsCode": stateFipsCode,
+					"countyFipsCode": countyFipsCode,
+					"countryName": countryName,
+					"stateName": stateName,
+					"countyName": countyName,
+					"fieldNumber": fieldNumber,
+					"ruleQuery": ruleQuery,
+					"ruleName": ruleName,
+					"query":query,
+					"baseQuery":baseQuery,
+					"tables":tableString,
+					"columns":colString
+					}
+	console.log(jsonData);
+	alert(jsonData);
+	$.ajax({
+        type: "POST",
+        url: 'saveRule',
+        dataType: 'json',
+        data: JSON.stringify(jsonData),
+        contentType: "application/json",
+        success: function (data) {
+        	console.log(data);
+        	if(data.status == "EXISTS"){
+        		alert("Rule Name already exists.");
+        	}else if (data.status == "SUCCESS") {
+        		alert("Rule successfully saved.");
+			}else {
+				alert("Processing Error.Please try after some time");
+			}
+        }
+	});
+}
+
+function fieldNumber18To22Validation(fieldNumber,countyName,editonNumber,countryFipsCode,stateFipsCode,countyFipsCode,stateName,countryName){
+	var dependentFieldNumber=0;
+	if(fieldNumber==18){
+		dependentFieldNumber=124;
+	}
+	else if(fieldNumber==19){
+		dependentFieldNumber=125;
+	}
+	else if(fieldNumber==22){
+		dependentFieldNumber=126;
+	}
+	$.ajax({
+		type: "POST",
+		url: 'saveForFields',
+		async: false,
+		data: {
+		'fieldNumber':fieldNumber,
+		'county':countyName
+		},
+		success: function (data) {
+			if(data.length==0){
+				var ruleLevel='';
+				var ruleLevelNumber='';
+				var model_dialog = $("#showDivForRuleLevel").dialog({
+				    autoOpen: false,
+				    title: "Error Report",
+				    height: 200,
+				    width: 577,
+				    resizable: true,
+				    buttons: {
+				            Save: function() {
+				            	if ($("#1stButton").prop("checked")) {
+				            		ruleLevelNumber=1;
+				            			ruleLevel=$('#1stButton').val();
+				            	}
+				            	if ($("#2stButton").prop("checked")) {
+				            		ruleLevelNumber=2;
+			            			ruleLevel=$('#2stButton').val();
+				            	}
+				            	if ($("#3stButton").prop("checked")) {
+				            		ruleLevelNumber=3;
+			            			ruleLevel=$('#3stButton').val();
+				            	}
+				            	if ($("#4stButton").prop("checked")) {
+				            		ruleLevelNumber=4;
+			            			ruleLevel=$('#4stButton').val();
+				            	}
+				           	
+				            	query = "select " +ruleLevelNumber;
+				        		ruleQuery = "Load as " +ruleLevelNumber;
+				        		ruleName = "Rule For " +ruleLevelNumber;
+				            	var jsonData = {
+				            			"countryFipsCode": countryFipsCode, 
+				    					"stateFipsCode": stateFipsCode,
+				    					"countyFipsCode": countyFipsCode,
+				    					"countryName": countryName,
+				    					"stateName": stateName,
+				    					"countyName": countyName,
+				    					"fieldNumber": dependentFieldNumber,
+				    					"ruleQuery": ruleQuery,
+				    					"ruleName": ruleName,
+				    					"query":query
+				    			}
+				//    	var hh=thi.id;
+				    	$.ajax({
+				            type: "POST",
+				            url: 'saveRule',
+				            dataType: 'json',
+				            data: JSON.stringify(jsonData),
+				            contentType: "application/json",
+				            success: function (data) {
+				            	console.log(data);
+				            	if(data.status == "EXISTS"){
+				            		alert("Rule Name already exists.");
+				            	}else if (data.status == "SUCCESS") {
+				            		alert("Rule successfully saved.");
+				    			}else {
+				    				alert("Processing Error.Please try after some time");
+				    			}
+				            	model_dialog.dialog("close");
+				            }
+				    	});
+				    },
+				    close:function(){
+						model_dialog.dialog("close");
+					}
+				 }
+				
+				  	});
+				    model_dialog.load("saveRuleLevel.jsp").dialog("open");
+			}
+		},
+		error:function (data) {
+			alert('error');
+		}
+		});
+}
+/*function showFieldRule() {
+	$("#ruleQueryGet").css('display','none');
+	var countryFipsCode = $("#countryFipsCode").val();
+	var stateFipsCode = $("#stateFipsCode").val();
+	var countyFipsCode = $("#countyFipsCode").val();
+	var countryName = $("#countryName").val();
+	var stateName = $("#stateName").val();
+	var countyName = $("#countyName").val();
+	var fieldNumber = $("#fields").val();
+	var jsonData = {"fieldNumber": fieldNumber, 
+					"countryFipsCode": countryFipsCode, 
+					"stateFipsCode": stateFipsCode,
+					"countyFipsCode": countyFipsCode,
+					"countryName": countryName,
+					"stateName": stateName,
+					"countyName": countyName
+					}
+	
+	$.ajax({
+        type: "POST",
+        url: 'loadFieldRules',
+        dataType: 'json',
+        data: JSON.stringify(jsonData),
+        contentType: "application/json",
+        success: function (data) {
+        	alert(JSON.stringify(data));
+        	console.log(data);
+        	 $("#countyTableColumnsDiv").empty();
+        	$.each(data, function( index, value ) {
+        		  alert( index + ": " + value );
+        		  console.log(index + ": " + value);
+        		  $("#countyTableColumnsDiv").append("<script> $('#addRule').show();</script>" +
+        		  		"<div class='form-group'><label class='control-label col-md-2 text-right margin-top47'>Field-"+value.fieldNumber+" <span class='required'>*</span></label>" +
+        		  				"<div class='col-md-4'>" +
+        		  				"<textarea rows='3' cols='3' name='textarea' class='auto form-control margin-top20' style='overflow: hidden; word-wrap: break-word; resize: horizontal; height: 68px;'>"+value.ruleQuery+"</textarea></div>"+
+        		  						"<div class='col-md-4'><div class='btn-group margin-top40'>" +
+        		  						"<button class='btn btn-default margin-right'>Edit</button>" +
+        		  						"<div class='col-md-4'><div class='btn-group margin-top40'>" +
+        		  						"<button class='btn btn-default margin-right'>Copy</button>" +
+        		  						"<button class='delete btn btn-warning' onclick='deleteTheRule("+value.ruleId+")'>Delete</button>" +
+        		  						"</div></div></div>");
+        		});
+        }
+	});
+	
+}*/
+
+function getPage(page){
+	var pageNumber = parseInt($("#pageNumber").val());
+	if(page == "NEXT"){
+		pageNumber = pageNumber+1;
+	}else if(page == "PREVIOUS"){
+		pageNumber = pageNumber-1;
+	}
+	
+	
+	$("#ruleQueryGet").css('display','none');
+	var countryFipsCode = $("#countryFipsCode").val();
+	if($.trim(countryFipsCode) == ""){
+		countryFipsCode = "0";
+	}
+	var stateFipsCode = $("#stateFipsCode").val();
+	if($.trim(stateFipsCode) == ""){
+		stateFipsCode = "0";
+	}
+	var countyFipsCode = $("#countyFipsCode").val();
+	if($.trim(countyFipsCode) == ""){
+		countyFipsCode = "0";
+	}
+	var countryName = $("#countryName").val();
+	var stateName = $("#stateName").val();
+	var countyName = $("#countyName").val();
+	/*var fieldNumber = $("#fieldName").val();
+	//var fieldNumber ;
+	if($.trim(fieldNumber) != "-" && $.trim(fieldNumber) != ""){
+			fieldNumber = fieldNumber.split("-");
+			fieldNumber = fieldNumber[1];
+	}else{
+		fieldNumber = "0";
+	}*/
+	var fieldNumber = $("#fieldNumber").val();
+	if(fieldNumber == "" || fieldNumber == "undefined"){
+		fieldNumber = "0";
+	}
+	
+	var ruleLevel = $("#ruleLevel").val();
+	var jsonData = {"countryFipsCode": countryFipsCode,
+					"stateFipsCode": stateFipsCode,
+					"countyFipsCode": countyFipsCode,
+					"ruleLevel": ruleLevel,
+					"countyName": countyName,
+					"fieldNumber": fieldNumber,
+					"pageSize": 5,
+					"pageNumber": pageNumber
+					}
+	console.log(jsonData);
+	$.ajax({
+        type: "POST",
+        url: 'loadPageRules',
+        dataType: 'json',
+        data: JSON.stringify(jsonData),
+        contentType: "application/json",
+        success: function (data) {
+        	$("#pageNumber").val(pageNumber);
+        	console.log(data);
+        	$("#countyTableColumnsDiv").empty();
+        	$.each(data, function( index, value ) {
+        		  console.log(index + ": " + value);
+        		  $("#countyTableColumnsDiv").append("<script> $('#addRule').show();</script>" +
+        		  		"<div class='form-group'><label class='control-label col-md-2 text-right margin-top47'>Field-"+value.ruleMaster.fieldNumber+" :: Pattern-"+value.ruleMaster.ruleName+" <span class='required'>*</span></label>" +
+        		  				"<div class='col-md-4'>" +
+        		  				"<textarea rows='3' cols='3' id='"+value.ruleQueryId+"ruleQuery'   name='textarea' class='auto form-control fieldRuleQuery margin-top20' style='overflow: hidden; word-wrap: break-word; resize: horizontal; height: 68px;'>"+value.rule+"</textarea>" +
+        		  				"<input id = 'ruleQueryGet' value = '"+value.query+"' class = 'form-control' hidden = true style = 'display:none'/></div>"+
+        		  						"<div class='col-md-4'><div class='btn-group margin-top40'>" +
+        		  						"<button id='copyRule' class='btn btn-success margin-right' onclick='editTheRule("+value.ruleQueryId+")'>Copy</button>" +
+										"<button id='editRule' class='btn btn-default margin-right' onclick='copyTheRule("+value.ruleQueryId+")'>Edit</button>" +
+										"<button id='deleteRule' class='delete btn btn-warning' onclick='deleteTheRule("+value.ruleMaster.ruleId+")'>Delete</button>" +
+        		  						"</div></div></div>");
+        		});
+        }
+	});
+}
+
+
+
+
+
+function editTheText(){
+	$('#baseQuery').removeAttr('disabled');	
+}
+
+function saveTheText(){
+	$('#baseQuery').attr('disabled',true);
+}
+
+function editTheRuleText(){
+	$('#ruleQuery').removeAttr('disabled');	
+}
+
+function saveTheRuleText(){
+	$('#ruleQuery').attr('disabled',true);
+}
+
+
+function saveHeaderRule(){
+	var query = "" 
+	var ruleQuery = "";
+	var ruleName = "";
+	var fieldsName = $("#fields").val();
+	fieldsName = fieldsName.split("-");
+	fieldsName = fieldsName[0];
+	if (fieldsName == "State (Postal Code)"){
+		query = "select " + $("#countyTablesInput").val();
+		ruleQuery = "Load as " + $("#countyTablesInput").val();
+		ruleName = "Rule For " + $("#countyTablesInput").val();
+	}
+	else if(fieldsName == "County Name"){
+		query = "select " + $("#countyTablesInput").val();
+		ruleQuery = "Load as " + $("#countyTablesInput").val();
+		ruleName = "Rule For " + $("#countyTablesInput").val();
+	}
+	else if(fieldsName == "Assessment Year"){
+		query = "select " + $("#countyAssessmentYear").val();
+		ruleQuery = "Load as " + $("#countyAssessmentYear").val();
+		ruleName = "Rule For " + $("#countyAssessmentYear").val();
+	}
+	else if(fieldsName == "Edition number"){
+		query = "select " + $("#countyEditionNumber").val();
+		ruleQuery = "Load as " + $("#countyEditionNumber").val();
+		ruleName = "Rule For " + $("#countyEditionNumber").val();
+	}
+	else if(fieldsName == "Certification Date"){
+		query = "select " + $("#countyTablesInput").val();
+		ruleQuery = "Load as " + $("#countyTablesInput").val();
+		ruleName = "Rule For " + $("#countyTablesInput").val();
+	}
+	else if(fieldsName == "Tape Cut Date"){
+		query = "select " + $("#countyTapeCutDate").val();
+		ruleQuery = "Load as " + $("#countyTapeCutDate").val();
+		ruleName = "Rule For " + $("#countyTapeCutDate").val();
+	}
+	/*else if(fieldsName == "Old/Alternate APN"){
+		query = "select " + $("#countyTablesAtOldAlternate").val();
+		ruleQuery = "Load as " + $("#countyTablesAtOldAlternate").val();
+		ruleName = "Rule For " + $("#countyTablesAtOldAlternate").val();
+	}*/else{}
+	
+	var countryFipsCode = $("#countryFipsCode").val();
+	var stateFipsCode = $("#stateFipsCode").val();
+	var countyFipsCode = $("#countyFipsCode").val();
+	/*var fieldNumber = $("#fields").val().split("-");
+	fieldNumber = fieldNumber[1];*/
+	var fieldNumber = $("#fieldNumber").val();
+	if(fieldNumber == "" || fieldNumber == "undefined"){
+		fieldNumber = "0";
+	}
+	
+	var countryName = $("#countryName").val();
+	var stateName = $("#stateName").val();
+	var countyName = $("#countyName").val();
+	var ruleScope = 'STATE';
+	
+	var jsonData = {"countryFipsCode": countryFipsCode, 
+					"stateFipsCode": stateFipsCode,
+					"countyFipsCode": countyFipsCode,
+					"countryName": countryName,
+					"stateName": stateName,
+					"countyName": countyName,
+					"fieldNumber": fieldNumber,
+					"ruleQuery": ruleQuery,
+					"ruleName": ruleName,
+					"query":query
+					}
+	alert(jsonData);
+	
+	$.ajax({
+        type: "POST",
+        url: 'saveRule',
+        dataType: 'json',
+        data: JSON.stringify(jsonData),
+        contentType: "application/json",
+        success: function (data) {
+        	console.log(data);
+        	if(data.status == "EXISTS"){
+        		alert("Rule Name already exists.");
+        	}else if (data.status == "SUCCESS") {
+        		alert("Rule successfully saved.");
+			}else {
+				alert("Processing Error.Please try after some time");
+			}
+        }
+	});
+}
+
+
+function getCountyName(value){
+	console.log(value);
+	$("#countyNameSpecific").find("i").removeClass("icon-plus-sign");
+	$("#countyNameSpecific").find("i").addClass("icon-minus-sign");
+};
+
+function getTheRulesFieldWise(){
+	  var countryFipsCode = $("#countryFipsCode").val();
+		var stateFipsCode = $("#stateFipsCode").val();
+		var countyFipsCode = $("#countyFipsCode").val();
+		var countryName = $("#countryName").val();
+		var stateName = $("#stateName").val();
+		var countyName = $("#countyName").val();
+		var stateCode = $("#stateCode").val();
+		var fieldsData =$("#fieldName").val().split('-');
+		console.log(fieldsData);
+		var ruleLevel ='county'; 	
+		/*var fieldName = fieldsData[0];
+		var fieldNumber = fieldsData[1];
+		if(fieldName == "APN"){
+			fieldName = fieldsData[0];
+			fieldNumber = fieldsData[2];
+		}*/
+		var fieldNumber = $("#fieldNumber").val();
+		if(fieldNumber == "" || fieldNumber == "undefined"){
+			fieldNumber = "0";
+		}
+		var defaultFlag = $("#defaultFlag").val();
+		var mappingFieldName = $("#mappingFieldName").val();
+		
+	var data="countryFipsCode="+countryFipsCode
+	+"&stateFipsCode="+stateFipsCode
+	+"&countyFipsCode="+countyFipsCode
+	+"&ruleLevel="+ruleLevel
+	+"&countyName="+countyName
+	+"&stateCode="+stateCode
+	+"&fieldNumber="+fieldNumber;
+	
+	alert(data);
+	loadingImage('rulesFrame');
+	jqueryAjaxfunction('getCountyTables','rulesFrame',data);	
+}

@@ -1,0 +1,243 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>  
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<html>
+<head>
+<link rel="stylesheet" href="css/bootstrap-multiselect.css">
+<link href="css/manual-style.css" rel="stylesheet" type="text/css"/>
+<link rel="stylesheet" href="css/jquery-ui.css">
+<link rel="stylesheet" href="css/font-awesome.min.css" type="text/css">
+<link href="css/gips.css" rel="stylesheet" type="text/css" />
+
+<script src="js/bootstrap-multiselect.js"></script>
+<script src="js/gips.js" type="text/javascript"></script>
+<script src="js/app.js"></script>
+<script src="js/modelJavaScript.js"></script>
+<script src="js/buildRulePopup.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+    	$("#countyName1").val($("#countyName").val());
+    	$("#stateName1").val($("#stateName").val());
+    	$('#iframecontainer11').hide();
+    	
+        $('.countyTableColumns').multiselect({
+            //enableFiltering: true,
+            filterBehavior: 'value',
+            includeSelectAllOption: true,
+        });
+        
+        $('#wrapper').dialog({
+            autoOpen: false,
+            title: 'Basic Dialog'
+        });
+        $('#opener').click(function() {
+            $('#wrapper').dialog('open');
+        });
+        alert("Sushanta");
+        runQueryExcept();
+
+    });
+    
+    function runQuery(){
+    	$('#iframecontainer11').show();
+    	var baseQuery =$("#baseQuery").val();
+    	var ruleQuery =$("#query").val();
+    	var specialChars = ['%','&','+','#'];
+		var codeNumbersForSplChars = ['%25','%26','%2B','%23'];
+		for(var sp = 0 ; sp < specialChars.length;sp++){
+			if(ruleQuery.indexOf(specialChars[sp]) >0){
+		    		ruleQuery = ruleQuery.split(specialChars[sp]).join(codeNumbersForSplChars[sp]);
+		    }
+			if(baseQuery.indexOf(specialChars[sp]) >0){
+				baseQuery = baseQuery.split(specialChars[sp]).join(codeNumbersForSplChars[sp]);
+	    	}
+		}
+    	$("#GridDisplay").removeAttr("src");
+    	$("#GridDisplay2").removeAttr("src");
+    	
+    	$("#GridDisplay").attr("src","./gridDisplay.jsp?baseQuery="+baseQuery+"&ruleQuery="+ruleQuery);
+    	$("#exportData").show();
+
+    }
+    
+    function runQueryExcept(){
+    	$('#iframecontainer11').show();
+    	var baseQuery =$("#baseQuery").val();
+    	var ruleQuery =$("#query").val();
+    	var specialChars = ['%','&','+','#'];
+		var codeNumbersForSplChars = ['%25','%26','%2B','%23'];
+		for(var sp = 0 ; sp < specialChars.length;sp++){
+			if(ruleQuery.indexOf(specialChars[sp]) >0){
+		    		ruleQuery = ruleQuery.split(specialChars[sp]).join(codeNumbersForSplChars[sp]);
+		    }
+			if(baseQuery.indexOf(specialChars[sp]) >0){
+				baseQuery = baseQuery.split(specialChars[sp]).join(codeNumbersForSplChars[sp]);
+	    	}
+		}
+		var sampleQuery = "";
+		var queryWhereSplit = baseQuery.split("where");
+		var queryFromPart = queryWhereSplit[0].split("FROM");
+		sampleQuery = queryWhereSplit[0].replace(queryFromPart[0], "select * ");
+		var afterWhere = baseQuery.replace(queryWhereSplit[0], "");
+		var exceptQuery = sampleQuery+" except "+sampleQuery+afterWhere;
+		alert(sampleQuery);
+		alert(exceptQuery);
+		//baseQuery = baseQuery+" except "+ruleQuery
+		ruleQuery = "";
+    	$("#GridDisplay").removeAttr("src");
+    	$("#GridDisplay2").removeAttr("src");
+    	
+    	$("#GridDisplay").attr("src","./gridDisplay.jsp?baseQuery="+exceptQuery+"&ruleQuery="+ruleQuery);
+    	$("#exportData").show();
+    }
+    
+    function applyRule(ruleQueryId)
+    {
+    	if($("#ruleQuery").val() == "")
+		{
+	    	alert("Kindly provide rule query");
+		}
+    	if($("#baseQuery").val() == ""){
+    		alert("Kindly provide base query");
+    	}
+    	if($("#ruleQuery").val() != "" && $("#fields").val() != "")
+		{
+    		if($("#ruleOperation").val() == "EDIT"){
+    			updateRule(ruleQueryId);
+    		}else{
+    			saveRule();
+    		}
+    	}
+    }
+    
+  	 $('textarea[name=textarea]').tooltip({
+    	placement: "top",
+    	trigger: "focus",
+    	width:'auto',
+    	height:'auto'
+    }); 
+  	 
+  	$("#showColumnsDialog").hide();
+  	function passValueOnNewWindow(){
+  		var territoryValue = $("#countyName1").val();
+  		var stateValue = $("#stateName1").val();
+  		var editon = $("#editonNumber").val();
+  		var countryFipsCode = $("#countryFipsCode").val();
+  		var countryName = $("#countryName").val();
+  		var stateFipsCode = $("#stateFipsCode").val();
+  		var countyFipsCode = $("#countyFipsCode").val();
+  		var stateCode = $("#stateCode").val();
+  		sessionStorage.setItem("territory", territoryValue); 
+        sessionStorage.setItem("stateValue", stateValue); 
+        sessionStorage.setItem("editon", editon); 
+        sessionStorage.setItem("stateFipsCode", stateFipsCode); 
+        sessionStorage.setItem("countyFipsCode", countyFipsCode); 
+        sessionStorage.setItem("countryFipsCode", countryFipsCode);
+        sessionStorage.setItem("countryName", countryName);
+        sessionStorage.setItem("stateCode", stateCode);
+  	    window.open("ExportData.jsp","_blank");
+  	}
+
+  	 </script>
+  	 <style>
+  	 
+  	 #editImgChange:hover {
+    	content: url('img/edit.png');
+    	margin-top: 15px;
+    	height: 19px;
+    	margin-right: 10px;
+	 }
+	 #saveImgChange:hover{
+	 	content: url('img/save-hover.png');
+    	margin-top: 15px;
+    	height: 19px;
+	 }
+  	 </style>
+</head>
+
+<body>
+<div class="widget-content">
+        <div class="height250">
+          <table class="table table-hover">
+            <tbody>
+            <tr>
+            <c:forEach items="${tableMapWithColumns}" var="tableNames">
+              <td>${tableNames.key}</td>
+            </c:forEach>
+            </tr>
+            <tr>
+            <c:forEach items="${tableMapWithColumns}" var="tableNames">
+                <td> <select id="${tableNames.key}" class="form-control countyTableColumns" multiple="multiple">
+					    <c:forEach items="${tableNames.value}" var="columnNames">
+					       <option value="${columnNames.columnName}-${columnNames.columnType}-${columnNames.columnSize}">${columnNames.columnName}</option>
+					    </c:forEach>
+					</select>
+				</td>
+				</c:forEach>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-warning pull-right" id="build_rule_btn">Build Rule </button>
+          <button type="button" id="sampleQuery" class="btn btn-default pull-right" onclick="buildQuery();"  title="Double click">Sample query </button>
+          <button type="button" class="btn btn-default pull-right" onclick="dynamicAddColumns();">Build query </button>
+        </div>
+      <div class="row">
+            <div class="col-md-12">
+              <label class="control-label">Query :</label>
+              <span id = "saveImgChange" class="pull-right" onclick = "saveTheText();" ><img src="img/save.png"  title='Save'  style = "margin-top: 15px;height: 19px;"></span>
+              <span id = "editImgChange" class="pull-right" onclick = "editTheText();" ><img src="img/edit_normal.png"  title='Edit'  style = "margin-top: 15px;height: 19px;margin-right: 10px;"></span>
+              <textarea id="baseQuery" rows="5" cols="3" name="textarea" class="auto form-control test"  style="overflow: scroll; word-wrap: break-word; resize: horizontal;height:100px;color: slategrey" spellcheck="false" data-toggle="tooltip" title = "" disabled >${rule.baseQuery}</textarea>
+            </div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+              <label class="control-label">Rule :</label>
+             <span id = "saveImgChangeRule" class="pull-right" onclick = "saveTheRuleText();" ><img src="img/save.png"  title='Save'  style = "margin-top: 15px;height: 19px;"></span>
+              <span id = "editImgChangeRule" class="pull-right" onclick = "editTheRuleText();" ><img src="img/edit_normal.png"  title='Edit'  style = "margin-top: 15px;height: 19px;margin-right: 10px;"></span>
+            	<textarea id="ruleQuery" rows="5" cols="3" name="textarea" class="auto form-control test"  style="overflow: scroll; word-wrap: break-word; resize: horizontal;width:437%;height:100px;color: slategrey" spellcheck="false" data-toggle="tooltip"  title = "${rule.query}" disabled>${rule.rule}</textarea>
+            </div>
+         </div>
+         <div class="row">
+            <div class="col-md-2 margin-top20">
+            <span id="fulscreenicon" class="pull-right" onclick="fullSceen()"><i  class="icon-fullscreen"></i></span>
+              <button type="button" class="btn btn-default" onclick="runQuery();">Run</button>
+              <button type="button" class="btn btn-default" onclick="runQueryExcept();">Run Except</button>
+			  <button type="button" class="btn btn-warning" id="opener1" onclick="applyRule(${rule.ruleQueryId});">Save </button>
+			</div>
+		</div>	
+			<div class="row">
+             <div class="col-md-2 " id="operation_fields" >
+             </div>
+             <div class="col-md-2 " id="operation_field" style="margin-left: 26px;">
+             </div>
+             </div>
+             <div class="col-md-2 " id="selected_columns1">
+             </div>
+             <div class="col-md-2 " id="selected_columns2">
+             </div>
+          </div>
+          
+      <div id="iframecontainer11">
+		<iframe id="GridDisplay"  src = "" name="gridDisplay" scrool="none" style=" text-align:center;width: 947px;height: 500px; border: none;"></iframe>
+	  </div>
+	  <div id="iframecontainer11">
+		<iframe id="GridDisplay2"  src = "" name="gridDisplay" scrool="none" style=" text-align:center;width: 947px;height: 500px;border: none;"></iframe>
+	  </div>
+	  <div id = "exportData" style = "float:right;margin-top:20px;" ><button type="button" class="btn btn-warning"  onclick="passValueOnNewWindow()">ExportData</button></div>		
+	 
+	  
+			<span id = "showColumnsDialog" style = "width: auto;min-height: 0px;max-height: none;height: 400px;display: block;overflow-y: scroll;" hidden></span>
+			<span id = "showColumnsDialogForBuildRule"></span>
+			<input type="hidden" id="ruleName"/> 
+			<input type="hidden" id="query" value="${rule.query}"/>
+			<input type="hidden" id="countyName1"/>
+			<input type="hidden" id="stateName1"/>
+			<input type="hidden" id="tables" value="${rule.tables}"/>
+			<input type="hidden" id="columns" value="${rule.columns}"/>
+			<input type="hidden" id="editonHidden" value="${rule.ruleMaster.edition}"/>
+			<input type="hidden" id="ruleQueryId" value="${rule.ruleQueryId}"/>
+	  	    <div id = "openDialogConformationBox"></div>
+	  	     <div id = "showDivForRuleLevel"></div>
+</body>
+</html>

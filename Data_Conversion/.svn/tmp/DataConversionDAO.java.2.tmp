@@ -1,0 +1,172 @@
+package com.appstek.dc.dao;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+/*import org.apache.poi.hssf.usermodel.HSSFWorkbook;*/
+import org.hibernate.HibernateException;
+
+import com.appstek.dc.dbload.Country;
+import com.appstek.dc.dbload.County;
+import com.appstek.dc.dbload.FieldMappingTable;
+import com.appstek.dc.dbload.FnfLanCounties;
+import com.appstek.dc.dbload.FnfLanCountries;
+import com.appstek.dc.dbload.FnfLanCountyTables;
+import com.appstek.dc.dbload.FnfLanDictionary;
+import com.appstek.dc.dbload.FnfLanForQC;
+import com.appstek.dc.dbload.FnfLanStates;
+import com.appstek.dc.dbload.RuleMaster;
+import com.appstek.dc.dbload.RuleQuery;
+import com.appstek.dc.dbload.SourceVerificationAnswer;
+import com.appstek.dc.dbload.State;
+//import com.appstek.dc.dbload.SourceVerificationAnswer;
+import com.appstek.dc.dbload.Territory;
+import com.appstek.dc.dto.DataConversionDto;
+import com.appstek.dc.dto.DataConversionRuleDto;
+import com.appstek.dc.dto.ExcelQuestionAnswerDto;
+
+public interface DataConversionDAO {
+
+	List<FnfLanCountries> loadCountries();
+
+	List<FnfLanDictionary> loadAllFields();
+
+	List<FnfLanCountyTables> loadTableNames(DataConversionDto dataConversionDto);
+
+	Map<String, List<DataConversionDto>> loadTableColumnNames(DataConversionDto dataConversionDto);
+
+	List<LinkedHashMap<String, Object>> getQueryData(String inputQuery) throws HibernateException,SQLException;
+
+	int executeUpdate(String inputQuery);
+
+	List<RuleQuery> loadAllTheRules(DataConversionDto dataConversionDto);
+
+	void deleteRule(RuleQuery ruleQuery);
+
+	RuleQuery loadRule(DataConversionRuleDto dataConversionRuleDto);
+
+	/*List<List<LinkedHashMap<String, Object>>> executeQueryForDefalutFlag(String selectedValue);*/
+
+	boolean saveRule(RuleQuery ruleQuery);
+
+	Territory getTerritoryDetailsByNameFips(String countyName, int countyFipsCode);
+
+	boolean saveTerritory(Territory countyTerritory);
+
+	RuleMaster getRuleMasterByRuleName(String ruleName);
+
+	List<RuleQuery> getFieldRules(List<Integer> fieldList, int territoryId);
+	
+	boolean updateRule(RuleQuery ruleQuery);
+
+	HSSFWorkbook getQueryDataXl(String inputQuery,String realPath);
+
+	List<List<LinkedHashMap<String, Object>>> executeQueryForJoinCondition(String tableNames);
+
+
+	List<RuleQuery> getPerticularField(int fieldNumber, int territoryId);
+
+	public List<RuleQuery> getQueryDataForField(String fildNumber,String countyName,String stateName,String edition);
+	public int getTotalRecordsOfBaseQuery(String query);
+
+	List<String> getTablesNames(String countyName);
+
+	int ruleCountForCountyField(int territoryId, int fieldNumber);
+	
+	public List<String> getUsedTableNames(int fieldNumber, String territoryName,String edition); 
+	public List<String> getUsedColumnNames(int fieldNumber, String territoryName,String edition);
+	/**
+	 * chandu
+	 * @param inputQuery
+	 * @return
+	 */
+		ArrayList<Object> FetchCounties(String inputQuery);
+
+		ArrayList<Object> Fetchusers(String inputQuery);
+
+	void saveUserTaskmanagement(String user, String county,String state,String editionYear,String assignedTime,String countyStateReference);
+		List<LinkedHashMap<String, Object>> showUserTaskmanagement(String fromDate,String toDate);
+
+		void showValidateUser(HttpServletRequest request, HttpServletResponse response,
+				String username, String password);
+
+		List<LinkedHashMap<String, Object>>  UserReportfetchRecords(HttpServletRequest request, HttpServletResponse response, String userName);
+
+		void UserReportInsertRecords(HttpServletRequest request, HttpServletResponse response, String comments,
+				String currentStatus,String selectedUser,String signOffStatus,String countyStateReference);
+
+		ArrayList<Object> FetchStates(String selectQuery);
+
+	int FetchNoOfTablesPerCounty(String stateCountyEditionYear);
+	int getRuleCount(DataConversionDto dataConversionDto);
+
+
+		List<FnfLanCountries> getAllCountries();
+
+		List<FnfLanStates> getStatesForCountry(DataConversionDto dto);
+
+		List<FnfLanCounties> getCountiesForState(DataConversionDto dto);
+		/**
+		 * chandu code ends
+		 */
+		public String getUsedRUL(int fieldNumber, String territoryName,String edition);
+		/**
+		 * chandu validation code starts here
+		 */
+		List<Object> saveSelectNumber(String inputQuery);
+		List<SourceVerificationAnswer> getSourceVerificationAnswers(DataConversionDto dataConversionDto);
+
+		boolean saveSourceVerificationResult(ExcelQuestionAnswerDto exclQADto);
+
+		List<FnfLanCountyTables> tablesRecordCount(String stateCode, String countyName, String editon);
+
+		List<List<LinkedHashMap<String, Object>>> joinConditionTablesList(String tableData);
+
+		int getCountOfJoinConditon(String checkingQuery);
+
+		void insertJoinCondition(String selectedQuery, String tablesSelectedForJoins);
+
+		int getCheckingTablesListResult(String tablesSelectedForJoinsString);
+
+		List<List<LinkedHashMap<String, Object>>> getTheJoinConditionListResult(String selectedTableColumns);
+
+		boolean saveMultipleFieldRules(List<RuleQuery> fieldsRuleQueryList);
+		
+		
+		/**
+		 * Srikanth Code start here
+		 * @return
+		 */
+		List<Country> getCountryList();
+		List<State> getStateList(Long countryCode);
+		List<County> getCountyList(Long stateFipsCode);
+		List<FnfLanDictionary> getFieldList(String countyName, String stateName);
+
+		List<FieldMappingTable> getFieldMappingForParentFieds(Integer fieldNumber);
+		
+		String showCreateUsers(HttpServletRequest request, HttpServletResponse response, String createusername,
+				String createpassword,String menuaccess);
+
+		String updatePassword(HttpServletRequest request, HttpServletResponse response, String createusername,
+				String createpassword);
+
+		void createIndividualLan23(String tableName);
+
+		List<RuleQuery> getFieldRules(DataConversionRuleDto dataConversionRuleDto);
+
+<<<<<<< .mine
+		List<LinkedHashMap<String, FnfLanForQC>> getDataForQc(String selectQuery,String slectedEdition);
+
+||||||| .r768
+=======
+		boolean saveFieldData(List<LinkedHashMap<String, Object>> fldQryDtaAftrValdn, String fieldLan23TableName, String mappingFieldName);
+
+>>>>>>> .r779
+}

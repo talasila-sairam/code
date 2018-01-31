@@ -1,0 +1,102 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Copy Rule</title>
+<style> 
+
+.divClass
+{
+   margin-top: 19px;
+    padding: 20px;
+    text-align: center;
+    height: 175px;
+    width: 1065px;
+    box-shadow: rgb(91, 91, 91) 5px 4px 7px, rgb(136, 136, 136) 0px 0px 25px, rgb(136, 136, 136) 0px 0px 5px;
+    background-color: #f5f5f5;
+    z-index: 10;
+    margin-left: -14px
+}
+label
+{
+	padding: 4px;
+	margin: 5px;
+}
+ .cancelRightEnd
+{
+    display:block;
+    position:absolute;
+    top:-10px;
+    right:-10px;
+    width:27px;
+    height:27px;
+    background:url('http://cdn-sg1.pgimgs.com/images/pg/close-button.png') no-repeat center center;
+} 
+	
+        </style>
+</head>
+<body>
+<div>
+    <table id = fixedColumns>
+	    <tr>
+		    <td><label class="control-label">Field :</label></td>
+		    <td><select id="field" class="form-control Column">
+		    		<option value="">--select--</option>
+		    	</select></td> 
+		    <td><label class="control-label">Country :</label></td>
+		    <td><select id="countryForCopyRul" class="form-control">
+	    		 	  <option value="">--select--</option>
+	    		</select></td> 
+	    	<td><label class="control-label">State :</label></td>
+  			<td><select id="stateForCopyRul" class="form-control">
+	    		 	  <option value="">--select--</option>
+	    		</select></td>
+	    	<td><label class="control-label">County :</label></td>
+  			<td><select id="countyForCopyRul" class="form-control">
+	    		 	  <option value="">--select--</option>
+	    		</select></td>
+	    	<td><label class="control-label">Edition :</label></td>
+  			<td><select id="editionForCopyRul" class="form-control">
+	    		 	  <option value="">--Year--</option>
+	    		 	  <option value="07">--2017--</option>
+	    		 	  <option value="06">--2016--</option>
+	    		 	  <option value="05">--2015--</option>
+	    		 	  <option value="04">--2014--</option>
+	    		 	  <option value="03">--2013--</option>
+	    		 	  <option value="02">--2012--</option>
+	    		 	  <option value="01">--2011--</option>
+	    		 	  <option value="00">--2010--</option>
+	    		</select></td>		
+	    </tr>
+    
+    </table>
+    
+    <div style = "margin-top: 20px">
+    
+    
+    <table id ="buildRuleTable">
+    	<tr id = 'cancel-0'>
+	    	<td><label class="control-label">Base Query :</label></td>
+	    	<td>
+	    		<textarea id="baseQueryCopy"  name="textarea" class="auto form-control test"  style="overflow: scroll; word-wrap: break-word; resize: horizontal;width:600px;height:100px;color: slategrey" spellcheck="false" data-toggle="tooltip" disabled></textarea>
+	    	</td>
+    	</tr> 
+    	<tr id = 'cancel-1' ><td colspan="2">&nbsp;</td></tr>
+    	<tr id = 'cancel-2'>
+	    	<td><label class="control-label">Rule :</label></td>
+	    	<td>
+	    		<textarea id="ruleQueryCopy"  name="textarea" class="auto form-control test"  style="overflow: scroll; word-wrap: break-word; resize: horizontal;width:600px;height:100px;color: slategrey" spellcheck="false" data-toggle="tooltip" disabled></textarea>
+	    	</td>
+    	</tr>   	
+    </table>
+    	<!-- <div class="divClass"  style = "position:abosulte" hidden>
+    	<a class="cancelRightEnd"></a>
+    	<div style="border: 1px solid #e78f08;background: #e78f08 50% 50% repeat-x;color: #ffffff;height: 40px;text-align: left;margin-top: -17px;margin-bottom: 10px;border-radius: 4px;width: 102.4%;margin-left: -15px"><lable style ="float: left;margin: 0.1em 0;font-weight: bold;margin-left: 15px;margin-top: 6px;">When Condition</lable></div>
+			<iframe id="submenuPagesDisplay" class = 'iframeForModal' src="whereClauseInBuildRule.jsp" style = "width: 1025px;height: 100px;padding: 4px;border-color: rgba(16, 181, 181, 0.55);background-color: oldlace" ></iframe>
+		 </div> -->
+    </div>
+</div>    
+</body>
+</html>

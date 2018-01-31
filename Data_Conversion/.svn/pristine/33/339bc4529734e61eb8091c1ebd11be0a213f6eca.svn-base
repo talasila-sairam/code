@@ -1,0 +1,1428 @@
+package com.appstek.dc.util;
+
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.apache.log4j.Logger;
+
+public class ApplyingFieldRules {
+	static Pattern  pattern = Pattern.compile("[^a-zA-Z0-9]");
+	private static Logger log4j = Logger.getLogger("com.appstek.dc.util.ApplyingFieldRules");
+	public static String fieldRules(int fieldNumber,String fieldValue,int length,Object[]  singleRowData,List<Object[]> fullRecord)
+	{
+		fieldValue = applyRulesForLengthofField(fieldValue,length);
+		switch (fieldNumber) {
+		case 1:
+			ApplyingFieldRules.for_Field_1(fieldValue,length);			
+			break;
+		case 2:
+			ApplyingFieldRules.for_Field_2(fieldValue,length);	
+			break;
+		case 3:
+			ApplyingFieldRules.forField_3(fieldValue,length);	
+			break;
+		case 4:
+			ApplyingFieldRules.forField_4(fieldValue,length);
+			break;
+		case 5:
+			ApplyingFieldRules.forField_5(fieldValue,length);
+			break;
+		case 6:
+			ApplyingFieldRules.forField_6(fieldValue,length);
+			break;
+		case 7:
+			ApplyingFieldRules.forField_7(fieldValue,length);
+			break;
+		case 8:
+			ApplyingFieldRules.forField_8(fieldValue,length);
+			break;
+		case 9:
+			ApplyingFieldRules.forField_9(fieldValue,length);
+			break;
+		case 10:
+			ApplyingFieldRules.forField_10(fieldValue,length);
+			break;
+		case 11:
+			ApplyingFieldRules.forField_11(fieldValue,length);
+			break;
+		case 12:
+			ApplyingFieldRules.forField_12(fieldValue,length);
+			break;
+		case 13:
+			ApplyingFieldRules.forField_13(fieldValue,length);
+			break;
+		case 14:
+			ApplyingFieldRules.forField_14(fieldValue,length);
+			break;
+		case 15:
+			ApplyingFieldRules.forField_15(fieldValue,length);
+			break;
+		case 16:
+			ApplyingFieldRules.forField_16(fieldValue,length);
+			break;
+		case 17:
+			ApplyingFieldRules.forField_17(fieldValue,length);
+			break;
+		case 18:
+			ApplyingFieldRules.forField_18(fieldValue,length);
+			break;
+		case 19:
+			ApplyingFieldRules.forField_19(fieldValue,length);
+			break;
+		case 20:
+			ApplyingFieldRules.forField_20(fieldValue,length);
+			break;
+		case 21:
+			ApplyingFieldRules.forField_21(fieldValue,length);
+			break;
+		case 22:
+			ApplyingFieldRules.forField_22(fieldValue,length);
+			break;
+		case 23:
+			ApplyingFieldRules.forField_23(fieldValue,length);
+			break;
+		case 24:
+			ApplyingFieldRules.forField_24(fieldValue,length);
+			break;
+		case 25:
+			ApplyingFieldRules.forField_25(fieldValue,length);
+			break;
+		case 26:
+			ApplyingFieldRules.forField_26(fieldValue,length);
+			break;
+		case 27:
+			ApplyingFieldRules.forField_27(fieldValue,length);
+			break;
+		case 28:
+			ApplyingFieldRules.forField_28(fieldValue,length);
+			break;
+		case 29:
+			ApplyingFieldRules.forField_29(fieldValue,length);
+			break;
+		case 30:
+			ApplyingFieldRules.forField_30(fieldValue,length);
+			break;
+		case 31:
+			ApplyingFieldRules.forField_31(fieldValue,length);
+			break;
+		case 32:
+			ApplyingFieldRules.forField_32(fieldValue,length);
+			break;
+		case 33:
+			ApplyingFieldRules.forField_33(fieldValue,length);
+			break;
+		case 34:
+			ApplyingFieldRules.forField_34(fieldValue,length);
+			break;
+		case 35:
+			ApplyingFieldRules.forField_35(fieldValue,length,singleRowData);
+			break;
+		case 36:
+			ApplyingFieldRules.forField_36(fieldValue,length);
+			break;
+		case 37:
+			ApplyingFieldRules.forField_37(fieldValue,length);
+			break;
+		case 38:
+			ApplyingFieldRules.forField_38(fieldValue,length);
+			break;
+		case 39:
+			ApplyingFieldRules.forField_39(fieldValue,length);
+			break;
+		case 40:
+			ApplyingFieldRules.forField_40(fieldValue,length);
+			break;
+		case 41:
+			ApplyingFieldRules.forField_41(fieldValue,length);
+			break;
+		case 42:
+			ApplyingFieldRules.forField_42(fieldValue,length);
+			break;
+		case 43:
+			ApplyingFieldRules.forField_43(fieldValue,length);
+			break;
+		case 44:
+			ApplyingFieldRules.forField_44(fieldValue,length);
+			break;
+		case 45:
+			ApplyingFieldRules.forField_45(fieldValue,length);
+			break;
+		case 46:
+			ApplyingFieldRules.forField_46(fieldValue,length);
+			break;
+		case 47:
+			ApplyingFieldRules.forField_47(fieldValue,length);
+			break;
+		case 48:
+			ApplyingFieldRules.forField_48(fieldValue,length);
+			break;
+		case 49:
+			ApplyingFieldRules.forField_49(fieldValue,length);
+			break;
+		case 50:
+			ApplyingFieldRules.forField_50(fieldValue,length);
+			break;
+		case 51:
+			ApplyingFieldRules.forField_51(fieldValue,length);
+			break;
+		case 52:
+			ApplyingFieldRules.forField_52(fieldValue,length);
+			break;
+		case 53:
+			ApplyingFieldRules.forField_53(fieldValue,length);
+			break;
+		case 54:
+			ApplyingFieldRules.forField_54(fieldValue,length);
+			break;
+		case 55:
+			ApplyingFieldRules.forField_55(fieldValue,length);
+			break;
+		case 56:
+			ApplyingFieldRules.forField_56(fieldValue,length);
+			break;
+		case 57:
+			ApplyingFieldRules.forField_57(fieldValue,length);
+			break;
+		case 58:
+			ApplyingFieldRules.forField_58(fieldValue,length);
+			break;
+		case 59:
+			ApplyingFieldRules.forField_59(fieldValue,length);
+			break;
+		case 60:
+			ApplyingFieldRules.forField_60(fieldValue,length);
+			break;
+		case 61:
+			ApplyingFieldRules.forField_61(fieldValue,length);
+			break;
+		case 62:
+			ApplyingFieldRules.forField_62(fieldValue,length);
+			break;
+		case 63:
+			ApplyingFieldRules.forField_63(fieldValue,length);
+			break;
+		case 64:
+			ApplyingFieldRules.forField_64(fieldValue,length);
+			break;
+		case 65:
+			ApplyingFieldRules.forField_65(fieldValue,length);
+			break;
+		case 66:
+			ApplyingFieldRules.forField_66(fieldValue,length);
+			break;
+		case 67:
+			ApplyingFieldRules.forField_67(fieldValue,length);
+			break;
+		case 68:
+			ApplyingFieldRules.forField_68(fieldValue,length);
+			break;
+		case 69:
+			ApplyingFieldRules.forField_69(fieldValue,length);
+			break;
+		case 70:
+			ApplyingFieldRules.forField_70(fieldValue,length);
+			break;
+		case 71:
+			ApplyingFieldRules.forField_71(fieldValue,length);
+			break;
+		case 72:
+			ApplyingFieldRules.forField_72(fieldValue,length);
+			break;
+		case 73:
+			ApplyingFieldRules.forField_73(fieldValue,length);
+			break;
+		case 74:
+			ApplyingFieldRules.forField_74(fieldValue,length);
+			break;
+		case 75:
+			ApplyingFieldRules.forField_75(fieldValue,length);
+			break;
+		case 76:
+			ApplyingFieldRules.forField_76(fieldValue,length);
+			break;
+		case 77:
+			ApplyingFieldRules.forField_77(fieldValue,length);
+			break;
+		case 78:
+			ApplyingFieldRules.forField_78(fieldValue,length);
+			break;
+		case 79:
+			ApplyingFieldRules.forField_79(fieldValue,length);
+			break;
+		case 80:
+			ApplyingFieldRules.forField_80(fieldValue,length);
+			break;
+		case 81:
+			ApplyingFieldRules.forField_81(fieldValue,length);
+			break;
+		case 82:
+			ApplyingFieldRules.forField_82(fieldValue,length);
+			break;
+		case 83:
+			ApplyingFieldRules.forField_83(fieldValue,length);
+			break;
+		case 84:
+			ApplyingFieldRules.forField_84(fieldValue,length);
+			break;
+		case 85:
+			ApplyingFieldRules.forField_85(fieldValue,length);
+			break;
+		case 86:
+			ApplyingFieldRules.forField_86(fieldValue,length);
+			break;
+		case 87:
+			ApplyingFieldRules.forField_87(fieldValue,length);
+			break;
+		case 88:
+			ApplyingFieldRules.forField_88(fieldValue,length);
+			break;
+		case 89:
+			ApplyingFieldRules.forField_89(fieldValue,length);
+			break;
+		case 90:
+			ApplyingFieldRules.forField_90(fieldValue,length);
+			break;
+		case 91:
+			ApplyingFieldRules.forField_91(fieldValue,length);
+			break;
+		case 92:
+			ApplyingFieldRules.forField_92(fieldValue,length);
+			break;
+		case 93:
+			ApplyingFieldRules.forField_93(fieldValue,length);
+			break;
+		case 94:
+			ApplyingFieldRules.forField_94(fieldValue,length);
+			break;
+		case 95:
+			ApplyingFieldRules.forField_95(fieldValue,length);
+			break;
+		case 96:
+			ApplyingFieldRules.forField_96(fieldValue,length);
+			break;
+		case 97:
+			ApplyingFieldRules.forField_97(fieldValue,length);
+			break;
+		case 98:
+			ApplyingFieldRules.forField_98(fieldValue,length);
+			break;
+		case 99:
+			ApplyingFieldRules.forField_99(fieldValue,length);
+			break;
+		case 100:
+			ApplyingFieldRules.forField_100(fieldValue,length);
+			break;
+		case 101:
+			ApplyingFieldRules.forField_101(fieldValue,length);
+			break;
+		case 102:
+			ApplyingFieldRules.forField_102(fieldValue,length);
+			break;
+		case 103:
+			ApplyingFieldRules.forField_103(fieldValue,length);
+			break;
+		case 104:
+			ApplyingFieldRules.forField_104(fieldValue,length);
+			break;
+		case 105:
+			ApplyingFieldRules.forField_105(fieldValue,length);
+			break;
+		case 106:
+			ApplyingFieldRules.forField_106(fieldValue,length);
+			break;
+		case 107:
+			ApplyingFieldRules.forField_107(fieldValue,length);
+			break;
+		case 108:
+			ApplyingFieldRules.forField_108(fieldValue,length);
+			break;
+		case 109:
+			ApplyingFieldRules.forField_109(fieldValue,length);
+			break;
+		case 110:
+			ApplyingFieldRules.forField_110(fieldValue,length);
+			break;
+		case 111:
+			ApplyingFieldRules.forField_111(fieldValue,length);
+			break;
+		case 112:
+			ApplyingFieldRules.forField_112(fieldValue,length);
+			break;
+		case 113:
+			ApplyingFieldRules.forField_113(fieldValue,length);
+			break;
+		case 114:
+			ApplyingFieldRules.forField_114(fieldValue,length);
+			break;
+		case 115:
+			ApplyingFieldRules.forField_115(fieldValue,length);
+			break;
+		case 116:
+			ApplyingFieldRules.forField_116(fieldValue,length);
+			break;
+		case 117:
+			ApplyingFieldRules.forField_117(fieldValue,length);
+			break;
+		case 118:
+			ApplyingFieldRules.forField_118(fieldValue,length);
+			break;
+		case 119:
+			ApplyingFieldRules.forField_119(fieldValue,length);
+			break;
+		case 120:
+			ApplyingFieldRules.forField_120(fieldValue,length);
+			break;
+		case 121:
+			ApplyingFieldRules.forField_121(fieldValue,length);
+			break;
+		case 122:
+			ApplyingFieldRules.forField_122(fieldValue,length);
+			break;
+		case 123:
+			ApplyingFieldRules.forField_123(fieldValue,length);
+			break;
+		case 124:
+			ApplyingFieldRules.forField_124(fieldValue,length);
+			break;
+		case 125:
+			ApplyingFieldRules.forField_125(fieldValue,length);
+			break;
+		case 126:
+			ApplyingFieldRules.forField_126(fieldValue,length);
+			break;
+		case 127:
+			ApplyingFieldRules.forField_127(fieldValue,length);
+			break;
+		case 128:
+			ApplyingFieldRules.forField_128(fieldValue,length);
+			break;
+		case 129:
+			ApplyingFieldRules.forField_129(fieldValue,length);
+			break;
+		case 130:
+			ApplyingFieldRules.forField_130(fieldValue,length);
+			break;
+		case 131:
+			ApplyingFieldRules.forField_131(fieldValue,length);
+			break;
+		case 132:
+			ApplyingFieldRules.forField_132(fieldValue,length);
+			break;
+		case 133:
+			ApplyingFieldRules.forField_133(fieldValue,length);
+			break;
+		case 134:
+			ApplyingFieldRules.forField_134(fieldValue,length);
+			break;
+		case 135:
+			ApplyingFieldRules.forField_135(fieldValue,length);
+			break;
+		case 136:
+			ApplyingFieldRules.forField_136(fieldValue,length);
+			break;
+		case 137:
+			ApplyingFieldRules.forField_137(fieldValue,length);
+			break;
+		case 138:
+			ApplyingFieldRules.forField_138(fieldValue,length);
+			break;
+		case 139:
+			ApplyingFieldRules.forField_139(fieldValue,length);
+			break;
+		case 140:
+			ApplyingFieldRules.forField_140(fieldValue,length);
+			break;
+		case 141:
+			ApplyingFieldRules.forField_141(fieldValue,length);
+			break;
+		case 142:
+			ApplyingFieldRules.forField_142(fieldValue,length);
+			break;
+		case 143:
+			ApplyingFieldRules.forField_143(fieldValue,length);
+			break;
+		case 144:
+			ApplyingFieldRules.forField_144(fieldValue,length);
+			break;
+		case 145:
+			ApplyingFieldRules.forField_145(fieldValue,length);
+			break;
+		case 146:
+			ApplyingFieldRules.forField_146(fieldValue,length);
+			break;
+		case 147:
+			ApplyingFieldRules.forField_147(fieldValue,length);
+			break;
+		case 148:
+			ApplyingFieldRules.forField_148(fieldValue,length);
+			break;
+		case 149:
+			ApplyingFieldRules.forField_149(fieldValue,length);
+			break;
+		case 150:
+			ApplyingFieldRules.forField_150(fieldValue,length);
+			break;
+		case 151:
+			ApplyingFieldRules.forField_151(fieldValue,length);
+			break;
+		case 152:
+			ApplyingFieldRules.forField_152(fieldValue,length);
+			break;
+		case 153:
+			ApplyingFieldRules.forField_153(fieldValue,length);
+			break;
+		case 154:
+			ApplyingFieldRules.forField_154(fieldValue,length);
+			break;
+		case 155:
+			ApplyingFieldRules.forField_155(fieldValue,length);
+			break;
+		case 156:
+			ApplyingFieldRules.forField_156(fieldValue,length);
+			break;
+		case 157:
+			ApplyingFieldRules.forField_157(fieldValue,length);
+			break;
+		case 158:
+			ApplyingFieldRules.forField_158(fieldValue,length);
+			break;
+		case 159:
+			ApplyingFieldRules.forField_159(fieldValue,length);
+			break;
+		case 160:
+			ApplyingFieldRules.forField_160(fieldValue,length);
+			break;
+		case 161:
+			ApplyingFieldRules.forField_161(fieldValue,length);
+			break;
+		case 162:
+			ApplyingFieldRules.forField_162(fieldValue,length);
+			break;
+		case 163:
+			ApplyingFieldRules.forField_163(fieldValue,length);
+			break;
+		case 164:
+			ApplyingFieldRules.forField_164(fieldValue,length);
+			break;
+		case 165:
+			ApplyingFieldRules.forField_165(fieldValue,length);
+			break;
+		case 166:
+			ApplyingFieldRules.forField_166(fieldValue,length);
+			break;
+		case 167:
+			ApplyingFieldRules.forField_167(fieldValue,length);
+			break;
+		case 168:
+			ApplyingFieldRules.forField_168(fieldValue,length);
+			break;
+		case 169:
+			ApplyingFieldRules.forField_169(fieldValue,length);
+			break;
+		case 170:
+			ApplyingFieldRules.forField_170(fieldValue,length);
+			break;
+		case 171:
+			ApplyingFieldRules.forField_171(fieldValue,length);
+			break;
+		case 172:
+			ApplyingFieldRules.forField_172(fieldValue,length);
+			break;
+		case 173:
+			ApplyingFieldRules.forField_173(fieldValue,length);
+			break;
+		case 174:
+			ApplyingFieldRules.forField_174(fieldValue,length);
+			break;
+		case 175:
+			ApplyingFieldRules.forField_175(fieldValue,length);
+			break;
+		case 176:
+			ApplyingFieldRules.forField_176(fieldValue,length);
+			break;
+		case 177:
+			ApplyingFieldRules.forField_177(fieldValue,length);
+			break;
+		case 178:
+			ApplyingFieldRules.forField_178(fieldValue,length);
+			break;
+		case 179:
+			ApplyingFieldRules.forField_179(fieldValue,length);
+			break;
+		case 180:
+			ApplyingFieldRules.forField_180(fieldValue,length);
+			break;
+		case 181:
+			ApplyingFieldRules.forField_181(fieldValue,length);
+			break;
+		case 182:
+			ApplyingFieldRules.forField_182(fieldValue,length);
+			break;
+		case 183:
+			ApplyingFieldRules.forField_183(fieldValue,length);
+			break;
+		case 184:
+			ApplyingFieldRules.forField_184(fieldValue,length);
+			break;
+		case 185:
+			ApplyingFieldRules.forField_185(fieldValue,length);
+			break;
+		case 186:
+			ApplyingFieldRules.forField_186(fieldValue,length);
+			break;
+		case 187:
+			ApplyingFieldRules.forField_187(fieldValue,length);
+			break;
+		case 188:
+			ApplyingFieldRules.forField_188(fieldValue,length);
+			break;
+		case 189:
+			ApplyingFieldRules.forField_189(fieldValue,length);
+			break;
+		case 190:
+			ApplyingFieldRules.forField_190(fieldValue,length);
+			break;
+		case 191:
+			ApplyingFieldRules.forField_191(fieldValue,length);
+			break;
+		case 192:
+			ApplyingFieldRules.forField_192(fieldValue,length);
+			break;
+		case 193:
+			ApplyingFieldRules.forField_193(fieldValue,length);
+			break;
+		case 194:
+			ApplyingFieldRules.forField_194(fieldValue,length);
+			break;
+
+		default:
+			fieldValue = null;
+		}
+		return fieldValue;
+	}
+	
+	public static String for_Field_1(String fieldValue,int length)
+	{
+		//Only required for length validation
+		return fieldValue;
+	}
+	public static String for_Field_2(String fieldValue,int length)
+	{
+		//Only required for length validation
+		return fieldValue;
+	}
+	public static String forField_3(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_4(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_5(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_6(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_7(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_8(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_9(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_10(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_11(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_12(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_13(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_14(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_15(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_16(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_17(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_18(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_19(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_20(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_21(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_22(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_23(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_24(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_25(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_26(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_27(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_28(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_29(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_30(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_31(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_32(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_33(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_34(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_35(String fieldValue,int length,Object[] singleRowData)
+	{
+		if(singleRowData[71] != null)
+		{
+			String nextFieldValue = singleRowData[71].toString();
+			if(nextFieldValue.equals(fieldValue))
+			{
+				fieldValue = null;
+			}
+		}
+		return fieldValue;
+	}
+	public static String forField_36(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_37(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_38(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_39(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_40(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_41(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_42(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_43(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_44(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_45(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_46(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_47(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_48(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_49(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_50(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_51(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_52(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_53(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_54(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_55(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_56(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_57(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_58(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_59(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_60(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_61(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_62(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_63(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_64(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_65(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_66(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_67(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_68(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_69(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_70(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_71(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_72(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_73(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_74(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_75(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_76(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_77(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_78(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_79(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_80(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_81(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_82(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_83(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_84(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_85(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_86(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_87(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_88(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_89(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_90(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_91(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_92(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_93(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_94(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_95(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_96(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_97(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_98(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_99(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_100(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_101(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_102(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_103(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_104(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_105(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_106(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_107(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_108(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_109(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_110(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_111(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_112(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_113(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_114(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_115(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_116(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_117(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_118(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_119(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_120(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_121(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_122(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_123(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_124(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_125(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_126(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_127(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_128(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_129(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_130(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_131(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_132(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_133(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_134(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_135(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_136(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_137(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_138(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_139(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_140(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_141(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_142(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_143(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_144(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_145(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_146(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_147(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_148(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_149(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_150(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_151(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_152(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_153(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_154(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_155(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_156(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_157(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_158(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_159(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_160(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_161(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_162(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_163(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_164(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_165(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_166(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_167(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_168(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_169(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_170(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_171(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_172(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_173(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_174(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_175(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_176(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_177(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_178(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_179(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_180(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_181(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_182(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_183(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_184(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_185(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_186(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_187(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_188(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_189(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_190(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_191(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_192(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_193(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String forField_194(String fieldValue,int length)
+	{
+		return fieldValue;
+	}
+	public static String  applyRulesForLengthofField(String mappedValue,int length)
+	 {
+		 log4j.error("ApplyingFieldRules - applyRulesForLengthofField :: Start ");
+		 try
+	     {
+			 if(mappedValue != null)
+			 {
+				 if(!mappedValue.equals(""))
+				 {
+					 Matcher firstCharMatch = pattern.matcher(Character.toString(mappedValue.charAt(0)));
+					 Matcher secondCharMatch = pattern.matcher(Character.toString(mappedValue.charAt(mappedValue.length()-1)));
+					 if(firstCharMatch.find()) {
+					    	mappedValue = mappedValue.substring(1);
+						}
+				     if(secondCharMatch.find()) {
+				    	 mappedValue = mappedValue.substring(0,mappedValue.length()-2);
+					    }
+				 } 
+				 if(mappedValue.length()<length)
+				 {
+					 int len = length-mappedValue.length();
+					 for(int k=1;k<=len;k++)
+					 {
+						 mappedValue = mappedValue.concat(" "); 
+					 }
+				 }else if(mappedValue.length()>length)
+				 {
+					 mappedValue = mappedValue.substring(0, length);
+				 }
+			 }
+	     }catch(Exception e)
+	     {
+	    	 log4j.error("ApplyingFieldRules - applyRulesForLengthofField :: Error " + e.getMessage());
+			 e.printStackTrace();
+	     }
+		  log4j.error("ApplyingFieldRules - applyRulesForLengthofField :: End ");
+		 return mappedValue;
+	 }
+}

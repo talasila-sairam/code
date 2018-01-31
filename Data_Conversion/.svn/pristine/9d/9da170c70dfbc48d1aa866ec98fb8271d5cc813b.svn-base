@@ -1,0 +1,199 @@
+	var columnValues = $("#columnValues").val();
+	var columnOption = $("#columnOption").val();
+	var tableCount = 0;
+	
+	   $('#modelDialog').contents().find('body').find("#plannerTable").find("#col-0").empty();
+       $('#modelDialog').contents().find('body').find("#plannerTable").find("#col-0").html(columnValues);
+       $('#modelDialog').contents().find('body').find("#plannerTable").find("#value-0").empty();
+       $('#modelDialog').contents().find('body').find("#plannerTable").find("#value-0").html(columnOption);
+       
+       
+       var disableFlag = false;
+       var isNullCheckFlag = false;
+       $(document).on('change', '.operatorInMainQuery', function() {
+           
+       	var id = this.id;
+           var count = id.split('-');
+           count = count[1];
+           var value = this.value;
+           var operatorValue;
+               
+           if( id.match("operators")){
+           	operatorValue = value;
+           if(operatorValue == "like" || operatorValue == "not like"){
+           	$("#alertWhileFieldIsEmpty").hide();
+           	$("#alertForInOperator").hide();
+           	$("#alertForLikeOperator").empty();
+           	$("#alertForLikeOperator").show();
+           	$("#alertForLikeOperator").append("<a href='' class='close' data-hide='alert' aria-label='close'>&times;</a> *Please add '%' in textfield as per your requirement");
+           	$("#alertForLikeOperator").effect("highlight",100);
+           	$("#value-" + count).attr("disabled", true);
+       		$('#value-' + count).prop('selectedIndex',0);
+           }
+           else{
+           	$("#alertForLikeOperator").empty();
+           	$("#alertForLikeOperator").hide();
+           	$("#alertForInOperator").empty();
+           	$("#alertForInOperator").hide();
+           	
+           	$('#value-' + count).removeAttr("disabled");
+           }
+           if(operatorValue == "is null" || operatorValue == "is not null" ){
+           	isNullCheckFlag = true;
+           }
+           else{
+           	isNullCheckFlag = false;
+           }
+           if(isNullCheckFlag  == true){
+           	$("#value-" + count).attr("disabled", true);
+           	$('#value-' + count).prop('selectedIndex',0);
+           	$("#valueText-" + count).attr("disabled", true);
+           	$("#valueText-" + count).val("");
+           }
+           else if(isNullCheckFlag == false){
+           	if($('#value-' + count).val() != "" && $("#valueText-" + count).val() != ""){
+           		$('#value-' + count).removeAttr("disabled");
+           		$("#valueText-" + count).removeAttr("disabled");
+           		$('#value-' + count).prop('selectedIndex',0);
+           		$("#valueText-" + count).val("");
+           	}
+           	else if($('#value-' + count).val() == "" && $("#valueText-" + count).val() != ""){
+           		$("#valueText-" + count).removeAttr("disabled");
+           	}
+           	else if($('#value-' + count).val() != "" && $("#valueText-" + count).val() == ""){
+           		$("#value-" + count).removeAttr("disabled");
+           	}
+           	
+           	else{
+           		
+           		if(operatorValue == "like" || operatorValue == "not like" || operatorValue == "in"){
+               		
+   	        		if(operatorValue == "like" || operatorValue == "not like" ){
+   	        			$("#value-" + count).attr("disabled", true);
+   	            		$('#value-' + count).prop('selectedIndex',0);
+   	            		$('#subQueryButton-'+count).css('display','none');
+   	        		}
+   	        		else if(operatorValue == "in"){
+   	            		$("#value-" + count).attr("disabled", true);
+   	            		$('#subQueryButton-'+count).css('display','block');
+   	        		}
+               	}
+           		else{
+           			$("#value-" + count).removeAttr("disabled");
+           			$('#subQueryButton-'+count).css('display','none');
+           		}
+           		$("#valueText-" + count).removeAttr("disabled");
+           	}
+           }
+           }
+           
+           if ($('#col-' + count).val() != "" && $('#operators-' + count).val() != "") {
+           	disableFlag = false;
+           }
+           else{
+           	disableFlag = true;
+           }
+          
+           if (disableFlag == false) {
+               $('#columns-' + count).removeAttr("disabled");
+           } 
+           else if(disableFlag == true) {
+               $('#columns-' + count).attr("disabled", true);
+           }
+           if(id == "value-"+count){
+           	if(value != ""){
+           		$('#valueText-' + count).attr("disabled", true);
+           		$('#valueText-' + count).val("");
+           	}
+           	else{
+           		$('#valueText-' + count).removeAttr("disabled");
+           	}
+           }
+           if(id == "valueText-"+count){
+   	    	if(value != ""){
+   	    		$('#value-' + count).attr("disabled", true);
+   	    		$('#value-' + count).prop('selectedIndex',0);
+   	    	}
+   	    	else{
+   	    		$('#value-' + count).removeAttr("disabled");
+   	    	}
+   	    }
+       });
+       
+       $(document).on('keyup', '.form-control', function() {
+       	
+       	var seletedId = this.id;
+       	var selectedCount = seletedId.split('-');
+       	selectedCount = selectedCount[1];
+       	var givenValue = this.value;
+       	if(seletedId == 'valueText-'+selectedCount){
+       		if(givenValue != ""){
+       			$('#value-' + selectedCount).attr("disabled", true);
+       		}
+       		else{
+       			if($('#operators-' + selectedCount).val() == 'like' || $('#operators-' + selectedCount).val() == 'not like'){
+       				$('#value-' + selectedCount).attr("disabled", true);	
+       			}
+       			else{
+       				$('#value-' + selectedCount).removeAttr("disabled");
+       			}
+       		}
+       	}
+       	if($('#col-' + selectedCount).val() != "" && $('#operators-' + selectedCount).val() != ""){
+       		   $('#columns-' + selectedCount).removeAttr("disabled");
+       		   $('#value-' + selectedCount).prop('selectedIndex',0);
+           } 	
+           else{
+               $('#columns-' + selectedCount).attr("disabled", true);
+       	}
+       });
+   	
+       $(document).off('change', '.countyTableColumns').on('change', '.countyTableColumns', function() {
+           var id = this.id;
+           var count = id.split('-');
+           count = count[1];
+           var value = this.value;
+           
+           var tableRowSize = $("#plannerTable").find("tr").not("thead tr").length;
+           var indexPosition = $(this).closest("tr").index();
+           if(id.match('columns') && indexPosition == (tableRowSize-1)){
+   	        if ((value == "And" || value == "Or") && id.match("columns-" + count)) {
+   	            dynamicRowsForTable();
+   	        }
+   	        function dynamicRowsForTable() {
+   	        	tableCount++;
+   	        	
+   	        	var columnData = "<tr id = 'closebutton-"+tableCount+"'>" +
+   	        			"<td><input type='checkbox' id='rowStart-"+tableCount+"' class = 'checkBoxStyle' style = 'margin: 0px 14px'/></td>" +
+   	        			"<td><label class='control-label'>  </label></td>" +
+   	        			"<td><select id='col-"+tableCount+"' class='form-control countyTableCol'></select></td>" +
+   	        			"<td><label class='control-label'>  </label></td><td><select id='operators-" + tableCount + "'  class='form-control operatorInMainQuery'><option value=''>--select--</option><option value='='>=</option><option value='<>'><></option><option value='like'>like</option><option value='not like'>not like</option><option value='<'><</option><option value='>'>></option><option value='>='>>=</option><option value='<'><=</option><option value='is null'>is null</option><option value='is not null'>is not null</option><option value='in'>in</option><option value='between'>between</option></select></td>" +
+   	        			"<td><label class='control-label'>  </label></td>" +
+   	        			"<td><select id='value-" + tableCount + "' class='form-control CountyTableValues' ></select></td>" +
+   	        			"<td><label class='control-label'>  </label></td>" +
+   	        			"<td><input type='text' id='valueText-" + tableCount + "' class='form-control'></td><td><label class='control-label'>  </label></td>" +
+   	        			"<td><select id='columns-" + tableCount + "' class='form-control countyTableColumns' disabled>" +
+   	        			"<option value=''>--select--</option><option value='And'>And</option><option value='Or'>Or</option><option value='Not'>Not</option></select></td>" +
+   	        			"<td><label class='control-label'>  </label></td>" +
+   	        			"<td><input type='checkbox'  id='rowEnd-"+ tableCount +"' class = 'checkBoxStyle' style = 'margin: 0px 14px'/></td>" +
+   	        			"<td><label class='control-label'>  </label></td>" +
+   	        			"<td><button class='btn btn-warning iframeForSubquery' id = 'subQueryButton-"+ tableCount +"' style='display: none;'>subQuery</button></td>" +
+   	        			"<td><div class = 'closeButton' id = 'closebutton-"+ tableCount +"' style = 'padding:4px'><img src='img/cancel.ico'/></div></td></tr>"
+   	        	
+   	            $("#plannerTable").append(columnData);
+   	            var optionValues = $("#col-0").html();
+   	         	$("#col-"+tableCount).append("");
+   	        	$("#col-"+tableCount).append(optionValues);
+   	        	$("#value-"+tableCount).append("");
+   	       		$("#value-"+tableCount).append(optionValues);
+   	        }
+           }
+       });
+       
+       
+       
+       function runQuery(){
+    	   $('html, body').animate({
+   	        scrollTop: $("#resultQueryDiv").offset().top
+   	    });
+    	 }

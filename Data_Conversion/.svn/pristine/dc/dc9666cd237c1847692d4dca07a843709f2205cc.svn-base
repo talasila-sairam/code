@@ -1,0 +1,148 @@
+package com.appstek.dc.dbload;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Proxy;
+
+/**
+ * @author Sushanta
+ * 
+ * Database mapping entity class for rule_query table.
+ */
+@Entity
+@Table(name = "dbo.rule_query")
+@Proxy(lazy = false)
+public class RuleQuery {
+	
+	@Id
+	@GenericGenerator(name="rulMstr" , strategy="increment")
+	@GeneratedValue(generator="rulMstr")
+	@Column(name="RULE_QUERY_ID")
+	private int ruleQueryId;
+	/*@Column(name="RULE_ID")
+	private int ruleId;*/
+	@Column(name="RUL")
+	private String rule;
+	/*@Column(name="BASEQUERY")
+	private String basequery;
+	
+	public String getBasequery() {
+		return basequery;
+	}
+	public void setBasequery(String basequery) {
+		this.basequery = basequery;
+	}*/
+	private boolean deleted;
+	
+	public String getBaseQuery() {
+		return baseQuery;
+	}
+	public void setBaseQuery(String baseQuery) {
+		this.baseQuery = baseQuery;
+	}
+	public String getQuery() {
+		return query;
+	}
+	public void setQuery(String query) {
+		this.query = query;
+	}
+	@Column(name="QUERY")
+	private String query;
+	
+	@Column(name="basequery")
+	private String baseQuery;
+	
+	@Column(name="ruleColumn")
+	private String ruleColumn;
+	
+	@Column(name="buildbasequery")
+	private String buildbasequery;
+	
+	@Column(name="buildrulequery")
+	private String buildrulequery;
+	
+	@Column(name="BaseQueryRuleHint")
+	private String baseQueryRuleHint;
+	
+	public String getRuleColumn() {
+		return ruleColumn;
+	}
+	public void setRuleColumn(String ruleColumn) {
+		this.ruleColumn = ruleColumn;
+	}
+	public String getBuildBaseQuery() {
+		return buildbasequery;
+	}
+	public void setBuildBaseQuery(String buildbasequery) {
+		this.buildbasequery = buildbasequery;
+	}
+	public String getBuildRuleQuery() {
+		return buildrulequery;
+	}
+	public void setBuildRuleQuery(String buildrulequery) {
+		this.buildrulequery = buildrulequery;
+	}
+	
+	
+	
+	public String getTables() {
+		return tables;
+	}
+	public void setTables(String tables) {
+		this.tables = tables;
+	}
+	public String getColumns() {
+		return columns;
+	}
+	public void setColumns(String columns) {
+		this.columns = columns;
+	}
+	@Column(name="TABLES")
+	private String tables;
+	
+	@Column(name="COLUMNS")
+	private String columns;
+	
+	public boolean isDeleted() {
+		return deleted;
+	}
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
+	@ManyToOne(fetch = FetchType.LAZY)
+	@Cascade(CascadeType.ALL)
+	@JoinColumn(name = "RULE_ID", nullable = false)
+	private RuleMaster ruleMaster;
+	
+	
+	public RuleMaster getRuleMaster() {
+		return ruleMaster;
+	}
+	public void setRuleMaster(RuleMaster ruleMaster) {
+		this.ruleMaster = ruleMaster;
+	}
+	public int getRuleQueryId() {
+		return ruleQueryId;
+	}
+	public void setRuleQueryId(int ruleQueryId) {
+		this.ruleQueryId = ruleQueryId;
+	}
+	public String getRule() {
+		return rule;
+	}
+	public void setRule(String rule) {
+		this.rule = rule;
+	}
+	
+
+}

@@ -1,0 +1,23 @@
+function jqueryAjaxfunction(url,div,data){
+	$.ajax({
+	     type: "POST",
+	     url: url,
+	     data: data,
+	     success : function(data) {
+             $('#'+div).html(data);
+         }
+	})
+}
+
+function jqueryAjaxfunctionForFrame(url,div,data){
+	$.ajax({
+	     type: "POST",
+	     url: url,
+	     data: data,
+	     success : function(data) {
+	    	 $("#"+div).attr("src", data);
+         }
+	})
+}
+
+
